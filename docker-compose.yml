@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db:
+    build: docker/database
+    restart: always
+    hostname: erasmus-db
+    container_name: erasmus-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Q1W2e3r4
+      - MSSQL_PID=Developer
+    networks:
+      - erasmus
+    ports:
+      - 1433:1433
+
+  app:
+    build: docker/app
+    restart: always
+    hostname: erasmus-backend
+    container_name: erasmus-backend
+    volumes:
+      - ./docker/app/erasmus-backend.jar:/opt/app/erasmus-backend.jar:ro
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - erasmus
+
+networks:
+  erasmus:
