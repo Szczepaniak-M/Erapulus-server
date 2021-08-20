@@ -5,18 +5,583 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-    <changeSet author="admin" id="1">
-        <createTable tableName="person">
+    <changeSet author="Szczepaniak-M" id="202108141232">
+        <comment>Initialize tables</comment>
+        <createTable tableName="University">
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="NVARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="address" type="VARCHAR(255)"/>
+            <column name="address" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="NVARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="zipcode" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="NVARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="NVARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Document">
+            <column name="id" autoIncrement="true" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="path" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="university" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="UniversityEmployee">
+            <column name="id" autoIncrement="true" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="firstName" type="NVARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastName" type="NVARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="university" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="User">
+            <column name="id" autoIncrement="true" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="firstName" type="NVARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastName" type="NVARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facebookUrl" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="whatsUpUrl" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="university" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="AddFriendRequest">
+            <column name="id" autoIncrement="true" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sender" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sendTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Friend">
+            <column name="user" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="friend" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Device">
+            <column name="id" autoIncrement="true" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deviceId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <!-- FK Constraints-->
+        <addForeignKeyConstraint baseTableName="Document" baseColumnNames="university"
+                                 constraintName="FK_Document_university_University"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="UniversityEmployee" baseColumnNames="university"
+                                 constraintName="FK_UniversityEmployee_university_University"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="User" baseColumnNames="university"
+                                 constraintName="FK_User_university_University"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="user"
+                                 constraintName="FK_Device_university_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="user"
+                                 constraintName="FK_Friend_user_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="friend"
+                                 constraintName="FK_Friend_friend_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="AddFriendRequest" baseColumnNames="sender"
+                                 constraintName="FK_AddFriendRequest_sender_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="AddFriendRequest" baseColumnNames="recipient"
+                                 constraintName="FK_AddFriendRequest_recipient_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+
+        <!-- lastModifiedBy Constraints -->
+        <addForeignKeyConstraint baseTableName="University" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_University_lastModifiedBy_UniversityEmployee"
+                                 referencedTableName="UniversityEmployee" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="UniversityEmployee" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_UniversityEmployee_lastModifiedBy_UniversityEmployee"
+                                 referencedTableName="UniversityEmployee" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Document" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Document_lastModifiedBy_UniversityEmployee"
+                                 referencedTableName="UniversityEmployee" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="User" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_User_lastModifiedBy_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Device_lastModifiedBy_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="AddFriendRequest" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_AddFriendRequest_lastModifiedBy_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Friend_lastModifiedBy_User"
+                                 referencedTableName="User" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <rollback>
+            <dropTable tableName="Device"/>
+            <dropTable tableName="Friend"/>
+            <dropTable tableName="AddFriendRequest"/>
+            <dropTable tableName="UniversityEmployee"/>
+            <dropTable tableName="Document"/>
+            <dropTable tableName="User"/>
+            <dropTable tableName="University"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="202108141328" author="Szczepaniak-M" dbms="mssql">
+        <comment>Adding history tables</comment>
+        <createTable tableName="UniversityHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="NVARCHAR(255)"/>
+            <column name="address" type="NVARCHAR(255)"/>
+            <column name="address2" type="NVARCHAR(255)"/>
+            <column name="zipcode" type="VARCHAR(32)"/>
+            <column name="city" type="NVARCHAR(64)"/>
+            <column name="country" type="NVARCHAR(64)"/>
+            <column name="description" type="NVARCHAR(MAX)"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="DocumentHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="NVARCHAR(255)"/>
+            <column name="description" type="NVARCHAR(MAX)"/>
+            <column name="path" type="VARCHAR(64)"/>
+            <column name="university" type="INT"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="UniversityEmployeeHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="firstName" type="NVARCHAR(32)"/>
+            <column name="lastName" type="NVARCHAR(32)"/>
+            <column name="university" type="int"/>
+            <column name="login" type="VARCHAR(32)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="UserHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="firstName" type="NVARCHAR(32)"/>
+            <column name="lastName" type="NVARCHAR(32)"/>
+            <column name="email" type="VARCHAR(64)"/>
+            <column name="facebookUrl" type="VARCHAR(64)"/>
+            <column name="whatsUpUrl" type="VARCHAR(64)"/>
+            <column name="university" type="int"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="AddFriendRequestHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="sender" type="INT"/>
+            <column name="recipient" type="INT"/>
+            <column name="sendTime" type="TIMESTAMP"/>
+            <column name="status" type="tinyint"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="FriendHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user" type="INT"/>
+            <column name="friend" type="INT"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="DeviceHistory">
+            <column name="historyId" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="user" type="INT"/>
+            <column name="deviceId" type="VARCHAR(255)"/>
+            <column name="lastModifiedBy" type="INT"/>
         </createTable>
         <rollback>
-            <dropTable tableName="person"/>
+            <dropTable tableName="DeviceHistory"/>
+            <dropTable tableName="FriendHistory"/>
+            <dropTable tableName="AddFriendRequestHistory"/>
+            <dropTable tableName="UniversityEmployeeHistory"/>
+            <dropTable tableName="DocumentHistory"/>
+            <dropTable tableName="UserHistory"/>
+            <dropTable tableName="UniversityHistory"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="202108141343" author="Szczepaniak-M" dbms="mssql">
+        <comment>Adding triggers to fill history tables</comment>
+        <sql endDelimiter="GO">
+            -- UniversityHistory
+            CREATE TRIGGER universityHistoryAfterInsertTrigger
+                ON University
+                AFTER INSERT AS
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
+                                              city, country, description, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER universityHistoryAfterUpdateTrigger
+                ON University
+                AFTER UPDATE AS
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
+                                              city, country, description, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER universityHistoryAfterDeleteTrigger
+                ON University
+                AFTER DELETE AS
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
+                                              city, country, description, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- DocumentHistory
+            CREATE TRIGGER documentHistoryAfterInsertTrigger
+                ON Document
+                AFTER INSERT AS
+                INSERT INTO DocumentHistory(operation, id, name, description,
+                                            path, university, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER documentHistoryAfterUpdateTrigger
+                ON Document
+                AFTER UPDATE AS
+                INSERT INTO DocumentHistory(operation, id, name, description,
+                                            path, university, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER documentHistoryAfterDeleteTrigger
+                ON Document
+                AFTER DELETE AS
+                INSERT INTO DocumentHistory(operation, id, name, description,
+                                            path, university, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- UniversityEmployeeHistory
+            CREATE TRIGGER universityEmployeeHistoryAfterInsertTrigger
+                ON UniversityEmployee
+                AFTER INSERT AS
+                INSERT INTO UniversityEmployeeHistory(operation, id, firstName, lastName, university,
+                                                      login, password, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER universityEmployeeHistoryAfterUpdateTrigger
+                ON UniversityEmployee
+                AFTER UPDATE AS
+                INSERT INTO UniversityEmployeeHistory(operation, id, firstName, lastName, university,
+                                                      login, password, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER universityEmployeeHistoryAfterDeleteTrigger
+                ON UniversityEmployee
+                AFTER DELETE AS
+                INSERT INTO UniversityEmployeeHistory(operation, id, firstName, lastName, university,
+                                                      login, password, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- UserHistory
+            CREATE TRIGGER userHistoryAfterInsertTrigger
+                ON [User]
+                AFTER INSERT AS
+                INSERT INTO UserHistory(operation, id, firstName, lastName, email,
+                                        facebookUrl, whatsUpUrl, university, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER userHistoryAfterUpdateTrigger
+                ON [User]
+                AFTER UPDATE AS
+                INSERT INTO UserHistory(operation, id, firstName, lastName, email,
+                                        facebookUrl, whatsUpUrl, university, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER userHistoryAfterDeleteTrigger
+                ON [User]
+                AFTER DELETE AS
+                INSERT INTO UserHistory(operation, id, firstName, lastName, email,
+                                        facebookUrl, whatsUpUrl, university, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- AddFriendRequestHistory
+            CREATE TRIGGER addFriendRequestHistoryAfterInsertTrigger
+                ON AddFriendRequest
+                AFTER INSERT AS
+                INSERT INTO AddFriendRequestHistory(operation, id, sender, recipient,
+                                                    sendTime, status, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER addFriendRequestHistoryAfterUpdateTrigger
+                ON AddFriendRequest
+                AFTER UPDATE AS
+                INSERT INTO AddFriendRequestHistory(operation, id, sender, recipient,
+                                                    sendTime, status, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER addFriendRequestHistoryAfterDeleteTrigger
+                ON AddFriendRequest
+                AFTER DELETE AS
+                INSERT INTO AddFriendRequestHistory(operation, id, sender, recipient,
+                                                    sendTime, status, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- DeviceHistory
+            CREATE TRIGGER deviceHistoryAfterInsertTrigger
+                ON Device
+                AFTER INSERT AS
+                INSERT INTO DeviceHistory(operation, id, [user],
+                                          deviceId, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER deviceHistoryAfterUpdateTrigger
+                ON Device
+                AFTER UPDATE AS
+                INSERT INTO DeviceHistory(operation, id, [user],
+                                          deviceId, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER deviceHistoryAfterDeleteTrigger
+                ON Device
+                AFTER DELETE AS
+                INSERT INTO DeviceHistory(operation, id, [user],
+                                          deviceId, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            --  FriendHistory
+            CREATE TRIGGER friendHistoryAfterInsertTrigger
+                ON Friend
+                AFTER INSERT AS
+                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER friendHistoryAfterUpdateTrigger
+                ON Friend
+                AFTER UPDATE AS
+                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER friendHistoryAfterDeleteTrigger
+                ON Friend
+                AFTER DELETE AS
+                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+        </sql>
+        <rollback>
+            <sql>
+                DROP TRIGGER IF EXISTS universityHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS universityHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS universityHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS documentHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS documentHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS documentHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS universityEmployeeHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS universityEmployeeHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS universityEmployeeHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS userHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS userHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS userHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS addFriendRequestHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS addFriendRequestHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS addFriendRequestHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS deviceHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS deviceHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS deviceHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS friendHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS friendHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS friendHistoryAfterDeleteTrigger;
+                GO
+            </sql>
         </rollback>
     </changeSet>
 </databaseChangeLog>
