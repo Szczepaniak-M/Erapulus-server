@@ -126,11 +126,14 @@
             </column>
         </createTable>
         <createTable tableName="Friend">
-            <column name="user" type="INT">
+            <column name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="user" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="friend" type="INT">
-                <constraints primaryKey="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="lastModifiedBy" type="INT">
                 <constraints nullable="true"/>
@@ -183,6 +186,10 @@
                                  constraintName="FK_AddFriendRequest_recipient_User"
                                  referencedTableName="User" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
+
+        <!-- Unique Constraints -->
+        <addUniqueConstraint tableName="Friend" columnNames="user, friend"
+                             constraintName="UQ_Friend_user_Friend"/>
 
         <!-- lastModifiedBy Constraints -->
         <addForeignKeyConstraint baseTableName="University" baseColumnNames="lastModifiedBy"
@@ -326,6 +333,7 @@
             <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
+            <column name="id" type="INT"/>
             <column name="user" type="INT"/>
             <column name="friend" type="INT"/>
             <column name="lastModifiedBy" type="INT"/>
@@ -530,7 +538,7 @@
             CREATE TRIGGER friendHistoryAfterInsertTrigger
                 ON Friend
                 AFTER INSERT AS
-                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                INSERT INTO FriendHistory(operation, id, [user], friend, lastModifiedBy)
                 SELECT 'insert', i.*
                 FROM inserted i;
             GO
@@ -538,7 +546,7 @@
             CREATE TRIGGER friendHistoryAfterUpdateTrigger
                 ON Friend
                 AFTER UPDATE AS
-                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                INSERT INTO FriendHistory(operation, id, [user], friend, lastModifiedBy)
                 SELECT 'update', i.*
                 FROM inserted i;
             GO
@@ -546,7 +554,7 @@
             CREATE TRIGGER friendHistoryAfterDeleteTrigger
                 ON Friend
                 AFTER DELETE AS
-                INSERT INTO FriendHistory(operation, [user], friend, lastModifiedBy)
+                INSERT INTO FriendHistory(operation, id, [user], friend, lastModifiedBy)
                 SELECT 'delete', d.*
                 FROM deleted d;
             GO
