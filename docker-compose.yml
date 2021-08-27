@@ -12,7 +12,7 @@ services:
     networks:
       - erasmus
     ports:
-      - 1433:1433
+      - "1433:1433"
 
   app:
     build: docker/app
@@ -22,9 +22,11 @@ services:
     volumes:
       - ./docker/app/erasmus-backend.jar:/opt/app/erasmus-backend.jar:ro
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - db
+    environment:
+      - DB_HOST=erasmus-db
     networks:
       - erasmus
 
