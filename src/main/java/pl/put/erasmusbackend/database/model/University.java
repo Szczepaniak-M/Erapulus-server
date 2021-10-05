@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class University {
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("name")
     private String name;
@@ -34,5 +34,5 @@ public class University {
     private String description;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }

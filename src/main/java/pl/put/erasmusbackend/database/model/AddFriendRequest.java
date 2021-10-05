@@ -13,20 +13,20 @@ public class AddFriendRequest {
 
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("sender")
-    private int senderId;
+    private Integer senderId;
 
     @Column("recipient")
-    private int recipientId;
+    private Integer recipientId;
 
     @Column("sendTime")
     private Instant sendTime;
 
     @Column("status")
-    private int status;
+    private Integer status;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }

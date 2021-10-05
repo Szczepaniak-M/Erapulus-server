@@ -9,14 +9,14 @@ public class Friend {
 
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("user")
-    private int userId;
+    private Integer userId;
 
     @Column("friend")
-    private int friendId;
+    private Integer friendId;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }

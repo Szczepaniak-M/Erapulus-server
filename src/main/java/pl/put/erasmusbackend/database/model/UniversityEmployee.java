@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class UniversityEmployee {
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("name")
     private String firstName;
@@ -19,7 +19,7 @@ public class UniversityEmployee {
     private String lastName;
 
     @Column("university")
-    private int universityId;
+    private Integer universityId;
 
     @Column("login")
     private String zipcode;
@@ -28,5 +28,5 @@ public class UniversityEmployee {
     private String password;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }

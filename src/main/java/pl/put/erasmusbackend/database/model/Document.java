@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Document {
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("name")
     private String name;
@@ -22,8 +22,8 @@ public class Document {
     private String path;
 
     @Column("university")
-    private int universityId;
+    private Integer universityId;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }

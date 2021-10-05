@@ -12,14 +12,14 @@ public class Device {
 
     @Id
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("user")
-    private int userId;
+    private Integer userId;
 
     @Column("deviceId")
     private String deviceId;
 
     @Column("lastModifiedBy")
-    private int lastModifiedBy;
+    private Integer lastModifiedBy;
 }
