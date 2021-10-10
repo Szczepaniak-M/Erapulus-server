@@ -3,7 +3,8 @@ package pl.put.erasmusbackend.web.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -11,11 +12,13 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import pl.put.erasmusbackend.TestUtils;
 import pl.put.erasmusbackend.database.model.University;
 import pl.put.erasmusbackend.database.repository.UniversityRepository;
+import pl.put.erasmusbackend.web.router.UniversityRouter;
 import reactor.core.publisher.Flux;
 
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@WebFluxTest(controllers = {UniversityRouter.class, UniversityController.class},
+        excludeAutoConfiguration = {ReactiveSecurityAutoConfiguration.class})
 class UniversityControllerTest {
 
     @Autowired
@@ -33,10 +36,13 @@ class UniversityControllerTest {
 
     @Test
     void getUniversityList_shouldReturnUniversityNames() {
+        // given
         var expected = "[\"university1\", \"university2\"]";
         var university1 = new University().name("university1");
         var university2 = new University().name("university2");
         when(universityRepository.findAll()).thenReturn(Flux.just(university1, university2));
+
+        // when-then
         webTestClient.get()
                      .uri("/university")
                      .exchange()

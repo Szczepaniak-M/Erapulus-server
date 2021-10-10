@@ -27,13 +27,15 @@ class EmployeeRepositoryTest {
 
     @Test
     void findByEmail_shouldReturnEmployeeEntityWhenEmployeeFound() {
+        // given
         var employeeEntity1 = createEmployee(EMAIL_1);
         var employeeEntity2 = createEmployee(EMAIL_2);
-
         employeeRepository.save(employeeEntity1);
 
+        // when
         Mono<Employee> result = employeeRepository.findByEmail(EMAIL_1);
 
+        // then
         StepVerifier.create(result)
                     .expectSubscription()
                     .assertNext(employeeFromDatabase -> assertEquals(employeeEntity1.id(), employeeFromDatabase.id()))
@@ -42,8 +44,11 @@ class EmployeeRepositoryTest {
 
     @Test
     void findByEmail_shouldReturnEmptyMonoWhenNoEmployeeFound() {
+        // given
+        // when
         Mono<Employee> result = employeeRepository.findByEmail(EMAIL_1);
 
+        //then
         StepVerifier.create(result)
                     .expectSubscription()
                     .verifyComplete();

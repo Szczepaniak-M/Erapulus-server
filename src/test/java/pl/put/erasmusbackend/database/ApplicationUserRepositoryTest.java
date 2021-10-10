@@ -27,13 +27,15 @@ class ApplicationUserRepositoryTest {
 
     @Test
     void findByEmail_shouldReturnUserEntityWhenUserFound() {
+        // given
         var userEntity1 = createUser(EMAIL_1);
         var userEntity2 = createUser(EMAIL_2);
-
         userRepository.save(userEntity1);
 
+        // when
         Mono<ApplicationUser> result = userRepository.findByEmail(EMAIL_1);
 
+        // then
         StepVerifier.create(result)
                     .expectSubscription()
                     .assertNext(userFromDatabase -> assertEquals(userEntity1.id(), userFromDatabase.id()))
@@ -42,8 +44,11 @@ class ApplicationUserRepositoryTest {
 
     @Test
     void findByEmail_shouldReturnEmptyMonoWhenNoUserFound() {
+        // given
+        // when
         Mono<ApplicationUser> result = userRepository.findByEmail(EMAIL_1);
 
+        // then
         StepVerifier.create(result)
                     .expectSubscription()
                     .verifyComplete();
