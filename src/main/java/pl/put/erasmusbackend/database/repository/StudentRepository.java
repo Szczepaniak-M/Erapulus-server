@@ -2,8 +2,8 @@ package pl.put.erasmusbackend.database.repository;
 
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
-import pl.put.erasmusbackend.database.model.UniversityEmployee;
+import pl.put.erasmusbackend.database.model.Student;
 
 @Repository
-public interface UniversityEmployeeRepository extends R2dbcRepository<UniversityEmployee, Integer> {
+public interface StudentRepository extends R2dbcRepository<Student, Integer> {
 }

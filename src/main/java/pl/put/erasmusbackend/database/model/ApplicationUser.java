@@ -9,19 +9,23 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Table("UniversityEmployee")
-public class UniversityEmployee {
+@Table("ApplicationUser")
+public class ApplicationUser {
     @Id
     @NotNull
     @Column("id")
     private Integer id;
 
     @NotNull
-    @Column("name")
+    @Column("type")
+    private String type;
+
+    @NotNull
+    @Column("firstName")
     private String firstName;
 
     @NotNull
-    @Column("address")
+    @Column("lastName")
     private String lastName;
 
     @NotNull
@@ -29,12 +33,8 @@ public class UniversityEmployee {
     private Integer universityId;
 
     @NotNull
-    @Column("login")
-    private String zipcode;
-
-    @NotNull
-    @Column("password")
-    private String password;
+    @Column("email")
+    private String email;
 
     @LastModifiedBy
     @Column("lastModifiedBy")

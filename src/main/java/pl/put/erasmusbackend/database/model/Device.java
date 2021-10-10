@@ -19,8 +19,8 @@ public class Device {
     private Integer id;
 
     @NotNull
-    @Column("user")
-    private Integer userId;
+    @Column("applicationUser")
+    private Integer applicationUserId;
 
     @NotNull
     @Column("deviceId")

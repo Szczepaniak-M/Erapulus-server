@@ -16,12 +16,16 @@ public class Friend {
     private Integer id;
 
     @NotNull
-    @Column("user")
-    private Integer userId;
+    @Column("applicationUser")
+    private Integer applicationUserId;
 
     @NotNull
     @Column("friend")
     private Integer friendId;
+
+    @NotNull
+    @Column("status")
+    private String status;
 
     @NotNull
     @LastModifiedBy
