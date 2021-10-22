@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import pl.put.erasmusbackend.web.common.ResponseFactory;
+import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -24,7 +24,7 @@ public class JwtFailureHandler implements ServerAuthenticationFailureHandler {
         ServerHttpResponse response = webFilterExchange.getExchange().getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(ResponseFactory.createHttpBadCredentialsResponse()))
+        return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(ServerResponseFactory.createHttpBadCredentialsResponse()))
                    .map(body -> response.bufferFactory().wrap(body))
                    .flatMap(dataBuffer -> response.writeWith(Mono.just(dataBuffer)));
     }

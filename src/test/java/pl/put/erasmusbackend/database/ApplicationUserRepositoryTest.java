@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.put.erasmusbackend.database.model.ApplicationUser;
+import pl.put.erasmusbackend.database.model.Employee;
 import pl.put.erasmusbackend.database.repository.UserRepository;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -56,11 +57,11 @@ class ApplicationUserRepositoryTest {
     }
 
     private ApplicationUser createUser(String email) {
-        ApplicationUser applicationUser = ApplicationUser.builder()
-                                                         .firstName("firstName")
-                                                         .lastName("lastName")
-                                                         .email(email)
-                                                         .build();
+        ApplicationUser applicationUser = Employee.builder()
+                                                  .firstName("firstName")
+                                                  .lastName("lastName")
+                                                  .email(email)
+                                                  .build();
         return userRepository.save(applicationUser).block();
     }
 }

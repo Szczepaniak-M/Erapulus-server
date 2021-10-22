@@ -12,7 +12,7 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component;
 import pl.put.erasmusbackend.database.model.ApplicationUser;
 import pl.put.erasmusbackend.dto.TokenDto;
-import pl.put.erasmusbackend.web.common.ResponseFactory;
+import pl.put.erasmusbackend.web.common.ResponseTemplate;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -31,7 +31,10 @@ public class JwtSuccessHandler implements ServerAuthenticationSuccessHandler {
         response.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         TokenDto tokenDto = TokenDto.builder().userId(applicationUser.id()).token(token).build();
-        return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(ResponseFactory.createHttpSuccessResponse(tokenDto)))
+        return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(ResponseTemplate.builder()
+                                                                                      .status(HttpStatus.OK.value())
+                                                                                      .payload(tokenDto)
+                                                                                      .build()))
                    .map(body -> response.bufferFactory().wrap(body))
                    .flatMap(dataBuffer -> response.writeWith(Mono.just(dataBuffer)));
     }

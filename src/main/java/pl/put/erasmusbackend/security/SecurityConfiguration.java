@@ -25,6 +25,8 @@ import java.util.List;
 @EnableReactiveMethodSecurity(proxyTargetClass = true)
 public class SecurityConfiguration {
 
+    private static final String[] WHITE_LIST = {"/documentation.html", "/webjars/**"};
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          JwtSuccessHandler jwtSuccessHandler,
@@ -36,9 +38,11 @@ public class SecurityConfiguration {
 
                    // Stateless
                    .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                   .csrf().disable()
 
                    // Paths
                    .authorizeExchange()
+                   .pathMatchers(WHITE_LIST).permitAll()
                    .pathMatchers("/login", "/register/**").permitAll()
                    .pathMatchers("/api/**").authenticated()
                    .and().build();
