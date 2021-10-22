@@ -1,6 +1,9 @@
 package pl.put.erasmusbackend.database.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.relational.core.mapping.Column;
@@ -9,6 +12,9 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table("ApplicationUser")
 public class ApplicationUser {
     @Id
@@ -18,7 +24,7 @@ public class ApplicationUser {
 
     @NotNull
     @Column("type")
-    private String type;
+    private UserType type;
 
     @NotNull
     @Column("firstName")

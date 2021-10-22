@@ -56,10 +56,11 @@ class ApplicationUserRepositoryTest {
     }
 
     private ApplicationUser createUser(String email) {
-        ApplicationUser applicationUser = new ApplicationUser().type("applicationUser")
-                                                               .firstName("firstName")
-                                                               .lastName("lastName")
-                                                               .email(email);
+        ApplicationUser applicationUser = ApplicationUser.builder()
+                                                         .firstName("firstName")
+                                                         .lastName("lastName")
+                                                         .email(email)
+                                                         .build();
         return userRepository.save(applicationUser).block();
     }
 }

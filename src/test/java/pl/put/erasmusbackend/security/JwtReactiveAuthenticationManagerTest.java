@@ -40,7 +40,7 @@ class JwtReactiveAuthenticationManagerTest {
     @Test
     void authenticate_shouldReturnJwtAuthenticatedUserWhenJwtAuthenticationTokenPassed() {
         // given
-        ApplicationUser user = new ApplicationUser().email(EMAIL);
+        ApplicationUser user = ApplicationUser.builder().email(EMAIL).build();
         when(userRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
         when(projectProperties.jwt()).thenReturn(new ProjectProperties.JwtProperties(ISSUER, SECRET));
         JwtGenerator jwtGenerator = new JwtGenerator(projectProperties);

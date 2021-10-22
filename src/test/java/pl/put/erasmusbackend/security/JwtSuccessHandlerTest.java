@@ -51,7 +51,7 @@ class JwtSuccessHandlerTest {
     @Test
     void onAuthenticationSuccess_shouldGenerateResponse() {
         // given
-        ApplicationUser applicationUser = new ApplicationUser().id(ID).email(EMAIL);
+        ApplicationUser applicationUser = ApplicationUser.builder().id(ID).email(EMAIL).build();
         when(jwtGenerator.generate(EMAIL)).thenReturn(TOKEN);
         JwtAuthenticatedUser jwtAuthenticatedUser = new JwtAuthenticatedUser(applicationUser, new SimpleGrantedAuthority("ROLE"));
         MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")

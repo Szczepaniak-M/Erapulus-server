@@ -40,7 +40,7 @@ class CustomReactiveAuthenticationManagerTest {
     @Test
     void authenticate_shouldReturnAuthenticationWhenJwtAuthenticationSuccess() {
         // given
-        ApplicationUser user = new ApplicationUser().email(EMAIL);
+        ApplicationUser user = ApplicationUser.builder().email(EMAIL).build();
         Authentication authentication = new TestingAuthenticationToken("principal", "credentials");
         JwtAuthenticatedUser jwtAuthenticatedUser = new JwtAuthenticatedUser(user, new SimpleGrantedAuthority("ROLE"));
         when(jwtManager.authenticate(any(Authentication.class))).thenReturn(Mono.just(jwtAuthenticatedUser));

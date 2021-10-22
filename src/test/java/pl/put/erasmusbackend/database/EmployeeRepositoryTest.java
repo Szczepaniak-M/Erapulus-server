@@ -56,10 +56,11 @@ class EmployeeRepositoryTest {
     }
 
     private Employee createEmployee(String email) {
-        Employee employee = (Employee) new Employee().type("EMPLOYEE")
-                                                     .firstName("firstName")
-                                                     .lastName("lastName")
-                                                     .email(email);
+        Employee employee = Employee.builder()
+                                    .firstName("firstName")
+                                    .lastName("lastName")
+                                    .email(email)
+                                    .build();
         return employeeRepository.save(employee).block();
     }
 }
