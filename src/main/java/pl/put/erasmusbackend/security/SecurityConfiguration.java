@@ -25,7 +25,7 @@ import java.util.List;
 @EnableReactiveMethodSecurity(proxyTargetClass = true)
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST = {"/documentation.html", "/webjars/**"};
+    private static final String[] WHITE_LIST = {"/v3/api-docs/**", "/documentation.html", "/documentation.yaml", "/webjars/**"};
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
