@@ -32,6 +32,16 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
+    public static Mono<ServerResponse> createHttpBadRequestCantParseToIntegerErrorResponse(NumberFormatException exception) {
+        String message = "bad.request;cannot.parse.to.int";
+        return ServerResponse.status(HttpStatus.BAD_REQUEST)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(BodyInserters.fromValue(ResponseTemplate.builder()
+                                                                           .status(HttpStatus.BAD_REQUEST.value())
+                                                                           .message(message)
+                                                                           .build()));
+    }
+
     public static Mono<ServerResponse> createHttpBadRequestConstraintViolationErrorResponse(ConstraintViolationException exception) {
         String message = "bad.request;" + getConstraintViolationReason(exception);
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
