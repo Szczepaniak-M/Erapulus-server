@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("University")
-public class University {
+public class UniversityEntity {
     @Id
     @NotNull
     @Column("id")

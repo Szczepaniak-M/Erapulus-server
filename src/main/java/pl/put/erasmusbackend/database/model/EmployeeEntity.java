@@ -12,15 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table("ApplicationUser")
-public class Employee extends ApplicationUser {
+public class EmployeeEntity extends ApplicationUserEntity {
     @Column("password")
     private String password;
-
-    // Automatic type filling by Builder
-    private static final class EmployeeBuilderImpl extends Employee.EmployeeBuilder<Employee, Employee.EmployeeBuilderImpl> {
-        @Override
-        public Employee build() {
-            return (Employee) new Employee(this).type(UserType.EMPLOYEE);
-        }
-    }
 }

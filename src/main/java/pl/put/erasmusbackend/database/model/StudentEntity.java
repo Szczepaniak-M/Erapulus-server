@@ -11,7 +11,10 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table("ApplicationUser")
-public class Student extends ApplicationUser {
+public class StudentEntity extends ApplicationUserEntity {
+    @Column("pictureUrl")
+    private String pictureUrl;
+
     @Column("facebookUrl")
     private String facebookUrl;
 
@@ -22,10 +25,10 @@ public class Student extends ApplicationUser {
     private String instagramUsername;
 
     // Automatic type filling by Builder
-    private static final class StudentBuilderImpl extends Student.StudentBuilder<Student, Student.StudentBuilderImpl> {
+    private static final class StudentEntityBuilderImpl extends StudentEntity.StudentEntityBuilder<StudentEntity, StudentEntity.StudentEntityBuilderImpl> {
         @Override
-        public Student build() {
-            return (Student) new Student(this).type(UserType.STUDENT);
+        public StudentEntity build() {
+            return (StudentEntity) new StudentEntity(this).type(UserType.STUDENT);
         }
     }
 }

@@ -4,7 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.put.erasmusbackend.database.model.Employee;
+import pl.put.erasmusbackend.database.model.EmployeeEntity;
+import pl.put.erasmusbackend.database.model.UserType;
 import pl.put.erasmusbackend.database.repository.EmployeeRepository;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -33,7 +34,7 @@ class EmployeeRepositoryTest {
         employeeRepository.save(employeeEntity1);
 
         // when
-        Mono<Employee> result = employeeRepository.findByEmail(EMAIL_1);
+        Mono<EmployeeEntity> result = employeeRepository.findByEmail(EMAIL_1);
 
         // then
         StepVerifier.create(result)
@@ -46,7 +47,7 @@ class EmployeeRepositoryTest {
     void findByEmail_shouldReturnEmptyMonoWhenNoEmployeeFound() {
         // given
         // when
-        Mono<Employee> result = employeeRepository.findByEmail(EMAIL_1);
+        Mono<EmployeeEntity> result = employeeRepository.findByEmail(EMAIL_1);
 
         //then
         StepVerifier.create(result)
@@ -55,12 +56,13 @@ class EmployeeRepositoryTest {
 
     }
 
-    private Employee createEmployee(String email) {
-        Employee employee = Employee.builder()
-                                    .firstName("firstName")
-                                    .lastName("lastName")
-                                    .email(email)
-                                    .build();
+    private EmployeeEntity createEmployee(String email) {
+        EmployeeEntity employee = EmployeeEntity.builder()
+                                                      .type(UserType.EMPLOYEE)
+                                                      .firstName("firstName")
+                                                      .lastName("lastName")
+                                                      .email(email)
+                                                      .build();
         return employeeRepository.save(employee).block();
     }
 }

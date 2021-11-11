@@ -82,6 +82,9 @@
             <column name="instagramUsername" type="VARCHAR(63)">
                 <constraints nullable="true"/>
             </column>
+            <column name="pictureUrl" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
             <column name="university" type="int">
                 <constraints nullable="true"/>
             </column>
@@ -93,7 +96,7 @@
             <column name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="applicationUser" type="INT">
+            <column name="applicationUserEntity" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="friend" type="INT">
@@ -110,7 +113,7 @@
             <column name="id" autoIncrement="true" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="applicationUser" type="INT">
+            <column name="applicationUserEntity" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="deviceId" type="VARCHAR(255)">
@@ -118,25 +121,6 @@
             </column>
             <column name="lastModifiedBy" type="INT">
                 <constraints nullable="true"/>
-            </column>
-        </createTable>
-        <createTable tableName="Role">
-            <column name="id" autoIncrement="true" type="INT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="name" type="VARCHAR(31)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="ApplicationUserRole">
-            <column name="id" autoIncrement="true" type="INT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="applicationUser" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="role" type="int">
-                <constraints nullable="false"/>
             </column>
         </createTable>
         <!-- FK Constraints-->
@@ -148,11 +132,11 @@
                                  constraintName="FK_ApplicationUser_university_University"
                                  referencedTableName="University" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="applicationUser"
+        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="applicationUserEntity"
                                  constraintName="FK_Device_university_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="applicationUser"
+        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="applicationUserEntity"
                                  constraintName="FK_Friend_user_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
@@ -160,20 +144,10 @@
                                  constraintName="FK_Friend_friend_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="ApplicationUserRole" baseColumnNames="applicationUser"
-                                 constraintName="FK_ApplicationUserRole_user_ApplicationUser"
-                                 referencedTableName="ApplicationUser" referencedColumnNames="id"
-                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="ApplicationUserRole" baseColumnNames="role"
-                                 constraintName="FK_ApplicationUserRole_role_Role"
-                                 referencedTableName="Role" referencedColumnNames="id"
-                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
 
         <!-- Unique Constraints -->
-        <addUniqueConstraint tableName="Friend" columnNames="applicationUser, friend"
+        <addUniqueConstraint tableName="Friend" columnNames="applicationUserEntity, friend"
                              constraintName="UQ_Friend_applicationUser_friend"/>
-        <addUniqueConstraint tableName="ApplicationUserRole" columnNames="applicationUser, role"
-                             constraintName="UQ_ApplicationUserRole_applicationUser_role"/>
         <addUniqueConstraint tableName="ApplicationUser" columnNames="email"
                              constraintName="UQ_ApplicationUser_email"/>
 
@@ -199,8 +173,6 @@
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
         <rollback>
-            <dropTable tableName="UserRole"/>
-            <dropTable tableName="Role"/>
             <dropTable tableName="Device"/>
             <dropTable tableName="Friend"/>
             <dropTable tableName="Document"/>
@@ -266,6 +238,7 @@
             <column name="facebookUrl" type="VARCHAR(63)"/>
             <column name="whatsUpUrl" type="VARCHAR(63)"/>
             <column name="instagramUsername" type="VARCHAR(63)"/>
+            <column name="pictureUrl" type="VARCHAR(255)"/>
             <column name="university" type="int"/>
             <column name="lastModifiedBy" type="INT"/>
         </createTable>
@@ -280,7 +253,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="applicationUser" type="INT"/>
+            <column name="applicationUserEntity" type="INT"/>
             <column name="friend" type="INT"/>
             <column name="status" type="VARCHAR(15)"/>
             <column name="lastModifiedBy" type="INT"/>
@@ -296,7 +269,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="applicationUser" type="INT"/>
+            <column name="applicationUserEntity" type="INT"/>
             <column name="deviceId" type="VARCHAR(255)"/>
             <column name="lastModifiedBy" type="INT"/>
         </createTable>
@@ -372,7 +345,7 @@
                 ON ApplicationUser
                 AFTER INSERT AS
                 INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, university,
+                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
                                                    lastModifiedBy)
                 SELECT 'insert', i.*
                 FROM inserted i;
@@ -382,7 +355,7 @@
                 ON ApplicationUser
                 AFTER UPDATE AS
                 INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, university,
+                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
                                                    lastModifiedBy)
                 SELECT 'update', i.*
                 FROM inserted i;
@@ -392,7 +365,7 @@
                 ON ApplicationUser
                 AFTER DELETE AS
                 INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, university,
+                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
                                                    lastModifiedBy)
                 SELECT 'delete', d.*
                 FROM deleted d;

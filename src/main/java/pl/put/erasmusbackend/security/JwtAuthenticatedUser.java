@@ -4,16 +4,16 @@ import java.util.Collections;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.put.erasmusbackend.database.model.ApplicationUser;
+import pl.put.erasmusbackend.database.model.ApplicationUserEntity;
 
 
 public class JwtAuthenticatedUser extends AbstractAuthenticationToken {
 
-    private final ApplicationUser applicationUser;
+    private final ApplicationUserEntity applicationUserEntity;
 
-    public JwtAuthenticatedUser(ApplicationUser applicationUser, SimpleGrantedAuthority authority) {
+    public JwtAuthenticatedUser(ApplicationUserEntity applicationUserEntity, SimpleGrantedAuthority authority) {
         super(Collections.singletonList(authority));
-        this.applicationUser = applicationUser;
+        this.applicationUserEntity = applicationUserEntity;
         setAuthenticated(true);
     }
 
@@ -24,6 +24,6 @@ public class JwtAuthenticatedUser extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return applicationUser;
+        return applicationUserEntity;
     }
 }

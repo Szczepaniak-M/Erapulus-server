@@ -9,8 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import pl.put.erasmusbackend.database.repository.EmployeeRepository;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
-import pl.put.erasmusbackend.mapper.EmployeeCreateRequestToEmployeeMapper;
-import pl.put.erasmusbackend.mapper.EmployeeToEmployeeCreatedDtoMapper;
+import pl.put.erasmusbackend.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
+import pl.put.erasmusbackend.mapper.EmployeeEntityToEmployeeCreatedDtoMapper;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -28,10 +28,10 @@ public class EmployeeService {
         String encryptedPassword = bCryptPasswordEncoder.encode(employeeCreateRequestDto.password());
         employeeCreateRequestDto.password("");
         return Mono.just(employeeCreateRequestDto)
-                   .map(EmployeeCreateRequestToEmployeeMapper::from)
+                   .map(EmployeeCreateRequestToEmployeeEntityMapper::from)
                    .map(employee -> employee.password(encryptedPassword))
                    .flatMap(employeeRepository::save)
-                   .map(EmployeeToEmployeeCreatedDtoMapper::from)
+                   .map(EmployeeEntityToEmployeeCreatedDtoMapper::from)
                    .doOnError(DataIntegrityViolationException.class, e -> log.info("Duplicated email for request:" + employeeCreateRequestDto))
                    .doOnError(e -> log.info("Unexpected error" + e.getMessage()));
     }

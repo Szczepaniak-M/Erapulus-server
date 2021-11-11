@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import pl.put.erasmusbackend.database.model.University;
+import pl.put.erasmusbackend.database.model.UniversityEntity;
 import pl.put.erasmusbackend.database.repository.UniversityRepository;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +33,7 @@ public class UniversityController {
     )
     public Mono<ServerResponse> getUniversityList(ServerRequest request) {
         return universityRepository.findAll()
-                                   .map(University::name)
+                                   .map(UniversityEntity::name)
                                    .collectList()
                                    .flatMap(universityNames -> ServerResponse.ok()
                                                                              .contentType(MediaType.APPLICATION_JSON)

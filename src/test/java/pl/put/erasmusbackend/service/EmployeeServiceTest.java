@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pl.put.erasmusbackend.database.model.Employee;
+import pl.put.erasmusbackend.database.model.EmployeeEntity;
 import pl.put.erasmusbackend.database.repository.EmployeeRepository;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
@@ -54,8 +54,8 @@ class EmployeeServiceTest {
                                                                                     .universityId(UNIVERSITY)
                                                                                     .build();
         when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
-        when(employeeRepository.save(any(Employee.class)))
-                .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, Employee.class).id(ID)));
+        when(employeeRepository.save(any(EmployeeEntity.class)))
+                .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
 
         // when
         Mono<EmployeeCreatedDto> result = employeeService.createEmployee(employeeCreateRequestDto);
@@ -84,7 +84,7 @@ class EmployeeServiceTest {
                                                                                     .universityId(UNIVERSITY)
                                                                                     .build();
         when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
-        when(employeeRepository.save(any(Employee.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
+        when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
 
         // when
         Mono<EmployeeCreatedDto> result = employeeService.createEmployee(employeeCreateRequestDto);

@@ -1,13 +1,13 @@
 package pl.put.erasmusbackend.mapper;
 
 import org.junit.jupiter.api.Test;
-import pl.put.erasmusbackend.database.model.Employee;
+import pl.put.erasmusbackend.database.model.EmployeeEntity;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class EmployeeCreateRequestToEmployeeMapperTest {
+class EmployeeCreateRequestToEmployeeEntityMapperTest {
 
     private static final String EMAIL = "example@gmail.com";
     private static final String FIRST_NAME = "firstName";
@@ -27,7 +27,7 @@ class EmployeeCreateRequestToEmployeeMapperTest {
                                                                       .build();
 
         // when
-        Employee result = EmployeeCreateRequestToEmployeeMapper.from(requestDto);
+        EmployeeEntity result = EmployeeCreateRequestToEmployeeEntityMapper.from(requestDto);
 
         //then
         assertEquals(EMAIL, result.email());

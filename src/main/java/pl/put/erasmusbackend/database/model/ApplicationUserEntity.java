@@ -1,9 +1,9 @@
 package pl.put.erasmusbackend.database.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.relational.core.mapping.Column;
@@ -12,29 +12,35 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Document")
-public class Document {
+@Table("ApplicationUser")
+public class ApplicationUserEntity {
     @Id
+    @NotNull
     @Column("id")
     private Integer id;
 
     @NotNull
-    @Column("name")
-    private String name;
-
-    @Column("description")
-    private String description;
+    @Column("type")
+    private UserType type;
 
     @NotNull
-    @Column("path")
-    private String path;
+    @Column("firstName")
+    private String firstName;
+
+    @NotNull
+    @Column("lastName")
+    private String lastName;
 
     @NotNull
     @Column("university")
     private Integer universityId;
+
+    @NotNull
+    @Column("email")
+    private String email;
 
     @LastModifiedBy
     @Column("lastModifiedBy")

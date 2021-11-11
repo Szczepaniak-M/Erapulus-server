@@ -4,8 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.put.erasmusbackend.database.model.ApplicationUser;
-import pl.put.erasmusbackend.database.model.Employee;
+import pl.put.erasmusbackend.database.model.ApplicationUserEntity;
+import pl.put.erasmusbackend.database.model.EmployeeEntity;
+import pl.put.erasmusbackend.database.model.UserType;
 import pl.put.erasmusbackend.database.repository.UserRepository;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -34,7 +35,7 @@ class ApplicationUserRepositoryTest {
         userRepository.save(userEntity1);
 
         // when
-        Mono<ApplicationUser> result = userRepository.findByEmail(EMAIL_1);
+        Mono<ApplicationUserEntity> result = userRepository.findByEmail(EMAIL_1);
 
         // then
         StepVerifier.create(result)
@@ -47,7 +48,7 @@ class ApplicationUserRepositoryTest {
     void findByEmail_shouldReturnEmptyMonoWhenNoUserFound() {
         // given
         // when
-        Mono<ApplicationUser> result = userRepository.findByEmail(EMAIL_1);
+        Mono<ApplicationUserEntity> result = userRepository.findByEmail(EMAIL_1);
 
         // then
         StepVerifier.create(result)
@@ -56,12 +57,13 @@ class ApplicationUserRepositoryTest {
 
     }
 
-    private ApplicationUser createUser(String email) {
-        ApplicationUser applicationUser = Employee.builder()
-                                                  .firstName("firstName")
-                                                  .lastName("lastName")
-                                                  .email(email)
-                                                  .build();
+    private ApplicationUserEntity createUser(String email) {
+        ApplicationUserEntity applicationUser = EmployeeEntity.builder()
+                                                              .type(UserType.EMPLOYEE)
+                                                              .firstName("firstName")
+                                                              .lastName("lastName")
+                                                              .email(email)
+                                                              .build();
         return userRepository.save(applicationUser).block();
     }
 }
