@@ -2,22 +2,22 @@ package pl.put.erasmusbackend.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.put.erasmusbackend.database.model.Student;
+import pl.put.erasmusbackend.database.model.StudentEntity;
 import pl.put.erasmusbackend.dto.StudentDto;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudentEntityToDtoMapper {
 
-    public static StudentDto from(Student student) {
+    public static StudentDto from(StudentEntity studentEntity) {
         return StudentDto.builder()
-                         .id(student.id())
-                         .firstName(student.firstName())
-                         .lastName(student.lastName())
-                         .email(student.email())
-                         .universityId(student.universityId())
-                         .facebookUrl(student.facebookUrl())
-                         .whatsUpUrl(student.whatsUpUrl())
-                         .instagramUsername(student.instagramUsername())
+                         .id(studentEntity.id())
+                         .firstName(studentEntity.firstName())
+                         .lastName(studentEntity.lastName())
+                         .email(studentEntity.email())
+                         .universityId(studentEntity.universityId())
+                         .facebookUrl(studentEntity.facebookUrl())
+                         .whatsUpUrl(studentEntity.whatsUpUrl())
+                         .instagramUsername(studentEntity.instagramUsername())
                          .build();
     }
 }

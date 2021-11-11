@@ -10,12 +10,14 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 import pl.put.erasmusbackend.configuration.ProjectProperties;
 import pl.put.erasmusbackend.database.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
+@Component
 @AllArgsConstructor
 public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 
@@ -34,9 +36,8 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                                .build();
         Jws<Claims> parsedJwt = parser.parseClaimsJws(jwt);
         String email = parsedJwt.getBody().getSubject();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE");
         return userRepository.findByEmail(email)
-                             .map(user -> new JwtAuthenticatedUser(user, authority));
+                             .map(user -> new JwtAuthenticatedUser(user, new SimpleGrantedAuthority(user.type().toString())));
     }
 
     private boolean isSupported(Authentication authentication) {

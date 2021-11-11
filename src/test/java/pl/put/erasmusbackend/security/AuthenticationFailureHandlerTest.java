@@ -19,21 +19,18 @@ import reactor.test.StepVerifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-class JwtFailureHandlerTest {
+class AuthenticationFailureHandlerTest {
 
     private static final String BODY = "{\"status\":401," +
                                         "\"payload\":null," +
                                         "\"message\":\"bad.credentials\"}";
 
-    @Mock
-    WebFilterChain webFilterChain;
-
-    private JwtFailureHandler jwtFailureHandler;
+    private AuthenticationFailureHandler authenticationFailureHandler;
 
     @BeforeEach
     void setUp() {
         ObjectMapper objectMapper = new ObjectMapper();
-        jwtFailureHandler = new JwtFailureHandler(objectMapper);
+        authenticationFailureHandler = new AuthenticationFailureHandler(objectMapper);
     }
 
     @Test
@@ -41,10 +38,9 @@ class JwtFailureHandlerTest {
         // given
         MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")
                                                                                          .header("Authorization", "Bearer myToken"));
-        WebFilterExchange webFilterExchange = new WebFilterExchange(exchange, webFilterChain);
 
         // when
-        Mono<Void> result = jwtFailureHandler.onAuthenticationFailure(webFilterExchange, new BadCredentialsException("Bad credentials"));
+        Mono<Void> result = authenticationFailureHandler.commence(exchange, new BadCredentialsException("Bad credentials"));
 
         // then
         StepVerifier.create(result)

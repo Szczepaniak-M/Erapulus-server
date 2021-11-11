@@ -12,11 +12,18 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class ProjectProperties {
 
     private final JwtProperties jwt;
+    private final LoginProperties login;
 
     @Data
     @AllArgsConstructor
     public static class JwtProperties {
         private final String issuer;
         private final String secret;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class LoginProperties {
+        private final String googleClientId;
     }
 }

@@ -1,14 +1,13 @@
 package pl.put.erasmusbackend.security;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
@@ -16,8 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import pl.put.erasmusbackend.configuration.ProjectProperties;
-import pl.put.erasmusbackend.database.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,47 +28,37 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
-                                                         JwtSuccessHandler jwtSuccessHandler,
-                                                         JwtFailureHandler jwtFailureHandler) {
-        return http.formLogin()
-                   .authenticationSuccessHandler(jwtSuccessHandler)
-                   .authenticationFailureHandler(jwtFailureHandler)
-                   .and()
-
-                   // Stateless
+                                                         JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager,
+                                                         AuthenticationFailureHandler authenticationFailureHandler,
+                                                         AuthorizationFailureHandler authorizationFailureHandler) {
+        return http.formLogin().disable()
+                   .httpBasic().disable()
+                   .authenticationManager(jwtReactiveAuthenticationManager)
                    .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                   .exceptionHandling()
+                   .authenticationEntryPoint(authenticationFailureHandler)
+                   .accessDeniedHandler(authorizationFailureHandler)
+                   .and()
                    .csrf().disable()
 
                    // Paths
                    .authorizeExchange()
                    .pathMatchers(WHITE_LIST).permitAll()
-                   .pathMatchers("/login", "/register/**").permitAll()
+                   .pathMatchers("api/user/login/**", "api/user/register/**").permitAll()
                    .pathMatchers("/api/**").authenticated()
                    .and().build();
     }
 
     @Bean
-    @Primary
-    ReactiveAuthenticationManager reactiveAuthenticationManager(JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager,
-                                                                UserDetailsRepositoryReactiveAuthenticationManager userDetailsRepositoryReactiveAuthenticationManager) {
-        return new CustomReactiveAuthenticationManager(jwtReactiveAuthenticationManager, userDetailsRepositoryReactiveAuthenticationManager);
-    }
-
-    @Bean
-    JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager(UserRepository userRepository, ProjectProperties projectProperties) {
-        return new JwtReactiveAuthenticationManager(userRepository, projectProperties);
-    }
-
-    @Bean
-    UserDetailsRepositoryReactiveAuthenticationManager userDetailsRepositoryReactiveAuthenticationManager(ReactiveUserDetailsService reactiveUserDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        UserDetailsRepositoryReactiveAuthenticationManager manager = new UserDetailsRepositoryReactiveAuthenticationManager(reactiveUserDetailsService);
-        manager.setPasswordEncoder(bCryptPasswordEncoder);
-        return manager;
-    }
-
-    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public GoogleIdTokenVerifier googleIdTokenVerifier(ProjectProperties projectProperties) {
+        return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(projectProperties.login().googleClientId()))
+                .build();
     }
 
     @Bean

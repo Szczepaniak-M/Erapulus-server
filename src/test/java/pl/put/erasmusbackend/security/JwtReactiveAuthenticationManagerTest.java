@@ -8,7 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import pl.put.erasmusbackend.configuration.ProjectProperties;
-import pl.put.erasmusbackend.database.model.ApplicationUser;
+import pl.put.erasmusbackend.database.model.ApplicationUserEntity;
+import pl.put.erasmusbackend.database.model.UserType;
 import pl.put.erasmusbackend.database.repository.UserRepository;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -40,7 +41,7 @@ class JwtReactiveAuthenticationManagerTest {
     @Test
     void authenticate_shouldReturnJwtAuthenticatedUserWhenJwtAuthenticationTokenPassed() {
         // given
-        ApplicationUser user = ApplicationUser.builder().email(EMAIL).build();
+        ApplicationUserEntity user = ApplicationUserEntity.builder().type(UserType.STUDENT).email(EMAIL).build();
         when(userRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
         when(projectProperties.jwt()).thenReturn(new ProjectProperties.JwtProperties(ISSUER, SECRET));
         JwtGenerator jwtGenerator = new JwtGenerator(projectProperties);
