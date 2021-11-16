@@ -27,8 +27,83 @@
             <column name="country" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
+            <column name="websiteUrl" type="VARCHAR(63)">
+                <constraints nullable="false"/>
+            </column>
             <column name="description" type="NVARCHAR(MAX)">
                 <constraints nullable="true"/>
+            </column>
+            <column name="logoUrl" type="VARCHAR(63)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="primaryColor" type="VARCHAR(7)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="secondaryColor" type="VARCHAR(7)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Course">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="abbrev" type="NVARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="university" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Subject">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="abbrev" type="NVARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="course" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedBy" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="Building">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="abbrev" type="NVARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="university" type="INT">
+                <constraints nullable="false"/>
             </column>
             <column name="lastModifiedBy" type="INT">
                 <constraints nullable="true"/>
@@ -48,7 +123,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="university" type="INT">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
+            </column>
+            <column name="course" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="subject" type="INT">
+                <constraints nullable="true"/>
             </column>
             <column name="lastModifiedBy" type="INT">
                 <constraints nullable="true"/>
@@ -69,6 +150,9 @@
             </column>
             <column name="email" type="VARCHAR(63)">
                 <constraints nullable="false"/>
+            </column>
+            <column name="phoneNumber" type="VARCHAR(15)">
+                <constraints nullable="true"/>
             </column>
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="true"/>
@@ -96,7 +180,7 @@
             <column name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="applicationUserEntity" type="INT">
+            <column name="applicationUser" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="friend" type="INT">
@@ -113,7 +197,7 @@
             <column name="id" autoIncrement="true" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="applicationUserEntity" type="INT">
+            <column name="applicationUser" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="deviceId" type="VARCHAR(255)">
@@ -128,15 +212,35 @@
                                  constraintName="FK_Document_university_University"
                                  referencedTableName="University" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Document" baseColumnNames="course"
+                                 constraintName="FK_Document_course_Course"
+                                 referencedTableName="Course" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Document" baseColumnNames="subject"
+                                 constraintName="FK_Document_subject_Subject"
+                                 referencedTableName="Subject" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Building" baseColumnNames="university"
+                                 constraintName="FK_Building_university_University"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Course" baseColumnNames="university"
+                                 constraintName="FK_Course_university_University"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Subject" baseColumnNames="course"
+                                 constraintName="FK_Subject_course_Course"
+                                 referencedTableName="University" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
         <addForeignKeyConstraint baseTableName="ApplicationUser" baseColumnNames="university"
                                  constraintName="FK_ApplicationUser_university_University"
                                  referencedTableName="University" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="applicationUserEntity"
+        <addForeignKeyConstraint baseTableName="Device" baseColumnNames="applicationUser"
                                  constraintName="FK_Device_university_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="applicationUserEntity"
+        <addForeignKeyConstraint baseTableName="Friend" baseColumnNames="applicationUser"
                                  constraintName="FK_Friend_user_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
@@ -146,7 +250,7 @@
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
 
         <!-- Unique Constraints -->
-        <addUniqueConstraint tableName="Friend" columnNames="applicationUserEntity, friend"
+        <addUniqueConstraint tableName="Friend" columnNames="applicationUser, friend"
                              constraintName="UQ_Friend_applicationUser_friend"/>
         <addUniqueConstraint tableName="ApplicationUser" columnNames="email"
                              constraintName="UQ_ApplicationUser_email"/>
@@ -172,10 +276,25 @@
                                  constraintName="FK_Friend_lastModifiedBy_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Building" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Building_lastModifiedBy_ApplicationUser"
+                                 referencedTableName="ApplicationUser" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Subject" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Subject_lastModifiedBy_ApplicationUser"
+                                 referencedTableName="ApplicationUser" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+        <addForeignKeyConstraint baseTableName="Course" baseColumnNames="lastModifiedBy"
+                                 constraintName="FK_Course_lastModifiedBy_ApplicationUser"
+                                 referencedTableName="ApplicationUser" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
         <rollback>
             <dropTable tableName="Device"/>
             <dropTable tableName="Friend"/>
             <dropTable tableName="Document"/>
+            <dropTable tableName="Subject"/>
+            <dropTable tableName="Course"/>
+            <dropTable tableName="Building"/>
             <dropTable tableName="ApplicationUser"/>
             <dropTable tableName="University"/>
         </rollback>
@@ -199,7 +318,11 @@
             <column name="zipcode" type="VARCHAR(31)"/>
             <column name="city" type="NVARCHAR(63)"/>
             <column name="country" type="NVARCHAR(63)"/>
+            <column name="websiteUrl" type="VARCHAR(63)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
+            <column name="logoUrl" type="VARCHAR(63)"/>
+            <column name="primaryColor" type="VARCHAR(7)"/>
+            <column name="secondaryColor" type="VARCHAR(7)"/>
             <column name="lastModifiedBy" type="INT"/>
         </createTable>
         <createTable tableName="DocumentHistory">
@@ -217,6 +340,8 @@
             <column name="description" type="NVARCHAR(MAX)"/>
             <column name="path" type="VARCHAR(64)"/>
             <column name="university" type="INT"/>
+            <column name="course" type="INT"/>
+            <column name="subject" type="INT"/>
             <column name="lastModifiedBy" type="INT"/>
         </createTable>
         <createTable tableName="ApplicationUserHistory">
@@ -234,6 +359,7 @@
             <column name="firstName" type="NVARCHAR(31)"/>
             <column name="lastName" type="NVARCHAR(31)"/>
             <column name="email" type="VARCHAR(63)"/>
+            <column name="phoneNumber" type="VARCHAR(15)"/>
             <column name="password" type="VARCHAR(255)"/>
             <column name="facebookUrl" type="VARCHAR(63)"/>
             <column name="whatsUpUrl" type="VARCHAR(63)"/>
@@ -253,7 +379,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="applicationUserEntity" type="INT"/>
+            <column name="applicationUser" type="INT"/>
             <column name="friend" type="INT"/>
             <column name="status" type="VARCHAR(15)"/>
             <column name="lastModifiedBy" type="INT"/>
@@ -269,11 +395,66 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="applicationUserEntity" type="INT"/>
+            <column name="applicationUser" type="INT"/>
             <column name="deviceId" type="VARCHAR(255)"/>
             <column name="lastModifiedBy" type="INT"/>
         </createTable>
+        <createTable tableName="CourseHistory">
+            <column autoIncrement="true" name="historyId" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="NVARCHAR(31)"/>
+            <column name="abbrev" type="NVARCHAR(7)"/>
+            <column name="description" type="NVARCHAR(MAX)"/>
+            <column name="university" type="INT"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="SubjectHistory">
+            <column autoIncrement="true" name="historyId" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="NVARCHAR(31)"/>
+            <column name="abbrev" type="NVARCHAR(7)"/>
+            <column name="description" type="NVARCHAR(MAX)"/>
+            <column name="course" type="INT"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
+        <createTable tableName="BuildingHistory">
+            <column autoIncrement="true" name="historyId" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operationTime" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="NVARCHAR(31)"/>
+            <column name="abbrev" type="NVARCHAR(7)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="university" type="INT"/>
+            <column name="lastModifiedBy" type="INT"/>
+        </createTable>
         <rollback>
+            <dropTable tableName="SubjectHistory"/>
+            <dropTable tableName="CourseHistory"/>
+            <dropTable tableName="BuildingHistory"/>
             <dropTable tableName="DeviceHistory"/>
             <dropTable tableName="FriendHistory"/>
             <dropTable tableName="DocumentHistory"/>
@@ -288,8 +469,8 @@
             CREATE TRIGGER universityHistoryAfterInsertTrigger
                 ON University
                 AFTER INSERT AS
-                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
-                                              city, country, description, lastModifiedBy)
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode, city, country, websiteUrl,
+                                              description, logoUrl, primaryColor, secondaryColor, lastModifiedBy)
                 SELECT 'insert', i.*
                 FROM inserted i;
             GO
@@ -297,8 +478,8 @@
             CREATE TRIGGER universityHistoryAfterUpdateTrigger
                 ON University
                 AFTER UPDATE AS
-                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
-                                              city, country, description, lastModifiedBy)
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode, city, country, websiteUrl,
+                                              description, logoUrl, primaryColor, secondaryColor, lastModifiedBy)
                 SELECT 'update', i.*
                 FROM inserted i;
             GO
@@ -306,8 +487,58 @@
             CREATE TRIGGER universityHistoryAfterDeleteTrigger
                 ON University
                 AFTER DELETE AS
-                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode,
-                                              city, country, description, lastModifiedBy)
+                INSERT INTO UniversityHistory(operation, id, name, address, address2, zipcode, city, country, websiteUrl,
+                                              description, logoUrl, primaryColor, secondaryColor, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- CourseHistory
+            CREATE TRIGGER courseHistoryAfterInsertTrigger
+                ON Course
+                AFTER INSERT AS
+                INSERT INTO CourseHistory(operation, id, name, abbrev, description, university, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER courseHistoryAfterUpdateTrigger
+                ON Course
+                AFTER UPDATE AS
+                INSERT INTO CourseHistory(operation, id, name, abbrev, description, university, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER courseHistoryAfterDeleteTrigger
+                ON Course
+                AFTER DELETE AS
+                INSERT INTO CourseHistory(operation, id, name, abbrev, description, university, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
+
+            -- SubjectHistory
+            CREATE TRIGGER subjectHistoryAfterInsertTrigger
+                ON Subject
+                AFTER INSERT AS
+                INSERT INTO SubjectHistory(operation, id, name, abbrev, description, course, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER subjectHistoryAfterUpdateTrigger
+                ON Subject
+                AFTER UPDATE AS
+                INSERT INTO SubjectHistory(operation, id, name, abbrev, description, course, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER subjectHistoryAfterDeleteTrigger
+                ON Subject
+                AFTER DELETE AS
+                INSERT INTO SubjectHistory(operation, id, name, abbrev, description, course, lastModifiedBy)
                 SELECT 'delete', d.*
                 FROM deleted d;
             GO
@@ -316,8 +547,8 @@
             CREATE TRIGGER documentHistoryAfterInsertTrigger
                 ON Document
                 AFTER INSERT AS
-                INSERT INTO DocumentHistory(operation, id, name, description,
-                                            path, university, lastModifiedBy)
+                INSERT INTO DocumentHistory(operation, id, name, description, path,
+                                            university, course, subject, lastModifiedBy)
                 SELECT 'insert', i.*
                 FROM inserted i;
             GO
@@ -325,8 +556,8 @@
             CREATE TRIGGER documentHistoryAfterUpdateTrigger
                 ON Document
                 AFTER UPDATE AS
-                INSERT INTO DocumentHistory(operation, id, name, description,
-                                            path, university, lastModifiedBy)
+                INSERT INTO DocumentHistory(operation, id, name, description, path,
+                                            university, course, subject, lastModifiedBy)
                 SELECT 'update', i.*
                 FROM inserted i;
             GO
@@ -334,8 +565,8 @@
             CREATE TRIGGER documentHistoryAfterDeleteTrigger
                 ON Document
                 AFTER DELETE AS
-                INSERT INTO DocumentHistory(operation, id, name, description,
-                                            path, university, lastModifiedBy)
+                INSERT INTO DocumentHistory(operation, id, name, description, path,
+                                            university, course, subject, lastModifiedBy)
                 SELECT 'delete', d.*
                 FROM deleted d;
             GO
@@ -344,9 +575,9 @@
             CREATE TRIGGER applicationUserHistoryAfterInsertTrigger
                 ON ApplicationUser
                 AFTER INSERT AS
-                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
-                                                   lastModifiedBy)
+                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, phoneNumber,
+                                                   password, facebookUrl, whatsUpUrl, instagramUsername, pictureUrl,
+                                                   university, lastModifiedBy)
                 SELECT 'insert', i.*
                 FROM inserted i;
             GO
@@ -354,9 +585,9 @@
             CREATE TRIGGER applicationUserHistoryAfterUpdateTrigger
                 ON ApplicationUser
                 AFTER UPDATE AS
-                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
-                                                   lastModifiedBy)
+                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, phoneNumber,
+                                                   password, facebookUrl, whatsUpUrl, instagramUsername, pictureUrl,
+                                                   university, lastModifiedBy)
                 SELECT 'update', i.*
                 FROM inserted i;
             GO
@@ -364,9 +595,9 @@
             CREATE TRIGGER applicationUserHistoryAfterDeleteTrigger
                 ON ApplicationUser
                 AFTER DELETE AS
-                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, password,
-                                                   facebookUrl, whatsUpUrl, instagramUsername, pictureUrl, university,
-                                                   lastModifiedBy)
+                INSERT INTO ApplicationUserHistory(operation, id, type, firstName, lastName, email, phoneNumber,
+                                                   password, facebookUrl, whatsUpUrl, instagramUsername, pictureUrl,
+                                                   university, lastModifiedBy)
                 SELECT 'delete', d.*
                 FROM deleted d;
             GO
@@ -423,6 +654,34 @@
                 SELECT 'delete', d.*
                 FROM deleted d;
             GO
+
+            -- BuildingHistory
+            CREATE TRIGGER buildingHistoryAfterInsertTrigger
+                ON Building
+                AFTER INSERT AS
+                INSERT INTO BuildingHistory(operation, id, name, abbrev, latitude,
+                                            longitude, university, lastModifiedBy)
+                SELECT 'insert', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER buildingHistoryAfterUpdateTrigger
+                ON Building
+                AFTER UPDATE AS
+                INSERT INTO BuildingHistory(operation, id, name, abbrev, latitude,
+                                            longitude, university, lastModifiedBy)
+                SELECT 'update', i.*
+                FROM inserted i;
+            GO
+
+            CREATE TRIGGER buildingHistoryAfterDeleteTrigger
+                ON Building
+                AFTER DELETE AS
+                INSERT INTO BuildingHistory(operation, id, name, abbrev, latitude,
+                                            longitude, university, lastModifiedBy)
+                SELECT 'delete', d.*
+                FROM deleted d;
+            GO
         </sql>
         <rollback>
             <sql>
@@ -430,9 +689,13 @@
                 DROP TRIGGER IF EXISTS universityHistoryAfterUpdateTrigger;
                 DROP TRIGGER IF EXISTS universityHistoryAfterDeleteTrigger;
 
-                DROP TRIGGER IF EXISTS documentHistoryAfterInsertTrigger;
-                DROP TRIGGER IF EXISTS documentHistoryAfterUpdateTrigger;
-                DROP TRIGGER IF EXISTS documentHistoryAfterDeleteTrigger;
+                DROP TRIGGER IF EXISTS courseHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS courseHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS courseHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS subjectHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS subjectHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS subjectHistoryAfterDeleteTrigger;
 
                 DROP TRIGGER IF EXISTS applicationUserHistoryAfterInsertTrigger;
                 DROP TRIGGER IF EXISTS applicationUserHistoryAfterUpdateTrigger;
@@ -445,6 +708,10 @@
                 DROP TRIGGER IF EXISTS friendHistoryAfterInsertTrigger;
                 DROP TRIGGER IF EXISTS friendHistoryAfterUpdateTrigger;
                 DROP TRIGGER IF EXISTS friendHistoryAfterDeleteTrigger;
+
+                DROP TRIGGER IF EXISTS buildingHistoryAfterInsertTrigger;
+                DROP TRIGGER IF EXISTS buildingHistoryAfterUpdateTrigger;
+                DROP TRIGGER IF EXISTS buildingHistoryAfterDeleteTrigger;
                 GO
             </sql>
         </rollback>

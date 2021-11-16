@@ -32,9 +32,14 @@ public class DocumentEntity {
     @Column("path")
     private String path;
 
-    @NotNull
     @Column("university")
     private Integer universityId;
+
+    @Column("university")
+    private Integer courseId;
+
+    @Column("subject")
+    private Integer subjectId;
 
     @LastModifiedBy
     @Column("lastModifiedBy")

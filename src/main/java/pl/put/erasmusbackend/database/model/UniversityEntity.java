@@ -48,6 +48,18 @@ public class UniversityEntity {
     @Column("description")
     private String description;
 
+    @Column("websiteUrl")
+    private String websiteUrl;
+
+    @Column("logoUrl")
+    private String logoUrl;
+
+    @Column("primaryColor")
+    private String primaryColor;
+
+    @Column("secondaryColor")
+    private String secondaryColor;
+
     @LastModifiedBy
     @Column("lastModifiedBy")
     private Integer lastModifiedBy;
