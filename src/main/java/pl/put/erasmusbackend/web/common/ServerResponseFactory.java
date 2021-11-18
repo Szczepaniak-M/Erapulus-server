@@ -32,6 +32,14 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
+    public static Mono<ServerResponse> createHttpNoContentResponse() {
+        return ServerResponse.status(HttpStatus.NO_CONTENT)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(BodyInserters.fromValue(ResponseTemplate.builder()
+                                                                           .status(HttpStatus.NO_CONTENT.value())
+                                                                           .build()));
+    }
+
     public static Mono<ServerResponse> createHttpBadRequestCantParseToIntegerErrorResponse(NumberFormatException exception) {
         String message = "bad.request;cannot.parse.to.int";
         return ServerResponse.status(HttpStatus.BAD_REQUEST)

@@ -31,6 +31,7 @@ public class BuildingEntity {
     @Column("abbrev")
     private String abbrev;
 
+    @NotNull
     @Column("latitude")
     private Long latitude;
 
