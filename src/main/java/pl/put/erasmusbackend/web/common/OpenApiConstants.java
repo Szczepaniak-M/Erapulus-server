@@ -17,6 +17,13 @@ public class OpenApiConstants {
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
 
     // Endpoints
+    // University
+    public static final String UNIVERSITY_BASE_URL_OPENAPI = "api/university";
+    public static final String UNIVERSITY_DETAILS_URL_OPENAPI = "api/university/{universityId}";
+
+    //Building
     public static final String BUILDING_BASE_URL_OPENAPI = "api/university/{universityId}/building";
     public static final String BUILDING_DETAILS_URL_OPENAPI = "api/university/{universityId}/building/{buildingId}";
+
+    //
 }

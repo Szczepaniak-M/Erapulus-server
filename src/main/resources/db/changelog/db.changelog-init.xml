@@ -259,7 +259,7 @@
         <addForeignKeyConstraint baseTableName="ApplicationUser" baseColumnNames="university"
                                  constraintName="FK_ApplicationUser_university_University"
                                  referencedTableName="University" referencedColumnNames="id"
-                                 onDelete="RESTRICT" onUpdate="RESTRICT"/>
+                                 onDelete="SET NULL" onUpdate="RESTRICT"/>
         <addForeignKeyConstraint baseTableName="Device" baseColumnNames="applicationUser"
                                  constraintName="FK_Device_university_ApplicationUser"
                                  referencedTableName="ApplicationUser" referencedColumnNames="id"

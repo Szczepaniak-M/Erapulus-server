@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -63,6 +64,7 @@ public class BuildingController {
             description = "Create building",
             summary = "Create building",
             parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -91,6 +93,7 @@ public class BuildingController {
                     @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
                     @Parameter(in = ParameterIn.PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"))
             },
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -135,7 +138,6 @@ public class BuildingController {
         return withPathParam(request, BUILDING_PATH_PARAM,
                 buildingId -> buildingService.deleteBuilding(buildingId)
                                              .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NumberFormatException.class, ServerResponseFactory::createHttpBadRequestCantParseToIntegerErrorResponse)
                                              .onErrorResume(NoSuchBuildingException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
