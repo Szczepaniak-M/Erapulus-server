@@ -34,7 +34,7 @@ public class UniversityRouter {
     RouterFunction<ServerResponse> universityRoutes(UniversityController universityController) {
         return route(GET(UNIVERSITY_BASE_URL).and(contentType(APPLICATION_JSON)), universityController::listUniversities)
                 .andRoute(POST(UNIVERSITY_BASE_URL).and(contentType(APPLICATION_JSON)), universityController::createUniversity)
-                .andRoute(POST(UNIVERSITY_DETAILS_URL_OPENAPI).and(contentType(APPLICATION_JSON)), universityController::getUniversityById)
+                .andRoute(GET(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::getUniversityById)
                 .andRoute(PUT(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::updateUniversity)
                 .andRoute(DELETE(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::deleteUniversity);
     }

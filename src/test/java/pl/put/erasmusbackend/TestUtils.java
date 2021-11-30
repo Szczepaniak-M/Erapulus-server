@@ -25,8 +25,9 @@ public class TestUtils {
     }
 
     public static void assertJsonEquals(String expected, String actual) {
+        String expectedWithoutNewLine = expected.replaceAll("\n", "");
         try {
-            JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+            JSONAssert.assertEquals(expectedWithoutNewLine, actual, JSONCompareMode.STRICT);
         } catch (JSONException e) {
             fail(e.getMessage());
         }

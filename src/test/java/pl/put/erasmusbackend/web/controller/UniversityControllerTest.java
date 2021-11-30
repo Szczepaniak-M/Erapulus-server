@@ -7,13 +7,17 @@ import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurity
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import pl.put.erasmusbackend.TestUtils;
-import pl.put.erasmusbackend.database.model.UniversityEntity;
-import pl.put.erasmusbackend.database.repository.UniversityRepository;
+import pl.put.erasmusbackend.dto.UniversityListDto;
+import pl.put.erasmusbackend.service.UniversityService;
 import pl.put.erasmusbackend.web.router.UniversityRouter;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -21,11 +25,16 @@ import static org.mockito.Mockito.when;
         excludeAutoConfiguration = {ReactiveSecurityAutoConfiguration.class})
 class UniversityControllerTest {
 
+    private static final int UNIVERSITY_ID_1 = 1;
+    private static final int UNIVERSITY_ID_2 = 2;
+    private static final String UNIVERSITY_NAME_1 = "university1";
+    private static final String UNIVERSITY_NAME_2 = "university2";
+
     @Autowired
     ApplicationContext applicationContext;
 
     @MockBean
-    UniversityRepository universityRepository;
+    UniversityService universityService;
 
     private WebTestClient webTestClient;
 
@@ -37,16 +46,31 @@ class UniversityControllerTest {
     @Test
     void getUniversityList_shouldReturnUniversityNames() {
         // given
-        var expected = "[\"university1\", \"university2\"]";
-        var university1 = new UniversityEntity().name("university1");
-        var university2 = new UniversityEntity().name("university2");
-        when(universityRepository.findAll()).thenReturn(Flux.just(university1, university2));
+        var expected = """
+                {
+                  "status": 200,
+                  "payload": [
+                    {
+                      "id": 1,
+                      "name": "university1"
+                    },
+                    {
+                      "id": 2,
+                      "name": "university2"
+                    }
+                  ],
+                  "message": null
+                }""";
+        var university1 = UniversityListDto.builder().name(UNIVERSITY_NAME_1).id(UNIVERSITY_ID_1).build();
+        var university2 = UniversityListDto.builder().name(UNIVERSITY_NAME_2).id(UNIVERSITY_ID_2).build();
+        when(universityService.listUniversities()).thenReturn(Mono.just(List.of(university1, university2)));
 
         // when-then
         webTestClient.get()
-                     .uri("/university")
+                     .uri("/api/university")
+                     .header("Content-Type", MediaType.APPLICATION_JSON.toString())
                      .exchange()
                      .expectStatus().isEqualTo(HttpStatus.OK)
-                     .expectBody().consumeWith(body -> TestUtils.assertJsonEquals(TestUtils.getBodyAsString(body), expected));
+                     .expectBody().consumeWith(body -> TestUtils.assertJsonEquals(expected, TestUtils.getBodyAsString(body)));
     }
 }

@@ -64,20 +64,23 @@ class RegisterControllerTest {
                                                                         .lastName(LAST_NAME)
                                                                         .universityId(UNIVERSITY_ID)
                                                                         .email(EMAIL);
-        String expected = "{\"status\":201," +
-                "\"payload\":{" +
-                "\"id\":1," +
-                "\"firstName\":\"firstName\"," +
-                "\"lastName\":\"lastName\"," +
-                "\"university\":2," +
-                "\"email\":\"example@gmail.com\"" +
-                "}," +
-                "\"message\":null}";
+        String expected = """
+                {
+                  "status":201,
+                  "payload":{
+                    "id":1,
+                    "firstName":"firstName",
+                    "lastName":"lastName",
+                    "university":2,
+                    "email":"example@gmail.com"
+                  },
+                  "message":null
+                }""";
         when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
 
         // when-then
         webTestClient.post()
-                     .uri("/register/employee")
+                     .uri("/api/user/register/employee")
                      .contentType(MediaType.APPLICATION_JSON)
                      .body(BodyInserters.fromValue(TestUtils.parseToJson(employeeCreateRequestDto)))
                      .exchange()
@@ -92,16 +95,21 @@ class RegisterControllerTest {
                                                                                           .lastName(LAST_NAME)
                                                                                           .universityId(UNIVERSITY_ID)
                                                                                           .password(PASSWORD);
-        String expected = "{\"status\":400," +
-                "\"payload\":null," +
-                "\"message\":\"bad.request;email.must.not.be.null\"}";
+        String expected = """
+                {
+                  "status":400,
+                  "payload":null,
+                  "message":"bad.request;email.must.not.be.null"
+                }
+                """;
+
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         when(registerService.createEmployee(any(EmployeeCreateRequestDto.class)))
                 .thenThrow(new ConstraintViolationException(validator.validate(employeeCreateRequestDto)));
 
         // when-then
         webTestClient.post()
-                     .uri("/register/employee")
+                     .uri("/api/user/register/employee")
                      .contentType(MediaType.APPLICATION_JSON)
                      .body(BodyInserters.fromValue(TestUtils.parseToJson(employeeCreateRequestDto)))
                      .exchange()
@@ -112,14 +120,17 @@ class RegisterControllerTest {
     @Test
     void createEmployee_shouldReturnBadRequestWhenNoBodyFound() {
         // given
-        String expected = "{\"status\":400," +
-                "\"payload\":null," +
-                "\"message\":\"bad.request;not.found.body\"}";
+        String expected = """
+                {
+                  "status":400,
+                  "payload":null,
+                  "message":"bad.request;not.found.body"
+                }""";
         when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
-                     .uri("/register/employee")
+                     .uri("/api/user/register/employee")
                      .contentType(MediaType.APPLICATION_JSON)
                      .exchange()
                      .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
@@ -135,14 +146,17 @@ class RegisterControllerTest {
                                                                                           .email(EMAIL)
                                                                                           .password(PASSWORD);
 
-        String expected = "{\"status\":409," +
-                "\"payload\":null," +
-                "\"message\":\"employee.conflict\"}";
+        String expected = """
+                {
+                  "status":409,
+                  "payload":null,
+                  "message":"employee.conflict"
+                }""";
         when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
-                     .uri("/register/employee")
+                     .uri("/api/user/register/employee")
                      .contentType(MediaType.APPLICATION_JSON)
                      .body(BodyInserters.fromValue(TestUtils.parseToJson(employeeCreateRequestDto)))
                      .exchange()
@@ -159,14 +173,17 @@ class RegisterControllerTest {
                                                                                           .email(EMAIL)
                                                                                           .password(PASSWORD);
 
-        String expected = "{\"status\":500," +
-                "\"payload\":null," +
-                "\"message\":\"internal.server.error\"}";
+        String expected = """
+                {
+                  "status":500,
+                  "payload":null,
+                  "message":"internal.server.error"
+                }""";
         when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new RuntimeException());
 
         // when-then
         webTestClient.post()
-                     .uri("/register/employee")
+                     .uri("/api/user/register/employee")
                      .contentType(MediaType.APPLICATION_JSON)
                      .body(BodyInserters.fromValue(TestUtils.parseToJson(employeeCreateRequestDto)))
                      .exchange()

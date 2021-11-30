@@ -17,8 +17,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class LoginRouter {
 
-    public static final String LOGIN_EMPLOYEE = "/api/login/employee";
-    public static final String LOGIN_GOOGLE = "/api/login/google";
+    public static final String LOGIN_EMPLOYEE = "/api/user/login/employee";
+    public static final String LOGIN_GOOGLE = "/api/user/login/google";
 
     @RouterOperations({
             @RouterOperation(path = LOGIN_EMPLOYEE, method = RequestMethod.POST, beanClass = LoginController.class, beanMethod = "loginEmployee"),

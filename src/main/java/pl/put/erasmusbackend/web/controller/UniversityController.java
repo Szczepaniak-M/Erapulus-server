@@ -58,7 +58,7 @@ public class UniversityController {
             tags = "University",
             description = "Create university",
             summary = "Create university",
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class))),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = UniversityResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -106,7 +106,7 @@ public class UniversityController {
             description = "Update university",
             summary = "Update university",
             parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class))),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

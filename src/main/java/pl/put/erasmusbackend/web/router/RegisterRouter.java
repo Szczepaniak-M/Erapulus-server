@@ -17,7 +17,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class RegisterRouter {
 
-    public static final String REGISTER_EMPLOYEE = "/api/register/employee";
+    public static final String REGISTER_EMPLOYEE = "/api/user/register/employee";
 
     @RouterOperations({
             @RouterOperation(path = REGISTER_EMPLOYEE, method = RequestMethod.POST, beanClass = RegisterController.class, beanMethod = "createEmployee")
