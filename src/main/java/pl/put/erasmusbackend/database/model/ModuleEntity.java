@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Course")
-public class CourseEntity {
+@Table("Module")
+public class ModuleEntity {
     @Id
     @NotNull
     @Column("id")
@@ -34,8 +34,8 @@ public class CourseEntity {
     private String description;
 
     @NotNull
-    @Column("university")
-    private Integer universityId;
+    @Column("program")
+    private Integer programId;
 
     @LastModifiedBy
     @Column("lastModifiedBy")
