@@ -5,13 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
-import pl.put.erasmusbackend.service.EmployeeService;
+import pl.put.erasmusbackend.service.RegisterService;
 import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
@@ -21,10 +22,11 @@ import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 
 @Controller
 @AllArgsConstructor
-public class EmployeeController {
+public class RegisterController {
 
-    private EmployeeService employeeService;
+    private RegisterService registerService;
 
+    @NonNull
     @Operation(
             operationId = "create-employee",
             tags = "Employee",
@@ -39,7 +41,7 @@ public class EmployeeController {
     )
     public Mono<ServerResponse> createEmployee(ServerRequest request) {
         return request.bodyToMono(EmployeeCreateRequestDto.class)
-                      .flatMap(employeeService::createEmployee)
+                      .flatMap(registerService::createEmployee)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))

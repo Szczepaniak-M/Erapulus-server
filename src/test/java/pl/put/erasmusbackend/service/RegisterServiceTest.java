@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceTest {
+class RegisterServiceTest {
 
     private static final int ID = 1;
     private static final CharSequence PASSWORD = "password";
@@ -36,11 +36,11 @@ class EmployeeServiceTest {
     @Mock
     EmployeeRepository employeeRepository;
 
-    EmployeeService employeeService;
+    RegisterService registerService;
 
     @BeforeEach
     void setUp() {
-        employeeService = new EmployeeService(bCryptPasswordEncoder, employeeRepository);
+        registerService = new RegisterService(bCryptPasswordEncoder, employeeRepository);
     }
 
     @Test
@@ -58,7 +58,7 @@ class EmployeeServiceTest {
                 .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
 
         // when
-        Mono<EmployeeCreatedDto> result = employeeService.createEmployee(employeeCreateRequestDto);
+        Mono<EmployeeCreatedDto> result = registerService.createEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)
@@ -87,7 +87,7 @@ class EmployeeServiceTest {
         when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
 
         // when
-        Mono<EmployeeCreatedDto> result = employeeService.createEmployee(employeeCreateRequestDto);
+        Mono<EmployeeCreatedDto> result = registerService.createEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)

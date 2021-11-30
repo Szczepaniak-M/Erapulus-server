@@ -20,8 +20,8 @@ import static pl.put.erasmusbackend.web.common.OpenApiConstants.UNIVERSITY_DETAI
 @Configuration
 public class UniversityRouter {
 
-    public static final String UNIVERSITY_BASE_URL = "api/university";
-    public static final String UNIVERSITY_DETAILS_URL = format("api/university/{%s}/", UNIVERSITY_PATH_PARAM);
+    public static final String UNIVERSITY_BASE_URL = "/api/university";
+    public static final String UNIVERSITY_DETAILS_URL = format("/api/university/{%s}/", UNIVERSITY_PATH_PARAM);
 
     @RouterOperations({
             @RouterOperation(path = UNIVERSITY_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = UniversityController.class, beanMethod = "listUniversities"),

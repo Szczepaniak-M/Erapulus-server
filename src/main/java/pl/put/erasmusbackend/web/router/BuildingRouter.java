@@ -21,8 +21,8 @@ import static pl.put.erasmusbackend.web.common.OpenApiConstants.BUILDING_DETAILS
 @Configuration
 public class BuildingRouter {
 
-    public static final String BUILDING_BASE_URL = format("api/university/{%s}/building", UNIVERSITY_PATH_PARAM);
-    public static final String BUILDING_DETAILS_URL = format("api/university/{%s}/building/{%s}", UNIVERSITY_PATH_PARAM, BUILDING_PATH_PARAM);
+    public static final String BUILDING_BASE_URL = format("/api/university/{%s}/building", UNIVERSITY_PATH_PARAM);
+    public static final String BUILDING_DETAILS_URL = format("/api/university/{%s}/building/{%s}", UNIVERSITY_PATH_PARAM, BUILDING_PATH_PARAM);
 
     @RouterOperations({
             @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = BuildingController.class, beanMethod = "listBuildingByUniversity"),

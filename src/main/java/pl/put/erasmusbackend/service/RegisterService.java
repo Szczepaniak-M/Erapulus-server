@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Service
 @Validated
 @AllArgsConstructor
-public class EmployeeService {
+public class RegisterService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmployeeRepository employeeRepository;

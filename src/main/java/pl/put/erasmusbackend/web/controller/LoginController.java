@@ -3,6 +3,7 @@ package pl.put.erasmusbackend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -34,7 +35,7 @@ public class LoginController {
             tags = "Login",
             description = "Login employee",
             summary = "Login employee",
-//            requestBody = {},
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = EmployeeLoginDTO.class))),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -58,7 +59,7 @@ public class LoginController {
             tags = "Login",
             description = "Login student using Google",
             summary = "Login student using Google",
-//            requestBody = {},
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = StudentLoginDTO.class))),
             responses = {
                     @ApiResponse(responseCode = "201", description = CREATED, content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

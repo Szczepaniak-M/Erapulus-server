@@ -15,8 +15,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import pl.put.erasmusbackend.TestUtils;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
-import pl.put.erasmusbackend.service.EmployeeService;
-import pl.put.erasmusbackend.web.router.EmployeeRouter;
+import pl.put.erasmusbackend.service.RegisterService;
+import pl.put.erasmusbackend.web.router.RegisterRouter;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
@@ -26,9 +26,9 @@ import javax.validation.Validator;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@WebFluxTest(controllers = {EmployeeRouter.class, EmployeeController.class},
+@WebFluxTest(controllers = {RegisterRouter.class, RegisterController.class},
         excludeAutoConfiguration = {ReactiveSecurityAutoConfiguration.class})
-class EmployeeControllerTest {
+class RegisterControllerTest {
 
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -41,7 +41,7 @@ class EmployeeControllerTest {
     ApplicationContext applicationContext;
 
     @MockBean
-    EmployeeService employeeService;
+    RegisterService registerService;
 
     private WebTestClient webTestClient;
 
@@ -73,7 +73,7 @@ class EmployeeControllerTest {
                 "\"email\":\"example@gmail.com\"" +
                 "}," +
                 "\"message\":null}";
-        when(employeeService.createEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
+        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
 
         // when-then
         webTestClient.post()
@@ -96,7 +96,7 @@ class EmployeeControllerTest {
                 "\"payload\":null," +
                 "\"message\":\"bad.request;email.must.not.be.null\"}";
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        when(employeeService.createEmployee(any(EmployeeCreateRequestDto.class)))
+        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class)))
                 .thenThrow(new ConstraintViolationException(validator.validate(employeeCreateRequestDto)));
 
         // when-then
@@ -115,7 +115,7 @@ class EmployeeControllerTest {
         String expected = "{\"status\":400," +
                 "\"payload\":null," +
                 "\"message\":\"bad.request;not.found.body\"}";
-        when(employeeService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
+        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
@@ -138,7 +138,7 @@ class EmployeeControllerTest {
         String expected = "{\"status\":409," +
                 "\"payload\":null," +
                 "\"message\":\"employee.conflict\"}";
-        when(employeeService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
+        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
@@ -162,7 +162,7 @@ class EmployeeControllerTest {
         String expected = "{\"status\":500," +
                 "\"payload\":null," +
                 "\"message\":\"internal.server.error\"}";
-        when(employeeService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new RuntimeException());
+        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new RuntimeException());
 
         // when-then
         webTestClient.post()

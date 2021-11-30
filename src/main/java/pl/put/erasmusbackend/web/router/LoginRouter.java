@@ -1,6 +1,7 @@
 package pl.put.erasmusbackend.web.router;
 
 import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,26 +17,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class LoginRouter {
 
-    @RouterOperation(
-            path = "/login/employee",
-            method = RequestMethod.POST,
-            beanClass = LoginController.class,
-            beanMethod = "loginEmployee"
-    )
-    @Bean
-    RouterFunction<ServerResponse> loginEmployeeRoute(LoginController loginController) {
-        return route(POST("/login/employee").and(contentType(APPLICATION_JSON)), loginController::loginEmployee);
-    }
+    public static final String LOGIN_EMPLOYEE = "/api/login/employee";
+    public static final String LOGIN_GOOGLE = "/api/login/google";
 
-    @RouterOperation(
-            path = "/login/google",
-            method = RequestMethod.POST,
-            beanClass = LoginController.class,
-            beanMethod = "loginEmployee"
-    )
+    @RouterOperations({
+            @RouterOperation(path = LOGIN_EMPLOYEE, method = RequestMethod.POST, beanClass = LoginController.class, beanMethod = "loginEmployee"),
+            @RouterOperation(path = LOGIN_GOOGLE, method = RequestMethod.POST, beanClass = LoginController.class, beanMethod = "loginStudentGoogle")
+    })
     @Bean
-    RouterFunction<ServerResponse> loginStudentGoogleRoute(LoginController loginController) {
-        return route(POST("/login/google").and(contentType(APPLICATION_JSON)), loginController::loginStudentGoogle);
+    RouterFunction<ServerResponse> loginRoute(LoginController loginController) {
+        return route(POST(LOGIN_EMPLOYEE).and(contentType(APPLICATION_JSON)), loginController::loginEmployee)
+                .andRoute(POST(LOGIN_GOOGLE).and(contentType(APPLICATION_JSON)), loginController::loginStudentGoogle);
     }
 }
 
