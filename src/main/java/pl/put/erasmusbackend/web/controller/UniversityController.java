@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
 
-import static pl.put.erasmusbackend.web.common.CommonPathVariable.UNIVERSITY_PATH_PARAM;
+import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 import static pl.put.erasmusbackend.web.controller.ControllerUtils.withPathParam;
 

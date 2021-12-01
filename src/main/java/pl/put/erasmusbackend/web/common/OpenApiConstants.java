@@ -22,9 +22,12 @@ public class OpenApiConstants {
     public static final String UNIVERSITY_BASE_URL_OPENAPI = "/api/university";
     public static final String UNIVERSITY_DETAILS_URL_OPENAPI = "/api/university/{universityId}";
 
-    //Building
+    // Building
     public static final String BUILDING_BASE_URL_OPENAPI = "/api/university/{universityId}/building";
     public static final String BUILDING_DETAILS_URL_OPENAPI = "/api/university/{universityId}/building/{buildingId}";
 
-    //
+    // Post
+    public static final String POST_BASE_URL_OPENAPI = "/api/university/{universityId}/post";
+    public static final String POST_DETAILS_URL_OPENAPI = "/api/university/{universityId}/post/{postId}";
+
 }

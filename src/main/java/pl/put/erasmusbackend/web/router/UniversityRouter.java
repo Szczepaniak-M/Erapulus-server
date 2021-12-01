@@ -13,7 +13,7 @@ import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static pl.put.erasmusbackend.web.common.CommonPathVariable.UNIVERSITY_PATH_PARAM;
+import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.UNIVERSITY_BASE_URL_OPENAPI;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.UNIVERSITY_DETAILS_URL_OPENAPI;
 
