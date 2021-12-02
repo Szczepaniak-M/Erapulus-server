@@ -1,14 +1,13 @@
 package pl.put.erasmusbackend.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.put.erasmusbackend.database.model.EmployeeEntity;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EmployeeEntityToEmployeeCreatedDtoMapper {
+@Component
+public class EmployeeEntityToEmployeeCreatedDtoMapper implements EntityToResponseDtoMapper<EmployeeEntity, EmployeeCreatedDto> {
 
-    public static EmployeeCreatedDto from(EmployeeEntity employeeEntity) {
+    public EmployeeCreatedDto from(EmployeeEntity employeeEntity) {
         return EmployeeCreatedDto.builder()
                                  .id(employeeEntity.id())
                                  .firstName(employeeEntity.firstName())

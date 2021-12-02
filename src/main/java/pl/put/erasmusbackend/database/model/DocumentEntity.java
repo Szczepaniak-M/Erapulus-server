@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("Document")
-public class DocumentEntity {
+public class DocumentEntity implements Entity {
     @Id
     @Column("id")
     private Integer id;

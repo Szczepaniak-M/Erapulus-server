@@ -12,9 +12,10 @@ import reactor.core.publisher.Mono;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentEntityToDtoMapper studentEntityToDtoMapper;
 
     public Mono<StudentDto> getStudent(int studentId) {
         return studentRepository.findById(studentId)
-                                .map(StudentEntityToDtoMapper::from);
+                                .map(studentEntityToDtoMapper::from);
     }
 }

@@ -13,14 +13,17 @@ import lombok.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import pl.put.erasmusbackend.database.model.BuildingEntity;
 import pl.put.erasmusbackend.dto.BuildingRequestDto;
 import pl.put.erasmusbackend.dto.BuildingResponseDto;
 import pl.put.erasmusbackend.service.BuildingService;
-import pl.put.erasmusbackend.service.exception.NoSuchBuildingException;
 import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+
+import java.util.NoSuchElementException;
+import java.util.function.UnaryOperator;
 
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.BUILDING_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
@@ -53,7 +56,6 @@ public class BuildingController {
                 universityId -> buildingService.listBuildingByUniversityId(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                               .onErrorResume(NumberFormatException.class, ServerResponseFactory::createHttpBadRequestCantParseToIntegerErrorResponse)
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -76,7 +78,7 @@ public class BuildingController {
     public Mono<ServerResponse> createBuilding(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(BuildingRequestDto.class)
-                                       .flatMap(building -> buildingService.createBuilding(universityId, building))
+                                       .flatMap(building -> buildingService.createEntity(building, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
@@ -107,10 +109,10 @@ public class BuildingController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, BUILDING_PATH_PARAM,
                         buildingId -> request.bodyToMono(BuildingRequestDto.class)
-                                             .flatMap(buildingDto -> buildingService.updateBuilding(universityId, buildingId, buildingDto))
+                                             .flatMap(buildingDto -> buildingService.updateEntity(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                             .onErrorResume(NoSuchBuildingException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                              .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -136,9 +138,9 @@ public class BuildingController {
     )
     public Mono<ServerResponse> deleteBuilding(ServerRequest request) {
         return withPathParam(request, BUILDING_PATH_PARAM,
-                buildingId -> buildingService.deleteBuilding(buildingId)
+                buildingId -> buildingService.deleteEntity(buildingId)
                                              .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NoSuchBuildingException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

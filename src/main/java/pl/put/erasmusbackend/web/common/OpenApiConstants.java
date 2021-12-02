@@ -30,4 +30,8 @@ public class OpenApiConstants {
     public static final String POST_BASE_URL_OPENAPI = "/api/university/{universityId}/post";
     public static final String POST_DETAILS_URL_OPENAPI = "/api/university/{universityId}/post/{postId}";
 
+    // Program
+    public static final String PROGRAM_BASE_URL_OPENAPI = "/api/university/{universityId}/program";
+    public static final String PROGRAM_DETAILS_URL_OPENAPI = "/api/university/{universityId}/program/{programId}";
+
 }

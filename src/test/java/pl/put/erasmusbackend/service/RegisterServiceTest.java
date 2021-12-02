@@ -11,6 +11,8 @@ import pl.put.erasmusbackend.database.model.EmployeeEntity;
 import pl.put.erasmusbackend.database.repository.EmployeeRepository;
 import pl.put.erasmusbackend.dto.EmployeeCreateRequestDto;
 import pl.put.erasmusbackend.dto.EmployeeCreatedDto;
+import pl.put.erasmusbackend.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
+import pl.put.erasmusbackend.mapper.EmployeeEntityToEmployeeCreatedDtoMapper;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -36,11 +38,20 @@ class RegisterServiceTest {
     @Mock
     EmployeeRepository employeeRepository;
 
+    EmployeeCreateRequestToEmployeeEntityMapper employeeCreateRequestToEmployeeEntityMapper
+            = new EmployeeCreateRequestToEmployeeEntityMapper();
+
+    EmployeeEntityToEmployeeCreatedDtoMapper employeeEntityToEmployeeCreatedDtoMapper
+            = new EmployeeEntityToEmployeeCreatedDtoMapper();
+
     RegisterService registerService;
 
     @BeforeEach
     void setUp() {
-        registerService = new RegisterService(bCryptPasswordEncoder, employeeRepository);
+        registerService = new RegisterService(bCryptPasswordEncoder,
+                employeeRepository,
+                employeeCreateRequestToEmployeeEntityMapper,
+                employeeEntityToEmployeeCreatedDtoMapper);
     }
 
     @Test
@@ -70,7 +81,7 @@ class RegisterServiceTest {
                         assertEquals(LAST_NAME, employeeCreatedDto.lastName());
                         assertEquals(UNIVERSITY, employeeCreatedDto.universityId());
                     })
-                .verifyComplete();
+                    .verifyComplete();
     }
 
     @Test

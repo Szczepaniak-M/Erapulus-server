@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("Device")
-public class DeviceEntity {
+public class DeviceEntity implements Entity {
     @Id
     @NotNull
     @Column("id")

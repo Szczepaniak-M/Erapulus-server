@@ -25,9 +25,10 @@ class EmployeeCreateRequestToEmployeeEntityMapperTest {
                                                                       .universityId(UNIVERSITY_ID)
                                                                       .password(PASSWORD)
                                                                       .build();
+        var employeeCreateRequestToEmployeeEntityMapper = new EmployeeCreateRequestToEmployeeEntityMapper();
 
         // when
-        EmployeeEntity result = EmployeeCreateRequestToEmployeeEntityMapper.from(requestDto);
+        EmployeeEntity result = employeeCreateRequestToEmployeeEntityMapper.from(requestDto);
 
         //then
         assertEquals(EMAIL, result.email());

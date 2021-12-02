@@ -1,13 +1,12 @@
 package pl.put.erasmusbackend.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.put.erasmusbackend.database.model.PostEntity;
 import pl.put.erasmusbackend.dto.PostRequestDto;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostRequestDtoToEntityMapper {
-    public static PostEntity from(PostRequestDto postEntity) {
+@Component
+public class PostRequestDtoToEntityMapper implements RequestDtoToEntityMapper<PostRequestDto, PostEntity> {
+    public PostEntity from(PostRequestDto postEntity) {
         return PostEntity.builder()
                          .title(postEntity.title())
                          .date(postEntity.date())

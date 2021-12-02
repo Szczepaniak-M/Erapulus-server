@@ -1,63 +1,61 @@
 package pl.put.erasmusbackend.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import pl.put.erasmusbackend.database.model.UniversityEntity;
 import pl.put.erasmusbackend.database.repository.UniversityRepository;
 import pl.put.erasmusbackend.dto.UniversityListDto;
 import pl.put.erasmusbackend.dto.UniversityRequestDto;
 import pl.put.erasmusbackend.dto.UniversityResponseDto;
-import pl.put.erasmusbackend.mapper.UniversityEntityToResponseDtoMapper;
+import pl.put.erasmusbackend.mapper.EntityToResponseDtoMapper;
+import pl.put.erasmusbackend.mapper.RequestDtoToEntityMapper;
 import pl.put.erasmusbackend.mapper.UniversityEntityToUniversityListDtoMapper;
-import pl.put.erasmusbackend.mapper.UniversityRequestDtoToEntityMapper;
-import pl.put.erasmusbackend.service.exception.NoSuchBuildingException;
-import pl.put.erasmusbackend.service.exception.NoSuchUniversityException;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.UnaryOperator;
 
 @Service
 @Validated
-@AllArgsConstructor
-public class UniversityService {
+public class UniversityService extends CrudGenericService<UniversityEntity, UniversityRequestDto, UniversityResponseDto> {
 
     private final UniversityRepository universityRepository;
+    private final UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper;
+
+    public UniversityService(UniversityRepository universityRepository,
+                             RequestDtoToEntityMapper<UniversityRequestDto, UniversityEntity> requestDtoToEntityMapper,
+                             EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> entityToResponseDtoMapper,
+                             UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper) {
+        super(universityRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        this.universityRepository = universityRepository;
+        this.universityEntityToUniversityListDtoMapper = universityEntityToUniversityListDtoMapper;
+    }
 
     public Mono<List<UniversityListDto>> listUniversities() {
         return universityRepository.findAllUniversitiesNameAndId()
-                                   .map(UniversityEntityToUniversityListDtoMapper::from)
+                                   .map(universityEntityToUniversityListDtoMapper::from)
                                    .collectList();
     }
 
-    public Mono<UniversityResponseDto> createUniversity(@Valid UniversityRequestDto universityRequestDto) {
-        return Mono.just(universityRequestDto)
-                   .map(UniversityRequestDtoToEntityMapper::from)
-                   .flatMap(universityRepository::save)
-                   .map(UniversityEntityToResponseDtoMapper::from);
+    public Mono<UniversityResponseDto> createEntity(UniversityRequestDto requestDto) {
+        UnaryOperator<UniversityEntity> addParamFromPath = university -> university;
+        return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<UniversityResponseDto> getUniversityById(int universityId) {
-        return universityRepository.findById(universityId)
-                                   .map(UniversityEntityToResponseDtoMapper::from);
+
+    public Mono<UniversityResponseDto> updateEntity(UniversityRequestDto requestDto, int universityId) {
+        UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
+        return updateEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<UniversityResponseDto> updateUniversity(int universityId, @Valid UniversityRequestDto universityRequestDto) {
-        return Mono.just(universityRequestDto)
-                   .map(UniversityRequestDtoToEntityMapper::from)
-                   .map(university -> university.id(universityId))
-                   .flatMap(updatedUniversity -> universityRepository.findById(updatedUniversity.id())
-                                                                     .switchIfEmpty(Mono.error(new NoSuchUniversityException()))
-                                                                     .flatMap(b -> universityRepository.save(updatedUniversity)))
-                   .map(UniversityEntityToResponseDtoMapper::from);
-    }
-
+    @Override
     @Transactional
-    public Mono<Boolean> deleteUniversity(int universityId) {
+    public Mono<Boolean> deleteEntity(int universityId) {
         // TODO Add deleting Posts, Building, Documents, Programs and Modules,
         return universityRepository.findById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchBuildingException()))
+                                   .switchIfEmpty(Mono.error(new NoSuchElementException()))
                                    .flatMap(b -> universityRepository.deleteById(universityId))
                                    .thenReturn(true);
     }

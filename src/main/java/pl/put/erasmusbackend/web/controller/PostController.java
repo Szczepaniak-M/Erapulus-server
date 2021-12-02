@@ -16,11 +16,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.PostRequestDto;
 import pl.put.erasmusbackend.dto.PostResponseDto;
 import pl.put.erasmusbackend.service.PostService;
-import pl.put.erasmusbackend.service.exception.NoSuchPostException;
 import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
 
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.*;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
@@ -85,7 +85,7 @@ public class PostController {
     public Mono<ServerResponse> createPost(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(PostRequestDto.class)
-                                       .flatMap(post -> postService.createPost(universityId, post))
+                                       .flatMap(post -> postService.createEntity(post, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
@@ -109,9 +109,9 @@ public class PostController {
     )
     public Mono<ServerResponse> getPostById(ServerRequest request) {
         return withPathParam(request, POST_PATH_PARAM,
-                postId -> postService.getPostById(postId)
+                postId -> postService.getEntityById(postId)
                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                     .onErrorResume(NoSuchPostException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                     .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -139,10 +139,10 @@ public class PostController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, POST_PATH_PARAM,
                         postId -> request.bodyToMono(PostRequestDto.class)
-                                         .flatMap(postDto -> postService.updatePost(universityId, postId, postDto))
+                                         .flatMap(postDto -> postService.updateEntity(postDto, postId, universityId))
                                          .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                          .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                         .onErrorResume(NoSuchPostException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                         .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
                                          .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                          .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -168,9 +168,9 @@ public class PostController {
     )
     public Mono<ServerResponse> deletePost(ServerRequest request) {
         return withPathParam(request, POST_PATH_PARAM,
-                postId -> postService.deletePost(postId)
+                postId -> postService.deleteEntity(postId)
                                      .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                     .onErrorResume(NoSuchPostException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                     .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

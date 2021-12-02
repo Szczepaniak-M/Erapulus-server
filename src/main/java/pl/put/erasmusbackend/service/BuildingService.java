@@ -1,55 +1,43 @@
 package pl.put.erasmusbackend.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import pl.put.erasmusbackend.database.model.BuildingEntity;
 import pl.put.erasmusbackend.database.repository.BuildingRepository;
 import pl.put.erasmusbackend.dto.BuildingRequestDto;
 import pl.put.erasmusbackend.dto.BuildingResponseDto;
-import pl.put.erasmusbackend.mapper.BuildingEntityToResponseDtoMapper;
-import pl.put.erasmusbackend.mapper.BuildingRequestDtoToEntityMapper;
-import pl.put.erasmusbackend.service.exception.NoSuchBuildingException;
+import pl.put.erasmusbackend.mapper.EntityToResponseDtoMapper;
+import pl.put.erasmusbackend.mapper.RequestDtoToEntityMapper;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 @Service
 @Validated
-@AllArgsConstructor
-public class BuildingService {
+public class BuildingService extends CrudGenericService<BuildingEntity, BuildingRequestDto, BuildingResponseDto> {
 
     private final BuildingRepository buildingRepository;
+
+    public BuildingService(BuildingRepository buildingRepository,
+                           RequestDtoToEntityMapper<BuildingRequestDto, BuildingEntity> requestDtoToEntityMapper,
+                           EntityToResponseDtoMapper<BuildingEntity, BuildingResponseDto> entityToResponseDtoMapper) {
+        super(buildingRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        this.buildingRepository = buildingRepository;
+    }
 
     public Mono<List<BuildingEntity>> listBuildingByUniversityId(int universityId) {
         return buildingRepository.findByUniversityId(universityId)
                                  .collectList();
     }
 
-    public Mono<BuildingResponseDto> createBuilding(int universityId, @Valid BuildingRequestDto buildingCreateDto) {
-        return Mono.just(buildingCreateDto)
-                   .map(BuildingRequestDtoToEntityMapper::from)
-                   .map(building -> building.universityId(universityId))
-                   .flatMap(buildingRepository::save)
-                   .map(BuildingEntityToResponseDtoMapper::from);
+    public Mono<BuildingResponseDto> createEntity(BuildingRequestDto requestDto, int universityId) {
+        UnaryOperator<BuildingEntity> addParamFromPath = building -> building.universityId(universityId);
+        return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<BuildingResponseDto> updateBuilding(int universityId, int buildingId, @Valid BuildingRequestDto buildingResponseDto) {
-        return Mono.just(buildingResponseDto)
-                   .map(BuildingRequestDtoToEntityMapper::from)
-                   .map(building -> building.id(buildingId)
-                                            .universityId(universityId))
-                   .flatMap(updatedBuilding -> buildingRepository.findById(updatedBuilding.id())
-                                                                 .switchIfEmpty(Mono.error(new NoSuchBuildingException()))
-                                                                 .flatMap(b -> buildingRepository.save(updatedBuilding)))
-                   .map(BuildingEntityToResponseDtoMapper::from);
-    }
-
-    public Mono<Boolean> deleteBuilding(int buildingId) {
-        return buildingRepository.findById(buildingId)
-                                 .switchIfEmpty(Mono.error(new NoSuchBuildingException()))
-                                 .flatMap(b -> buildingRepository.deleteById(buildingId))
-                                 .thenReturn(true);
+    public Mono<BuildingResponseDto> updateEntity(BuildingRequestDto requestDto, int buildingId, int universityId) {
+        UnaryOperator<BuildingEntity> addParamFromPath = building -> building.id(buildingId).universityId(universityId);
+        return updateEntity(requestDto, addParamFromPath);
     }
 }

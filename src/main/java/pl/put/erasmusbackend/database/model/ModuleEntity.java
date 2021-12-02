@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("Module")
-public class ModuleEntity {
+public class ModuleEntity implements Entity {
     @Id
     @NotNull
     @Column("id")

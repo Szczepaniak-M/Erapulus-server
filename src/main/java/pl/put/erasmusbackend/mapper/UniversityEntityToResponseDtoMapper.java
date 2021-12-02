@@ -2,12 +2,13 @@ package pl.put.erasmusbackend.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import pl.put.erasmusbackend.database.model.UniversityEntity;
 import pl.put.erasmusbackend.dto.UniversityResponseDto;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UniversityEntityToResponseDtoMapper {
-    public static UniversityResponseDto from(UniversityEntity universityEntity) {
+@Configuration
+public class UniversityEntityToResponseDtoMapper implements EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> {
+    public UniversityResponseDto from(UniversityEntity universityEntity) {
         return UniversityResponseDto.builder()
                                     .id(universityEntity.id())
                                     .name(universityEntity.name())

@@ -1,13 +1,12 @@
 package pl.put.erasmusbackend.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.put.erasmusbackend.database.model.PostEntity;
 import pl.put.erasmusbackend.dto.PostResponseDto;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostEntityToResponseDtoMapper {
-    public static PostResponseDto from(PostEntity postEntity) {
+@Component
+public class PostEntityToResponseDtoMapper implements EntityToResponseDtoMapper<PostEntity, PostResponseDto> {
+    public PostResponseDto from(PostEntity postEntity) {
         return PostResponseDto.builder()
                               .id(postEntity.id())
                               .title(postEntity.title())

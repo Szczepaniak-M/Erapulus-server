@@ -30,9 +30,10 @@ class StudentEntityEntityToDtoMapperTest {
                                                    .instagramUsername(INSTAGRAM_USERNAME)
                                                    .whatsUpUrl(WHATS_UP_URL)
                                                    .build();
+        var studentEntityToDtoMapper = new StudentEntityToDtoMapper();
 
         // when
-        StudentDto result = StudentEntityToDtoMapper.from(studentEntity);
+        StudentDto result = studentEntityToDtoMapper.from(studentEntity);
 
         //then
         assertEquals(ID, result.id());

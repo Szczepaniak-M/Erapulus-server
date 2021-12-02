@@ -15,11 +15,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.*;
 import pl.put.erasmusbackend.service.UniversityService;
-import pl.put.erasmusbackend.service.exception.NoSuchUniversityException;
 import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+
+import java.util.NoSuchElementException;
 
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
@@ -69,7 +70,7 @@ public class UniversityController {
     )
     public Mono<ServerResponse> createUniversity(ServerRequest request) {
         return request.bodyToMono(UniversityRequestDto.class)
-                      .flatMap(universityService::createUniversity)
+                      .flatMap(universityService::createEntity)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
@@ -93,9 +94,9 @@ public class UniversityController {
     )
     public Mono<ServerResponse> getUniversityById(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> universityService.getUniversityById(universityId)
+                universityId -> universityService.getEntityById(universityId)
                                                  .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                 .onErrorResume(NoSuchUniversityException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                                 .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -119,10 +120,10 @@ public class UniversityController {
     public Mono<ServerResponse> updateUniversity(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(UniversityRequestDto.class)
-                                       .flatMap(universityDto -> universityService.updateUniversity(universityId, universityDto))
+                                       .flatMap(universityDto -> universityService.updateEntity(universityDto, universityId))
                                        .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                       .onErrorResume(NoSuchUniversityException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                       .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -145,9 +146,9 @@ public class UniversityController {
     )
     public Mono<ServerResponse> deleteUniversity(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> universityService.deleteUniversity(universityId)
+                universityId -> universityService.deleteEntity(universityId)
                                                  .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                                 .onErrorResume(NoSuchUniversityException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                                 .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("Post")
-public class PostEntity {
+public class PostEntity implements Entity {
     @Id
     @NotNull
     @Column("id")
