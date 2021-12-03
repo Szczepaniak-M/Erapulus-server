@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Friend")
+@Table("friend")
 public class FriendEntity implements Entity {
     @Id
     @NotNull
@@ -23,7 +23,7 @@ public class FriendEntity implements Entity {
     private Integer id;
 
     @NotNull
-    @Column("applicationUser")
+    @Column("application_user")
     private Integer applicationUserId;
 
     @NotNull
@@ -36,6 +36,6 @@ public class FriendEntity implements Entity {
 
     @NotNull
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

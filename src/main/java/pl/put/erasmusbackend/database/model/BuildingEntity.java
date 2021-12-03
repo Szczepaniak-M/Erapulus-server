@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Building")
+@Table("building")
 public class BuildingEntity implements Entity {
 
     @Id
@@ -44,6 +44,6 @@ public class BuildingEntity implements Entity {
     private Integer universityId;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

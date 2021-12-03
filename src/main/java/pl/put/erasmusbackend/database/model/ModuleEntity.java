@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Module")
+@Table("module")
 public class ModuleEntity implements Entity {
     @Id
     @NotNull
@@ -38,6 +38,6 @@ public class ModuleEntity implements Entity {
     private Integer programId;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

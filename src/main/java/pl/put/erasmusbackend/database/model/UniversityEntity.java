@@ -48,19 +48,19 @@ public class UniversityEntity implements Entity {
     @Column("description")
     private String description;
 
-    @Column("websiteUrl")
+    @Column("website_url")
     private String websiteUrl;
 
-    @Column("logoUrl")
+    @Column("logo_url")
     private String logoUrl;
 
-    @Column("primaryColor")
+    @Column("primary_color")
     private String primaryColor;
 
-    @Column("secondaryColor")
+    @Column("secondary_color")
     private String secondaryColor;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

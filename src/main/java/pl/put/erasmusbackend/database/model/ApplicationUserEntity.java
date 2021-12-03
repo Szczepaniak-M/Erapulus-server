@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("ApplicationUser")
+@Table("application_user")
 public class ApplicationUserEntity implements Entity {
     @Id
     @NotNull
@@ -27,11 +27,11 @@ public class ApplicationUserEntity implements Entity {
     private UserType type;
 
     @NotNull
-    @Column("firstName")
+    @Column("first_name")
     private String firstName;
 
     @NotNull
-    @Column("lastName")
+    @Column("last_name")
     private String lastName;
 
     @Column("university")
@@ -42,10 +42,10 @@ public class ApplicationUserEntity implements Entity {
     private String email;
 
     @NotNull
-    @Column("phoneNumber")
+    @Column("phone_number")
     private String phoneNumber;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

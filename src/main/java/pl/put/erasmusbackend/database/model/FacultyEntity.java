@@ -11,25 +11,32 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import javax.validation.constraints.NotNull;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("device")
-public class DeviceEntity implements Entity {
+@Table("faculty")
+public class FacultyEntity implements Entity {
     @Id
     @NotNull
     @Column("id")
     private Integer id;
 
     @NotNull
-    @Column("application_user")
-    private Integer applicationUserId;
+    @Column("name")
+    private String name;
 
     @NotNull
-    @Column("device_id")
-    private String deviceId;
+    @Column("address")
+    private String address;
+
+    @NotNull
+    @Column("email")
+    private String email;
+
+    @NotNull
+    @Column("university")
+    private Integer universityId;
 
     @LastModifiedBy
     @Column("last_modified_by")

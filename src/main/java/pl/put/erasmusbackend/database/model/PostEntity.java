@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Post")
+@Table("post")
 public class PostEntity implements Entity {
     @Id
     @NotNull
@@ -40,6 +40,6 @@ public class PostEntity implements Entity {
     private Integer universityId;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

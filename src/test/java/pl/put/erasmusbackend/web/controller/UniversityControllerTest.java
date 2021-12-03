@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurity
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -63,7 +62,7 @@ class UniversityControllerTest {
                 }""";
         var university1 = UniversityListDto.builder().name(UNIVERSITY_NAME_1).id(UNIVERSITY_ID_1).build();
         var university2 = UniversityListDto.builder().name(UNIVERSITY_NAME_2).id(UNIVERSITY_ID_2).build();
-        when(universityService.listUniversities()).thenReturn(Mono.just(List.of(university1, university2)));
+        when(universityService.listEntities()).thenReturn(Mono.just(List.of(university1, university2)));
 
         // when-then
         webTestClient.get()

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("Document")
+@Table("document")
 public class DocumentEntity implements Entity {
     @Id
     @Column("id")
@@ -35,13 +35,13 @@ public class DocumentEntity implements Entity {
     @Column("university")
     private Integer universityId;
 
-    @Column("university")
-    private Integer courseId;
+    @Column("program")
+    private Integer programId;
 
-    @Column("subject")
-    private Integer subjectId;
+    @Column("module")
+    private Integer moduleId;
 
     @LastModifiedBy
-    @Column("lastModifiedBy")
+    @Column("last_modified_by")
     private Integer lastModifiedBy;
 }

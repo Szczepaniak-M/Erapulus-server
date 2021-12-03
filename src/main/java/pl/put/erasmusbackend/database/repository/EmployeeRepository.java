@@ -10,6 +10,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface EmployeeRepository extends R2dbcRepository<EmployeeEntity, Integer> {
 
-    @Query("SELECT * FROM ApplicationUser WHERE email = :email")
+    @Query("SELECT * FROM application_user WHERE email = :email")
     Mono<EmployeeEntity> findByEmail(@Param("email") String email);
 }

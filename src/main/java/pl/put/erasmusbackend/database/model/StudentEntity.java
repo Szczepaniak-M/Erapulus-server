@@ -10,18 +10,18 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table("ApplicationUser")
+@Table("application_user")
 public class StudentEntity extends ApplicationUserEntity {
-    @Column("pictureUrl")
+    @Column("picture_url")
     private String pictureUrl;
 
-    @Column("facebookUrl")
+    @Column("facebook_url")
     private String facebookUrl;
 
-    @Column("whatsUpUrl")
+    @Column("whats_up_url")
     private String whatsUpUrl;
 
-    @Column("instagramUsername")
+    @Column("instagram_username")
     private String instagramUsername;
 
     // Automatic type filling by Builder

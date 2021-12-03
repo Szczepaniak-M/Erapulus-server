@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
 
     @Query("""
-            SELECT * FROM Post
+            SELECT * FROM post
             WHERE university = :university
             AND LOWER(title) LIKE LOWER(CONCAT('%', :title, '%'))
             AND date BETWEEN :fromDate AND :toDate
@@ -30,7 +30,7 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
                                        @Param("size") int pageSize);
 
     @Query("""
-            SELECT COUNT(*) FROM Post
+            SELECT COUNT(*) FROM post
             WHERE university = :university
             AND LOWER(title) LIKE LOWER(CONCAT('%', :title, '%'))
             AND date BETWEEN :fromDate AND :toDate
@@ -39,5 +39,9 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
                                      @Param("title") String title,
                                      @Param("fromDate") LocalDate fromDate,
                                      @Param("toDate") LocalDate toDate);
+
+    @Query("SELECT * FROM post WHERE id = :postId AND university = :universityId")
+    Mono<PostEntity> findByIdAndUniversityId(@Param("postId") int postId,
+                                             @Param("universityId")int universityId);
 
 }

@@ -22,6 +22,7 @@ class PostRepositoryTest {
 
     public static final String TITLE_1 = "First Amazing Post";
     public static final String TITLE_2 = "Second Post";
+    public static final String TITLE_3 = "Third Amazing Post";
     public static final String TITLE_PART = "amazing";
     private static final String UNIVERSITY_1 = "university1";
     private static final String UNIVERSITY_2 = "university2";
@@ -63,8 +64,8 @@ class PostRepositoryTest {
         // given
         var university = createUniversity(UNIVERSITY_1);
         var post1 = createPost(TITLE_1, DATE_1, university);
-        var post2 = createPost(TITLE_1, DATE_2, university);
-        var post3 = createPost(TITLE_1, DATE_3, university);
+        var post2 = createPost(TITLE_2, DATE_2, university);
+        var post3 = createPost(TITLE_3, DATE_3, university);
         var pageRequest = PageRequest.of(0, 2);
 
         // when
@@ -84,11 +85,11 @@ class PostRepositoryTest {
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
         var post1 = createPost(TITLE_1, DATE_1, university1);
-        var post2 = createPost(TITLE_1, DATE_2, university1);
-        var post3 = createPost(TITLE_1, DATE_3, university1);
+        var post2 = createPost(TITLE_2, DATE_2, university1);
+        var post3 = createPost(TITLE_3, DATE_3, university1);
         var post4 = createPost(TITLE_1, DATE_1, university2);
-        var post5 = createPost(TITLE_1, DATE_2, university2);
-        var post6 = createPost(TITLE_1, DATE_3, university2);
+        var post5 = createPost(TITLE_2, DATE_2, university2);
+        var post6 = createPost(TITLE_3, DATE_3, university2);
         var pageRequest = PageRequest.of(1, 1);
 
         // when
@@ -108,7 +109,7 @@ class PostRepositoryTest {
         var university2 = createUniversity(UNIVERSITY_2);
         var post1 = createPost(TITLE_1, DATE_1, university1);
         var post2 = createPost(TITLE_2, DATE_2, university1);
-        var post3 = createPost(TITLE_1, DATE_2, university1);
+        var post3 = createPost(TITLE_3, DATE_2, university1);
         var post4 = createPost(TITLE_1, DATE_3, university1);
         var post5 = createPost(TITLE_1, DATE_3, university2);
         int expectedResult = 2;
