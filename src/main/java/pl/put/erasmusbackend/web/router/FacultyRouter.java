@@ -3,6 +3,7 @@ package pl.put.erasmusbackend.web.router;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -17,6 +18,7 @@ import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.FACULTY_BASE_URL_OPENAPI;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.FACULTY_DETAILS_URL_OPENAPI;
 
+@Configuration
 public class FacultyRouter {
 
     public static final String FACULTY_BASE_URL = format("/api/university/{%s}/faculty", UNIVERSITY_PATH_PARAM);

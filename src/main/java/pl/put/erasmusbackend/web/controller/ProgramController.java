@@ -123,7 +123,7 @@ public class ProgramController {
     @NonNull
     @Operation(
             operationId = "update-program",
-            tags = "program",
+            tags = "Program",
             description = "Update program",
             summary = "Update program",
             parameters = {
