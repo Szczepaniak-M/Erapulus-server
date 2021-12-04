@@ -10,6 +10,7 @@ import pl.put.erasmusbackend.mapper.EntityToResponseDtoMapper;
 import pl.put.erasmusbackend.mapper.RequestDtoToEntityMapper;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -26,17 +27,17 @@ public class BuildingService extends CrudGenericService<BuildingEntity, Building
         this.buildingRepository = buildingRepository;
     }
 
-    public Mono<List<BuildingEntity>> listBuildingByUniversityId(int universityId) {
+    public Mono<List<BuildingEntity>> listEntities(int universityId) {
         return buildingRepository.findByUniversityId(universityId)
                                  .collectList();
     }
 
-    public Mono<BuildingResponseDto> createEntity(BuildingRequestDto requestDto, int universityId) {
+    public Mono<BuildingResponseDto> createEntity(@Valid BuildingRequestDto requestDto, int universityId) {
         UnaryOperator<BuildingEntity> addParamFromPath = building -> building.universityId(universityId);
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<BuildingResponseDto> updateEntity(BuildingRequestDto requestDto, int buildingId, int universityId) {
+    public Mono<BuildingResponseDto> updateEntity(@Valid BuildingRequestDto requestDto, int buildingId, int universityId) {
         UnaryOperator<BuildingEntity> addParamFromPath = building -> building.id(buildingId).universityId(universityId);
         return updateEntity(requestDto, addParamFromPath);
     }

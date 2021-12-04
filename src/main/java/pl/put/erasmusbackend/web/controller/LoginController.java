@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.EmployeeLoginDTO;
@@ -23,7 +23,7 @@ import javax.validation.ConstraintViolationException;
 
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class LoginController {
 

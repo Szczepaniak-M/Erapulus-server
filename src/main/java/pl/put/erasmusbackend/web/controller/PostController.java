@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.PostRequestDto;
@@ -26,7 +26,7 @@ import static pl.put.erasmusbackend.web.common.CommonRequestVariable.*;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 import static pl.put.erasmusbackend.web.controller.ControllerUtils.*;
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class PostController {
 
@@ -54,15 +54,14 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
-    public Mono<ServerResponse> listPostsByUniversity(ServerRequest request) {
+    public Mono<ServerResponse> listPosts(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withQueryParam(request, TITLE_QUERY_PARAM,
                         title -> withQueryParam(request, FROM_QUERY_PARAM,
                                 fromDate -> withQueryParam(request, TO_QUERY_PARAM,
                                         toDate -> withPageParams(request,
-                                                pageRequest -> postService.listPostByUniversityId(universityId, title, fromDate, toDate, pageRequest)
+                                                pageRequest -> postService.listEntities(universityId, title, fromDate, toDate, pageRequest)
                                                                           .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                          .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
     }
 
@@ -108,11 +107,12 @@ public class PostController {
             }
     )
     public Mono<ServerResponse> getPostById(ServerRequest request) {
-        return withPathParam(request, POST_PATH_PARAM,
-                postId -> postService.getEntityById(postId)
-                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                     .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
-                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, POST_PATH_PARAM,
+                        postId -> postService.getEntityById(postId, universityId)
+                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 
     @NonNull
@@ -127,7 +127,7 @@ public class PostController {
             },
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = PostRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),

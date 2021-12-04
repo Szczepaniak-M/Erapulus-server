@@ -25,17 +25,17 @@ public class BuildingRouter {
     public static final String BUILDING_DETAILS_URL = format("/api/university/{%s}/building/{%s}", UNIVERSITY_PATH_PARAM, BUILDING_PATH_PARAM);
 
     @RouterOperations({
-            @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = BuildingController.class, beanMethod = "listBuildingByUniversity"),
+            @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = BuildingController.class, beanMethod = "listBuildings"),
             @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = RequestMethod.POST, beanClass = BuildingController.class, beanMethod = "createBuilding"),
             @RouterOperation(path = BUILDING_DETAILS_URL_OPENAPI, method = RequestMethod.PUT, beanClass = BuildingController.class, beanMethod = "updateBuilding"),
             @RouterOperation(path = BUILDING_DETAILS_URL_OPENAPI, method = RequestMethod.DELETE, beanClass = BuildingController.class, beanMethod = "deleteBuilding")
     })
     @Bean
     RouterFunction<ServerResponse> buildingRoutes(BuildingController buildingController) {
-        return route(GET(BUILDING_BASE_URL).and(contentType(APPLICATION_JSON)), buildingController::listBuildingByUniversity)
+        return route(GET(BUILDING_BASE_URL).and(accept(APPLICATION_JSON)), buildingController::listBuildings)
                 .andRoute(POST(BUILDING_BASE_URL).and(contentType(APPLICATION_JSON)), buildingController::createBuilding)
                 .andRoute(PUT(BUILDING_DETAILS_URL).and(contentType(APPLICATION_JSON)), buildingController::updateBuilding)
-                .andRoute(DELETE(BUILDING_DETAILS_URL).and(contentType(APPLICATION_JSON)), buildingController::deleteBuilding);
+                .andRoute(DELETE(BUILDING_DETAILS_URL).and(accept(APPLICATION_JSON)), buildingController::deleteBuilding);
     }
 }
 

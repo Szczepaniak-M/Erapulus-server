@@ -10,16 +10,18 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import pl.put.erasmusbackend.dto.*;
+import pl.put.erasmusbackend.dto.BuildingResponseDto;
+import pl.put.erasmusbackend.dto.UniversityListDto;
+import pl.put.erasmusbackend.dto.UniversityRequestDto;
+import pl.put.erasmusbackend.dto.UniversityResponseDto;
 import pl.put.erasmusbackend.service.UniversityService;
 import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
-
 import java.util.NoSuchElementException;
 
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
@@ -27,7 +29,7 @@ import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 import static pl.put.erasmusbackend.web.controller.ControllerUtils.withPathParam;
 
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class UniversityController {
 
@@ -48,7 +50,7 @@ public class UniversityController {
             }
     )
     public Mono<ServerResponse> listUniversities(ServerRequest request) {
-        return universityService.listUniversities()
+        return universityService.listEntities()
                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
@@ -59,7 +61,7 @@ public class UniversityController {
             tags = "University",
             description = "Create university",
             summary = "Create university",
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class))),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class)), required = true),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = UniversityResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -83,7 +85,7 @@ public class UniversityController {
             tags = "University",
             description = "Get university by ID",
             summary = "Get university by ID",
-            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
+            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = UniversityResponseDto.class))),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
@@ -106,10 +108,10 @@ public class UniversityController {
             tags = "University",
             description = "Update university",
             summary = "Update university",
-            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class))),
+            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -134,7 +136,7 @@ public class UniversityController {
             tags = "University",
             description = "Delete university",
             summary = "Delete university by ID",
-            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
+            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "204", description = NO_CONTENT),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

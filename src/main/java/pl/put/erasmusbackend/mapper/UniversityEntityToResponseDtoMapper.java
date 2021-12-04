@@ -1,7 +1,5 @@
 package pl.put.erasmusbackend.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import pl.put.erasmusbackend.database.model.UniversityEntity;
 import pl.put.erasmusbackend.dto.UniversityResponseDto;

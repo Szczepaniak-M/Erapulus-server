@@ -13,8 +13,10 @@ import pl.put.erasmusbackend.mapper.RequestDtoToEntityMapper;
 import pl.put.erasmusbackend.mapper.UniversityEntityToUniversityListDtoMapper;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 @Service
@@ -33,19 +35,23 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
         this.universityEntityToUniversityListDtoMapper = universityEntityToUniversityListDtoMapper;
     }
 
-    public Mono<List<UniversityListDto>> listUniversities() {
+    public Mono<List<UniversityListDto>> listEntities() {
         return universityRepository.findAllUniversitiesNameAndId()
                                    .map(universityEntityToUniversityListDtoMapper::from)
                                    .collectList();
     }
 
-    public Mono<UniversityResponseDto> createEntity(UniversityRequestDto requestDto) {
+    public Mono<UniversityResponseDto> createEntity(@Valid UniversityRequestDto requestDto) {
         UnaryOperator<UniversityEntity> addParamFromPath = university -> university;
         return createEntity(requestDto, addParamFromPath);
     }
 
+    public Mono<UniversityResponseDto> getEntityById(int universityId) {
+        Supplier<Mono<UniversityEntity>> supplier = () -> universityRepository.findById(universityId);
+        return getEntityById(supplier);
+    }
 
-    public Mono<UniversityResponseDto> updateEntity(UniversityRequestDto requestDto, int universityId) {
+    public Mono<UniversityResponseDto> updateEntity(@Valid UniversityRequestDto requestDto, int universityId) {
         UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
         return updateEntity(requestDto, addParamFromPath);
     }

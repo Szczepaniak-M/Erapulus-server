@@ -12,10 +12,11 @@ import pl.put.erasmusbackend.web.controller.PostController;
 import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
-import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static pl.put.erasmusbackend.web.common.CommonRequestVariable.*;
-import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
+import static pl.put.erasmusbackend.web.common.CommonRequestVariable.POST_PATH_PARAM;
+import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static pl.put.erasmusbackend.web.common.OpenApiConstants.POST_BASE_URL_OPENAPI;
+import static pl.put.erasmusbackend.web.common.OpenApiConstants.POST_DETAILS_URL_OPENAPI;
 
 @Configuration
 public class PostRouter {
@@ -23,7 +24,7 @@ public class PostRouter {
     public static final String POST_DETAILS_URL = format("/api/university/{%s}/post/{%s}", UNIVERSITY_PATH_PARAM, POST_PATH_PARAM);
 
     @RouterOperations({
-            @RouterOperation(path = POST_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = PostController.class, beanMethod = "listPostsByUniversity"),
+            @RouterOperation(path = POST_BASE_URL_OPENAPI, method = RequestMethod.GET, beanClass = PostController.class, beanMethod = "listPosts"),
             @RouterOperation(path = POST_BASE_URL_OPENAPI, method = RequestMethod.POST, beanClass = PostController.class, beanMethod = "createPost"),
             @RouterOperation(path = POST_DETAILS_URL_OPENAPI, method = RequestMethod.GET, beanClass = PostController.class, beanMethod = "getPostById"),
             @RouterOperation(path = POST_DETAILS_URL_OPENAPI, method = RequestMethod.PUT, beanClass = PostController.class, beanMethod = "updatePost"),
@@ -31,10 +32,10 @@ public class PostRouter {
     })
     @Bean
     RouterFunction<ServerResponse> postRoutes(PostController postController) {
-        return route(GET(POST_BASE_URL).and(contentType(APPLICATION_JSON)), postController::listPostsByUniversity)
+        return route(GET(POST_BASE_URL).and(accept(APPLICATION_JSON)), postController::listPosts)
                 .andRoute(POST(POST_BASE_URL).and(contentType(APPLICATION_JSON)), postController::createPost)
-                .andRoute(GET(POST_DETAILS_URL).and(contentType(APPLICATION_JSON)), postController::getPostById)
+                .andRoute(GET(POST_DETAILS_URL).and(accept(APPLICATION_JSON)), postController::getPostById)
                 .andRoute(PUT(POST_DETAILS_URL).and(contentType(APPLICATION_JSON)), postController::updatePost)
-                .andRoute(DELETE(POST_DETAILS_URL).and(contentType(APPLICATION_JSON)), postController::deletePost);
+                .andRoute(DELETE(POST_DETAILS_URL).and(accept(APPLICATION_JSON)), postController::deletePost);
     }
 }

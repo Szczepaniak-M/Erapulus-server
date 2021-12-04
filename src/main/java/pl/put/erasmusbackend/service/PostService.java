@@ -1,7 +1,5 @@
 package pl.put.erasmusbackend.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -11,10 +9,13 @@ import pl.put.erasmusbackend.dto.PostRequestDto;
 import pl.put.erasmusbackend.dto.PostResponseDto;
 import pl.put.erasmusbackend.mapper.EntityToResponseDtoMapper;
 import pl.put.erasmusbackend.mapper.RequestDtoToEntityMapper;
+import pl.put.erasmusbackend.web.common.PageablePayload;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
@@ -35,24 +36,29 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
         this.postRepository = repository;
     }
 
-    public Mono<Page<PostResponseDto>> listPostByUniversityId(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
+    public Mono<PageablePayload<PostResponseDto>> listEntities(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
         return convertDate(fromDate, MIN_DATE)
                 .zipWith(convertDate(toDate, MAX_DATE))
                 .flatMap(fromAndToDate -> postRepository.findPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2(), pageRequest.getOffset(), pageRequest.getPageSize())
                                                         .map(entityToResponseDtoMapper::from)
                                                         .collectList()
                                                         .zipWith(postRepository.countPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2()))
-                                                        .map(t -> new PageImpl<>(t.getT1(), pageRequest, t.getT2())));
+                                                        .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
 
     }
 
-    public Mono<PostResponseDto> createEntity(PostRequestDto requestDto, int universityId) {
+    public Mono<PostResponseDto> createEntity(@Valid PostRequestDto requestDto, int universityId) {
         UnaryOperator<PostEntity> addParamFromPath = postEntity -> postEntity.universityId(universityId);
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<PostResponseDto> updateEntity(PostRequestDto requestDto, int postId, int universityId) {
-        UnaryOperator<PostEntity> addParamFromPath = postEntity -> postEntity.id(postId).universityId(universityId);
+    public Mono<PostResponseDto> getEntityById(int postId, int universityId) {
+        Supplier<Mono<PostEntity>> supplier = () -> postRepository.findByIdAndUniversityId(postId, universityId);
+        return getEntityById(supplier);
+    }
+
+    public Mono<PostResponseDto> updateEntity(@Valid PostRequestDto requestDto, int postId, int universityId) {
+        UnaryOperator<PostEntity> addParamFromPath = post -> post.id(postId).universityId(universityId);
         return updateEntity(requestDto, addParamFromPath);
     }
 

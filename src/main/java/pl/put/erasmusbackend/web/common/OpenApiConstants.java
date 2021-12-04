@@ -30,8 +30,16 @@ public class OpenApiConstants {
     public static final String POST_BASE_URL_OPENAPI = "/api/university/{universityId}/post";
     public static final String POST_DETAILS_URL_OPENAPI = "/api/university/{universityId}/post/{postId}";
 
+    // Faculty
+    public static final String FACULTY_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty";
+    public static final String FACULTY_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}";
+
     // Program
-    public static final String PROGRAM_BASE_URL_OPENAPI = "/api/university/{universityId}/program";
-    public static final String PROGRAM_DETAILS_URL_OPENAPI = "/api/university/{universityId}/program/{programId}";
+    public static final String PROGRAM_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program";
+    public static final String PROGRAM_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}";
+
+    // Module
+    public static final String MODULE_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module";
+    public static final String MODULE_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}";
 
 }

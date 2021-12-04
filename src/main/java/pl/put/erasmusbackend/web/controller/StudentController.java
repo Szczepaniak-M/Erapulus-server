@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pl.put.erasmusbackend.dto.StudentDto;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class StudentController {
 
@@ -28,7 +28,7 @@ public class StudentController {
             tags = "Student",
             description = "Get student",
             summary = "Get student",
-            parameters = @Parameter (in = ParameterIn.PATH, name ="id" ,schema = @Schema(type = "integer")),
+            parameters = @Parameter(in = ParameterIn.PATH, name = "id", schema = @Schema(type = "integer")),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = StudentDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

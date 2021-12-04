@@ -10,10 +10,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import pl.put.erasmusbackend.database.model.BuildingEntity;
 import pl.put.erasmusbackend.dto.BuildingRequestDto;
 import pl.put.erasmusbackend.dto.BuildingResponseDto;
 import pl.put.erasmusbackend.service.BuildingService;
@@ -21,16 +20,14 @@ import pl.put.erasmusbackend.web.common.ServerResponseFactory;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
-
 import java.util.NoSuchElementException;
-import java.util.function.UnaryOperator;
 
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.BUILDING_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
 import static pl.put.erasmusbackend.web.common.OpenApiConstants.*;
 import static pl.put.erasmusbackend.web.controller.ControllerUtils.withPathParam;
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class BuildingController {
 
@@ -42,7 +39,7 @@ public class BuildingController {
             tags = "Building",
             description = "List buildings",
             summary = "List building by university ID",
-            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
+            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = BuildingResponseDto.class)))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -51,11 +48,10 @@ public class BuildingController {
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
-    public Mono<ServerResponse> listBuildingByUniversity(ServerRequest request) {
+    public Mono<ServerResponse> listBuildings(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> buildingService.listBuildingByUniversityId(universityId)
+                universityId -> buildingService.listEntities(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                               .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -65,8 +61,8 @@ public class BuildingController {
             tags = "Building",
             description = "Create building",
             summary = "Create building",
-            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
+            parameters = @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class)), required = true),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -92,12 +88,12 @@ public class BuildingController {
             description = "Update building",
             summary = "Update building",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
-                    @Parameter(in = ParameterIn.PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"))
+                    @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = ParameterIn.PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
             },
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class))),
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -124,8 +120,8 @@ public class BuildingController {
             description = "Delete building",
             summary = "Delete building by ID",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer")),
-                    @Parameter(in = ParameterIn.PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"))
+                    @Parameter(in = ParameterIn.PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = ParameterIn.PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = NO_CONTENT),

@@ -32,10 +32,10 @@ public class UniversityRouter {
     })
     @Bean
     RouterFunction<ServerResponse> universityRoutes(UniversityController universityController) {
-        return route(GET(UNIVERSITY_BASE_URL).and(contentType(APPLICATION_JSON)), universityController::listUniversities)
+        return route(GET(UNIVERSITY_BASE_URL).and(accept(APPLICATION_JSON)), universityController::listUniversities)
                 .andRoute(POST(UNIVERSITY_BASE_URL).and(contentType(APPLICATION_JSON)), universityController::createUniversity)
-                .andRoute(GET(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::getUniversityById)
+                .andRoute(GET(UNIVERSITY_DETAILS_URL).and(accept(APPLICATION_JSON)), universityController::getUniversityById)
                 .andRoute(PUT(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::updateUniversity)
-                .andRoute(DELETE(UNIVERSITY_DETAILS_URL).and(contentType(APPLICATION_JSON)), universityController::deleteUniversity);
+                .andRoute(DELETE(UNIVERSITY_DETAILS_URL).and(accept(APPLICATION_JSON)), universityController::deleteUniversity);
     }
 }

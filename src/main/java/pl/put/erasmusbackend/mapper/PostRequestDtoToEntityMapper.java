@@ -6,11 +6,11 @@ import pl.put.erasmusbackend.dto.PostRequestDto;
 
 @Component
 public class PostRequestDtoToEntityMapper implements RequestDtoToEntityMapper<PostRequestDto, PostEntity> {
-    public PostEntity from(PostRequestDto postEntity) {
+    public PostEntity from(PostRequestDto postRequestDto) {
         return PostEntity.builder()
-                         .title(postEntity.title())
-                         .date(postEntity.date())
-                         .content(postEntity.content())
+                         .title(postRequestDto.title())
+                         .date(postRequestDto.date())
+                         .content(postRequestDto.content())
                          .build();
     }
 }
