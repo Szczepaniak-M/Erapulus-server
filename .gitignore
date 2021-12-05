@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-/docker/app/erasmus-backend.jar
+/docker/app/erapulus-server.jar

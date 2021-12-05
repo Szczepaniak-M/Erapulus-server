@@ -1,4 +1,4 @@
 app:
 	mvn clean install
-	cp ./target/erasmus-backend-0.0.1-SNAPSHOT.jar ./docker/app/erasmus-backend.jar
+	cp ./target/erapulus-server-0.0.1-SNAPSHOT.jar ./docker/app/erapulus-server.jar
 

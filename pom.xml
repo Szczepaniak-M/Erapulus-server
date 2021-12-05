@@ -8,11 +8,11 @@
         <version>2.5.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>pl.put</groupId>
-    <artifactId>erasmus-backend</artifactId>
+    <groupId>com.erapulus</groupId>
+    <artifactId>erapulus-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>erasmus-backend</name>
-    <description>Demo project for Spring Boot</description>
+    <name>erapulus-server</name>
+    <description>Server application for Erapulus</description>
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>

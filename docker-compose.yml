@@ -3,32 +3,32 @@ services:
   db:
     build: docker/database
     restart: always
-    hostname: erasmus-db
-    container_name: erasmus-db
+    hostname: erapulus-db
+    container_name: erapulus-db
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Q1W2e3r4
       - MSSQL_PID=Developer
     networks:
-      - erasmus
+      - erapulus
     ports:
       - "1433:1433"
 
   app:
     build: docker/app
     restart: always
-    hostname: erasmus-backend
-    container_name: erasmus-backend
+    hostname: erapulus-server
+    container_name: erapulus-server
     volumes:
-      - ./docker/app/erasmus-backend.jar:/opt/app/erasmus-backend.jar:ro
+      - ./docker/app/erapulus-server.jar:/opt/app/erapulus-server.jar:ro
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      - DB_HOST=erasmus-db
+      - DB_HOST=erapulus-db
     networks:
-      - erasmus
+      - erapulus
 
 networks:
-  erasmus:
+  erapulus:
