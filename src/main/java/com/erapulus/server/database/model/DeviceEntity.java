@@ -31,6 +31,10 @@ public class DeviceEntity implements Entity {
     @Column("device_id")
     private String deviceId;
 
+    @NotNull
+    @Column("name")
+    private String name;
+
     @LastModifiedBy
     @Column("last_modified_by")
     private Integer lastModifiedBy;

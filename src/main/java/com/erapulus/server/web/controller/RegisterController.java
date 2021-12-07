@@ -1,6 +1,8 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.web.common.OpenApiConstants;
+import com.erapulus.server.dto.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.service.RegisterService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,12 +14,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeCreatedDto;
-import com.erapulus.server.service.RegisterService;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+
+import static com.erapulus.server.web.common.OpenApiConstants.*;
 
 @RestController
 @AllArgsConstructor
@@ -32,10 +33,10 @@ public class RegisterController {
             description = "Create employee",
             summary = "Create employee",
             responses = {
-                    @ApiResponse(responseCode = "201", description = OpenApiConstants.OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
-                    @ApiResponse(responseCode = "400", description = OpenApiConstants.BAD_REQUEST),
-                    @ApiResponse(responseCode = "409", description = OpenApiConstants.CONFLICT),
-                    @ApiResponse(responseCode = "500", description = OpenApiConstants.INTERNAL_SERVER_ERROR)
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
     public Mono<ServerResponse> createEmployee(ServerRequest request) {

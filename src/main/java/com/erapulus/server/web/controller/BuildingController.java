@@ -3,12 +3,9 @@ package com.erapulus.server.web.controller;
 import com.erapulus.server.dto.BuildingRequestDto;
 import com.erapulus.server.dto.BuildingResponseDto;
 import com.erapulus.server.service.BuildingService;
-import com.erapulus.server.web.common.CommonRequestVariable;
-import com.erapulus.server.web.common.OpenApiConstants;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,6 +21,12 @@ import reactor.core.publisher.Mono;
 import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
+import static com.erapulus.server.web.common.CommonRequestVariable.BUILDING_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.OpenApiConstants.*;
+import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
+
 @RestController
 @AllArgsConstructor
 public class BuildingController {
@@ -36,17 +39,17 @@ public class BuildingController {
             tags = "Building",
             description = "List buildings",
             summary = "List building by university ID",
-            parameters = @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            parameters = @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OpenApiConstants.OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = BuildingResponseDto.class)))),
-                    @ApiResponse(responseCode = "400", description = OpenApiConstants.BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = OpenApiConstants.UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = OpenApiConstants.FORBIDDEN),
-                    @ApiResponse(responseCode = "500", description = OpenApiConstants.INTERNAL_SERVER_ERROR)
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = BuildingResponseDto.class)))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
     public Mono<ServerResponse> listBuildings(ServerRequest request) {
-        return ControllerUtils.withPathParam(request, CommonRequestVariable.UNIVERSITY_PATH_PARAM,
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> buildingService.listEntities(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
@@ -58,18 +61,18 @@ public class BuildingController {
             tags = "Building",
             description = "Create building",
             summary = "Create building",
-            parameters = @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            parameters = @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "201", description = OpenApiConstants.OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = OpenApiConstants.BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = OpenApiConstants.UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = OpenApiConstants.FORBIDDEN),
-                    @ApiResponse(responseCode = "500", description = OpenApiConstants.INTERNAL_SERVER_ERROR)
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
     public Mono<ServerResponse> createBuilding(ServerRequest request) {
-        return ControllerUtils.withPathParam(request, CommonRequestVariable.UNIVERSITY_PATH_PARAM,
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(BuildingRequestDto.class)
                                        .flatMap(building -> buildingService.createEntity(building, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
@@ -85,22 +88,22 @@ public class BuildingController {
             description = "Update building",
             summary = "Update building",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-                    @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
+                    @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
             },
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = BuildingRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OpenApiConstants.OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = OpenApiConstants.BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = OpenApiConstants.UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = OpenApiConstants.FORBIDDEN),
-                    @ApiResponse(responseCode = "404", description = OpenApiConstants.NOT_FOUND),
-                    @ApiResponse(responseCode = "500", description = OpenApiConstants.INTERNAL_SERVER_ERROR)
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
     public Mono<ServerResponse> updateBuilding(ServerRequest request) {
-        return ControllerUtils.withPathParam(request, CommonRequestVariable.UNIVERSITY_PATH_PARAM,
-                universityId -> ControllerUtils.withPathParam(request, CommonRequestVariable.BUILDING_PATH_PARAM,
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, BUILDING_PATH_PARAM,
                         buildingId -> request.bodyToMono(BuildingRequestDto.class)
                                              .flatMap(buildingDto -> buildingService.updateEntity(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
@@ -117,20 +120,20 @@ public class BuildingController {
             description = "Delete building",
             summary = "Delete building by ID",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-                    @Parameter(in = ParameterIn.PATH, name = CommonRequestVariable.BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
+                    @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = PATH, name = BUILDING_PATH_PARAM, schema = @Schema(type = "integer"), required = true)
             },
             responses = {
-                    @ApiResponse(responseCode = "204", description = OpenApiConstants.NO_CONTENT),
-                    @ApiResponse(responseCode = "400", description = OpenApiConstants.BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = OpenApiConstants.UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = OpenApiConstants.FORBIDDEN),
-                    @ApiResponse(responseCode = "404", description = OpenApiConstants.NOT_FOUND),
-                    @ApiResponse(responseCode = "500", description = OpenApiConstants.INTERNAL_SERVER_ERROR)
+                    @ApiResponse(responseCode = "204", description = NO_CONTENT),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
     public Mono<ServerResponse> deleteBuilding(ServerRequest request) {
-        return ControllerUtils.withPathParam(request, CommonRequestVariable.BUILDING_PATH_PARAM,
+        return withPathParam(request, BUILDING_PATH_PARAM,
                 buildingId -> buildingService.deleteEntity(buildingId)
                                              .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                              .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
