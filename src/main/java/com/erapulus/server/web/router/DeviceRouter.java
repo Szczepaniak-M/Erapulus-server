@@ -37,7 +37,7 @@ public class DeviceRouter {
             @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = DELETE, beanClass = DeviceRouter.class, beanMethod = "deleteDevice")
     })
     @Bean
-    RouterFunction<ServerResponse> facultyRoutes(DeviceController deviceController) {
+    RouterFunction<ServerResponse> deviceRoutes(DeviceController deviceController) {
         return route(GET(DEVICE_BASE_URL).and(accept(APPLICATION_JSON)), deviceController::listDevices)
                 .andRoute(POST(DEVICE_BASE_URL).and(contentType(APPLICATION_JSON)), deviceController::createDevice)
                 .andRoute(GET(DEVICE_DETAILS_URL).and(accept(APPLICATION_JSON)), deviceController::getDeviceById)
