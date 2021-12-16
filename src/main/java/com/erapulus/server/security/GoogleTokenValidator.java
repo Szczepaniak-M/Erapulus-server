@@ -21,7 +21,7 @@ public class GoogleTokenValidator {
                        GoogleIdToken.Payload payload = idToken.getPayload();
                        return StudentEntity.builder()
                                            .email(payload.getEmail())
-                                           .firstName((String) payload.get("name"))
+                                           .firstName((String) payload.get("given_name"))
                                            .lastName((String) payload.get("family_name"))
                                            .pictureUrl((String) payload.get("picture"))
                                            .build();
