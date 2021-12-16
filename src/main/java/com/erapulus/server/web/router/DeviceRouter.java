@@ -30,11 +30,11 @@ public class DeviceRouter {
     public static final String DEVICE_DETAILS_URL = String.format("/api/student/{%s}/device/{%s}", STUDENT_PATH_PARAM, DEVICE_PATH_PARAM);
 
     @RouterOperations({
-            @RouterOperation(path = DEVICE_BASE_URL_OPENAPI, method = GET, beanClass = DeviceRouter.class, beanMethod = "listDevices"),
-            @RouterOperation(path = DEVICE_BASE_URL_OPENAPI, method = POST, beanClass = DeviceRouter.class, beanMethod = "createDevice"),
-            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = GET, beanClass = DeviceRouter.class, beanMethod = "getDeviceById"),
-            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = PUT, beanClass = DeviceRouter.class, beanMethod = "updateDevice"),
-            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = DELETE, beanClass = DeviceRouter.class, beanMethod = "deleteDevice")
+            @RouterOperation(path = DEVICE_BASE_URL_OPENAPI, method = GET, beanClass = DeviceController.class, beanMethod = "listDevices"),
+            @RouterOperation(path = DEVICE_BASE_URL_OPENAPI, method = POST, beanClass = DeviceController.class, beanMethod = "createDevice"),
+            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = GET, beanClass = DeviceController.class, beanMethod = "getDeviceById"),
+            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = PUT, beanClass = DeviceController.class, beanMethod = "updateDevice"),
+            @RouterOperation(path = DEVICE_DETAILS_URL_OPENAPI, method = DELETE, beanClass = DeviceController.class, beanMethod = "deleteDevice")
     })
     @Bean
     RouterFunction<ServerResponse> deviceRoutes(DeviceController deviceController) {

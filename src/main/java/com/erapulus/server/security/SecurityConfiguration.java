@@ -44,7 +44,7 @@ public class SecurityConfiguration {
                    // Paths
                    .authorizeExchange()
                    .pathMatchers(WHITE_LIST).permitAll()
-                   .pathMatchers("api/user/login/**", "api/user/register/**").permitAll()
+                   .pathMatchers("/api/user/login/**", "/api/user/register/**").permitAll()
                    .pathMatchers("/api/**").authenticated()
                    .and().build();
     }
