@@ -12,4 +12,7 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
 
     @Query("SELECT * FROM application_user WHERE email = :email")
     Mono<StudentEntity> findByEmail(@Param("email") String email);
+
+    @Query("SELECT * FROM application_user WHERE id = :studentId AND type = 'STUDENT'")
+    Mono<StudentEntity> findById(@Param("studentId") int studentId);
 }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.STUDENT_PATH_PARAM;
 import static com.erapulus.server.web.common.OpenApiConstants.STUDENT_DETAILS_URL_OPENAPI;
 import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -25,7 +25,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class StudentRouter {
     public static final String STUDENT_BASE_URL = "/api/student";
-    public static final String STUDENT_DETAILS_URL = format("/api/student/{%s}", UNIVERSITY_PATH_PARAM);
+    public static final String STUDENT_DETAILS_URL = format("/api/student/{%s}", STUDENT_PATH_PARAM);
 
     @RouterOperations({
             @RouterOperation(path = STUDENT_DETAILS_URL_OPENAPI, method = GET, beanClass = StudentController.class, beanMethod = "getStudentById"),
