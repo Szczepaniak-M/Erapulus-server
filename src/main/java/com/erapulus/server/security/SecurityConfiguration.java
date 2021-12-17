@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ProjectProperties;
+import com.erapulus.server.configuration.ErapulusProperties;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -55,9 +55,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public GoogleIdTokenVerifier googleIdTokenVerifier(ProjectProperties projectProperties) {
+    public GoogleIdTokenVerifier googleIdTokenVerifier(ErapulusProperties erapulusProperties) {
         return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(projectProperties.login().googleClientId()))
+                .setAudience(Collections.singletonList(erapulusProperties.login().googleClientId()))
                 .build();
     }
 

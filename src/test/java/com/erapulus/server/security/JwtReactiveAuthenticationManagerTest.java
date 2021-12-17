@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ProjectProperties;
+import com.erapulus.server.configuration.ErapulusProperties;
 import com.erapulus.server.database.model.ApplicationUserEntity;
 import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.database.repository.UserRepository;
@@ -29,13 +29,13 @@ class JwtReactiveAuthenticationManagerTest {
     UserRepository userRepository;
 
     @Mock
-    ProjectProperties projectProperties;
+    ErapulusProperties erapulusProperties;
 
     private JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @BeforeEach
     void setUp() {
-        jwtReactiveAuthenticationManager = new JwtReactiveAuthenticationManager(userRepository, projectProperties);
+        jwtReactiveAuthenticationManager = new JwtReactiveAuthenticationManager(userRepository, erapulusProperties);
     }
 
     @Test
@@ -43,8 +43,8 @@ class JwtReactiveAuthenticationManagerTest {
         // given
         ApplicationUserEntity user = ApplicationUserEntity.builder().type(UserType.STUDENT).email(EMAIL).build();
         when(userRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
-        when(projectProperties.jwt()).thenReturn(new ProjectProperties.JwtProperties(ISSUER, SECRET));
-        JwtGenerator jwtGenerator = new JwtGenerator(projectProperties);
+        when(erapulusProperties.jwt()).thenReturn(new ErapulusProperties.JwtProperties(ISSUER, SECRET));
+        JwtGenerator jwtGenerator = new JwtGenerator(erapulusProperties);
         String jwt = jwtGenerator.generate(EMAIL);
         Authentication authentication = new JwtAuthenticationToken(jwt);
 

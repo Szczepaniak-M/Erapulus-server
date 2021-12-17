@@ -2,14 +2,16 @@ package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.dto.EmployeeCreatedDto;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@Component
-public class EmployeeEntityToEmployeeCreatedDtoMapper implements EntityToResponseDtoMapper<EmployeeEntity, EmployeeCreatedDto> {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class EmployeeEntityToEmployeeCreatedDtoMapper {
 
-    public EmployeeCreatedDto from(EmployeeEntity employeeEntity) {
+    public static EmployeeCreatedDto from(EmployeeEntity employeeEntity) {
         return EmployeeCreatedDto.builder()
                                  .id(employeeEntity.id())
+                                 .type(employeeEntity.type())
                                  .firstName(employeeEntity.firstName())
                                  .lastName(employeeEntity.lastName())
                                  .email(employeeEntity.email())

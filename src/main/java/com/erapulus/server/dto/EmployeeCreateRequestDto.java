@@ -22,7 +22,6 @@ public class EmployeeCreateRequestDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    @NotNull
     @JsonProperty("university")
     private Integer universityId;
 

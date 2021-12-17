@@ -1,5 +1,11 @@
 package com.erapulus.server.web.controller;
 
+import com.erapulus.server.TestUtils;
+import com.erapulus.server.database.model.UserType;
+import com.erapulus.server.dto.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.service.RegisterService;
+import com.erapulus.server.web.router.RegisterRouter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
-import com.erapulus.server.TestUtils;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeCreatedDto;
-import com.erapulus.server.service.RegisterService;
-import com.erapulus.server.web.router.RegisterRouter;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
@@ -51,7 +52,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    void createEmployee_shouldReturnCreatedWhenUserCorrect() {
+    void createUniversityEmployee_shouldReturnCreatedWhenUserCorrect() {
         // given
         EmployeeCreateRequestDto employeeCreateRequestDto = new EmployeeCreateRequestDto().firstName(FIRST_NAME)
                                                                                           .lastName(LAST_NAME)
@@ -60,6 +61,7 @@ class RegisterControllerTest {
                                                                                           .password(PASSWORD);
 
         EmployeeCreatedDto employeeCreatedDto = new EmployeeCreatedDto().id(ID)
+                                                                        .type(UserType.EMPLOYEE)
                                                                         .firstName(FIRST_NAME)
                                                                         .lastName(LAST_NAME)
                                                                         .universityId(UNIVERSITY_ID)
@@ -69,6 +71,7 @@ class RegisterControllerTest {
                   "status":201,
                   "payload":{
                     "id":1,
+                    "type":"EMPLOYEE",
                     "firstName":"firstName",
                     "lastName":"lastName",
                     "university":2,
@@ -76,7 +79,7 @@ class RegisterControllerTest {
                   },
                   "message":null
                 }""";
-        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
 
         // when-then
         webTestClient.post()
@@ -104,7 +107,7 @@ class RegisterControllerTest {
                 """;
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class)))
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class)))
                 .thenThrow(new ConstraintViolationException(validator.validate(employeeCreateRequestDto)));
 
         // when-then
@@ -126,7 +129,7 @@ class RegisterControllerTest {
                   "payload":null,
                   "message":"bad.request;not.found.body"
                 }""";
-        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
@@ -152,7 +155,7 @@ class RegisterControllerTest {
                   "payload":null,
                   "message":"employee.conflict"
                 }""";
-        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new DuplicateKeyException("employee"));
 
         // when-then
         webTestClient.post()
@@ -179,7 +182,7 @@ class RegisterControllerTest {
                   "payload":null,
                   "message":"internal.server.error"
                 }""";
-        when(registerService.createEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new RuntimeException());
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenThrow(new RuntimeException());
 
         // when-then
         webTestClient.post()

@@ -28,20 +28,72 @@ public class RegisterController {
 
     @NonNull
     @Operation(
-            operationId = "create-employee",
+            operationId = "create-administrator",
             tags = "Employee",
-            description = "Create employee",
-            summary = "Create employee",
+            description = "Create university employee",
+            summary = "Create university employee",
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
-    public Mono<ServerResponse> createEmployee(ServerRequest request) {
+    public Mono<ServerResponse> createAdministrator(ServerRequest request) {
         return request.bodyToMono(EmployeeCreateRequestDto.class)
-                      .flatMap(registerService::createEmployee)
+                      .flatMap(registerService::createAdministrator)
+                      .flatMap(ServerResponseFactory::createHttpCreatedResponse)
+                      .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("administrator"))
+                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                      .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
+    }
+
+    @NonNull
+    @Operation(
+            operationId = "create-university-administrator",
+            tags = "Employee",
+            description = "Create university administrator",
+            summary = "Create university administrator",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> createUniversityAdministrator(ServerRequest request) {
+        return request.bodyToMono(EmployeeCreateRequestDto.class)
+                      .flatMap(registerService::createUniversityAdministrator)
+                      .flatMap(ServerResponseFactory::createHttpCreatedResponse)
+                      .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("universityAdministrator"))
+                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                      .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
+    }
+
+    @NonNull
+    @Operation(
+            operationId = "create-employee",
+            tags = "Employee",
+            description = "Create university employee",
+            summary = "Create university employee",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> createUniversityEmployee(ServerRequest request) {
+        return request.bodyToMono(EmployeeCreateRequestDto.class)
+                      .flatMap(registerService::createUniversityEmployee)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))

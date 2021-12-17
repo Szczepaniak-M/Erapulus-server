@@ -28,10 +28,9 @@ class EmployeeToEmployeeEntityCreatedDtoMapperTest {
                                                       .lastName(LAST_NAME)
                                                       .universityId(UNIVERSITY_ID)
                                                       .build();
-        var employeeEntityToEmployeeCreatedDtoMapper = new EmployeeEntityToEmployeeCreatedDtoMapper();
 
         // when
-        EmployeeCreatedDto result = employeeEntityToEmployeeCreatedDtoMapper.from(employeeEntity);
+        EmployeeCreatedDto result = EmployeeEntityToEmployeeCreatedDtoMapper.from(employeeEntity);
 
         //then
         assertEquals(ID, result.id());

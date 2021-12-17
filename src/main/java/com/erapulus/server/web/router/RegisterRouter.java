@@ -17,13 +17,19 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class RegisterRouter {
 
-    public static final String REGISTER_EMPLOYEE = "/api/user/register/employee";
+    public static final String REGISTER_ADMINISTRATOR = "/api/user/register/administrator";
+    public static final String REGISTER_UNIVERSITY_ADMINISTRATOR = "/api/user/register/university-administrator";
+    public static final String REGISTER_UNIVERSITY_EMPLOYEE = "/api/user/register/employee";
 
     @RouterOperations({
-            @RouterOperation(path = REGISTER_EMPLOYEE, method = POST, beanClass = RegisterController.class, beanMethod = "createEmployee")
+            @RouterOperation(path = REGISTER_ADMINISTRATOR, method = POST, beanClass = RegisterController.class, beanMethod = "createAdministrator"),
+            @RouterOperation(path = REGISTER_UNIVERSITY_ADMINISTRATOR, method = POST, beanClass = RegisterController.class, beanMethod = "createUniversityAdministrator"),
+            @RouterOperation(path = REGISTER_UNIVERSITY_EMPLOYEE, method = POST, beanClass = RegisterController.class, beanMethod = "createUniversityEmployee")
     })
     @Bean
     RouterFunction<ServerResponse> registerRoute(RegisterController registerController) {
-        return route(POST(REGISTER_EMPLOYEE).and(contentType(APPLICATION_JSON)), registerController::createEmployee);
+        return route(POST(REGISTER_ADMINISTRATOR).and(contentType(APPLICATION_JSON)), registerController::createAdministrator)
+                .andRoute(POST(REGISTER_UNIVERSITY_ADMINISTRATOR).and(contentType(APPLICATION_JSON)), registerController::createUniversityAdministrator)
+                .andRoute(POST(REGISTER_UNIVERSITY_EMPLOYEE).and(contentType(APPLICATION_JSON)), registerController::createUniversityEmployee);
     }
 }

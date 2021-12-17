@@ -11,8 +11,6 @@ import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.repository.EmployeeRepository;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
 import com.erapulus.server.dto.EmployeeCreatedDto;
-import com.erapulus.server.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
-import com.erapulus.server.mapper.EmployeeEntityToEmployeeCreatedDtoMapper;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -38,20 +36,11 @@ class RegisterServiceTest {
     @Mock
     EmployeeRepository employeeRepository;
 
-    EmployeeCreateRequestToEmployeeEntityMapper employeeCreateRequestToEmployeeEntityMapper
-            = new EmployeeCreateRequestToEmployeeEntityMapper();
-
-    EmployeeEntityToEmployeeCreatedDtoMapper employeeEntityToEmployeeCreatedDtoMapper
-            = new EmployeeEntityToEmployeeCreatedDtoMapper();
-
     RegisterService registerService;
 
     @BeforeEach
     void setUp() {
-        registerService = new RegisterService(bCryptPasswordEncoder,
-                employeeRepository,
-                employeeCreateRequestToEmployeeEntityMapper,
-                employeeEntityToEmployeeCreatedDtoMapper);
+        registerService = new RegisterService(bCryptPasswordEncoder, employeeRepository);
     }
 
     @Test
@@ -69,7 +58,7 @@ class RegisterServiceTest {
                 .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
 
         // when
-        Mono<EmployeeCreatedDto> result = registerService.createEmployee(employeeCreateRequestDto);
+        Mono<EmployeeCreatedDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)
@@ -98,7 +87,7 @@ class RegisterServiceTest {
         when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
 
         // when
-        Mono<EmployeeCreatedDto> result = registerService.createEmployee(employeeCreateRequestDto);
+        Mono<EmployeeCreatedDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)

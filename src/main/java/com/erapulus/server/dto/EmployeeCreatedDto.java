@@ -1,5 +1,6 @@
 package com.erapulus.server.dto;
 
+import com.erapulus.server.database.model.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,10 @@ public class EmployeeCreatedDto {
     @NotNull
     @JsonProperty("id")
     private Integer id;
+
+    @NotNull
+    @JsonProperty("type")
+    private UserType type;
 
     @NotNull
     @JsonProperty("firstName")

@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ProjectProperties;
+import com.erapulus.server.configuration.ErapulusProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 
     private final UserRepository userRepository;
-    private final ProjectProperties projectProperties;
+    private final ErapulusProperties erapulusProperties;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) throws AuthenticationException {
@@ -32,7 +32,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
         String jwt = jwtAuthenticationToken.getJwt();
         JwtParser parser = Jwts.parserBuilder()
-                               .setSigningKey(Keys.hmacShaKeyFor(projectProperties.jwt().secret().getBytes(StandardCharsets.UTF_8)))
+                               .setSigningKey(Keys.hmacShaKeyFor(erapulusProperties.jwt().secret().getBytes(StandardCharsets.UTF_8)))
                                .build();
         Jws<Claims> parsedJwt = parser.parseClaimsJws(jwt);
         String email = parsedJwt.getBody().getSubject();

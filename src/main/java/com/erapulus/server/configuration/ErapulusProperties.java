@@ -8,11 +8,12 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @Data
 @AllArgsConstructor
 @ConstructorBinding
-@ConfigurationProperties(prefix = "project")
-public class ProjectProperties {
+@ConfigurationProperties(prefix = "erapulus")
+public class ErapulusProperties {
 
     private final JwtProperties jwt;
     private final LoginProperties login;
+    private final AdministratorProperties administrator;
 
     @Data
     @AllArgsConstructor
@@ -25,5 +26,14 @@ public class ProjectProperties {
     @AllArgsConstructor
     public static class LoginProperties {
         private final String googleClientId;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class AdministratorProperties {
+        private final String firstName;
+        private final String lastName;
+        private final String email;
+        private CharSequence password;
     }
 }

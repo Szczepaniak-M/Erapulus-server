@@ -1,6 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.EmployeeEntity;
+import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,16 +27,16 @@ class EmployeeCreateRequestToEmployeeEntityMapperTest {
                                                                       .universityId(UNIVERSITY_ID)
                                                                       .password(PASSWORD)
                                                                       .build();
-        var employeeCreateRequestToEmployeeEntityMapper = new EmployeeCreateRequestToEmployeeEntityMapper();
 
         // when
-        EmployeeEntity result = employeeCreateRequestToEmployeeEntityMapper.from(requestDto);
+        EmployeeEntity result = EmployeeCreateRequestToEmployeeEntityMapper.from(requestDto, UserType.EMPLOYEE);
 
         //then
-        Assertions.assertEquals(EMAIL, result.email());
-        Assertions.assertEquals(FIRST_NAME, result.firstName());
-        Assertions.assertEquals(LAST_NAME, result.lastName());
-        Assertions.assertEquals(UNIVERSITY_ID, result.universityId());
+        assertEquals(EMAIL, result.email());
+        assertEquals(FIRST_NAME, result.firstName());
+        assertEquals(LAST_NAME, result.lastName());
+        assertEquals(UNIVERSITY_ID, result.universityId());
+        assertEquals(UserType.EMPLOYEE, result.type());
         assertNull(result.password());
     }
 }
