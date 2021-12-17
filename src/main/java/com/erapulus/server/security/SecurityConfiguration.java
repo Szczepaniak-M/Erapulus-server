@@ -8,9 +8,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
@@ -29,11 +31,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager,
+                                                         CustomServerAuthenticationConverter customServerAuthenticationConverter,
                                                          AuthenticationFailureHandler authenticationFailureHandler,
                                                          AuthorizationFailureHandler authorizationFailureHandler) {
+
+        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(jwtReactiveAuthenticationManager);
+        authenticationWebFilter.setServerAuthenticationConverter(customServerAuthenticationConverter);
+
         return http.formLogin().disable()
                    .httpBasic().disable()
-                   .authenticationManager(jwtReactiveAuthenticationManager)
+                   .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                    .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                    .exceptionHandling()
                    .authenticationEntryPoint(authenticationFailureHandler)
