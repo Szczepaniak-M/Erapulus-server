@@ -31,4 +31,10 @@ public class StudentEntity extends ApplicationUserEntity {
             return (StudentEntity) new StudentEntity(this).type(UserType.STUDENT);
         }
     }
+
+    public StudentEntity id(int id){
+        super.id(id);
+        return this;
+    }
+
 }

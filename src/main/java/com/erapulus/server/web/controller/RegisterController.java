@@ -30,8 +30,8 @@ public class RegisterController {
     @Operation(
             operationId = "create-administrator",
             tags = "Employee",
-            description = "Create university employee",
-            summary = "Create university employee",
+            description = "Create administrator",
+            summary = "Create administrator",
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

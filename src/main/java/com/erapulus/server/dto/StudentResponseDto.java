@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class StudentDto {
+public class StudentResponseDto {
 
     @NotNull
     @JsonProperty("id")
@@ -22,7 +22,6 @@ public class StudentDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    @NotNull
     @JsonProperty("university")
     private Integer universityId;
 

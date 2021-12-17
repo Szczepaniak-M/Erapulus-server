@@ -1,7 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.StudentDto;
+import com.erapulus.server.dto.StudentResponseDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ class StudentEntityEntityToDtoMapperTest {
         var studentEntityToDtoMapper = new StudentEntityToDtoMapper();
 
         // when
-        StudentDto result = studentEntityToDtoMapper.from(studentEntity);
+        StudentResponseDto result = studentEntityToDtoMapper.from(studentEntity);
 
         //then
         assertEquals(ID, result.id());

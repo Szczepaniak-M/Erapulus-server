@@ -1,9 +1,6 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.BuildingResponseDto;
-import com.erapulus.server.dto.UniversityListDto;
-import com.erapulus.server.dto.UniversityRequestDto;
-import com.erapulus.server.dto.UniversityResponseDto;
+import com.erapulus.server.dto.*;
 import com.erapulus.server.service.UniversityService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -111,7 +108,7 @@ public class UniversityController {
             parameters = @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = UniversityRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = StudentResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),

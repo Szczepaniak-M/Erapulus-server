@@ -18,6 +18,10 @@ public class OpenApiConstants {
 
     // Endpoints
 
+    // Student
+    public static final String STUDENT_BASE_URL_OPENAPI = "/api/student";
+    public static final String STUDENT_DETAILS_URL_OPENAPI = "/api/student/{studentId}";
+
     // University
     public static final String UNIVERSITY_BASE_URL_OPENAPI = "/api/university";
     public static final String UNIVERSITY_DETAILS_URL_OPENAPI = "/api/university/{universityId}";
