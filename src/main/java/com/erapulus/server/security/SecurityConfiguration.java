@@ -37,13 +37,13 @@ public class SecurityConfiguration {
 
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(jwtReactiveAuthenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(customServerAuthenticationConverter);
+        authenticationWebFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 
         return http.formLogin().disable()
                    .httpBasic().disable()
                    .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                    .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                    .exceptionHandling()
-                   .authenticationEntryPoint(authenticationFailureHandler)
                    .accessDeniedHandler(authorizationFailureHandler)
                    .and()
                    .csrf().disable()

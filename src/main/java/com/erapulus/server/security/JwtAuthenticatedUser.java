@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import com.erapulus.server.database.model.ApplicationUserEntity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
@@ -25,5 +26,9 @@ public class JwtAuthenticatedUser extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return applicationUserEntity;
+    }
+
+    public Authentication asAuthentication(){
+        return this;
     }
 }

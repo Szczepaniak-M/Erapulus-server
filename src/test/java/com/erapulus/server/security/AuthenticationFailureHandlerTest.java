@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.web.server.WebFilterExchange;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -33,16 +34,17 @@ class AuthenticationFailureHandlerTest {
     @Test
     void onAuthenticationFailure_shouldGenerateResponse() {
         // given
-        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")
+        MockServerWebExchange webExchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")
                                                                                          .header("Authorization", "Bearer myToken"));
+        WebFilterExchange webFilterExchange = new WebFilterExchange(webExchange, e -> Mono.empty());
 
         // when
-        Mono<Void> result = authenticationFailureHandler.commence(exchange, new BadCredentialsException("Bad credentials"));
+        Mono<Void> result = authenticationFailureHandler.onAuthenticationFailure(webFilterExchange, new BadCredentialsException("Bad credentials"));
 
         // then
         StepVerifier.create(result)
                     .verifyComplete();
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, exchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
-        assertEquals(BODY, exchange.getResponse().getBodyAsString().block());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, webExchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
+        assertEquals(BODY, webExchange.getResponse().getBodyAsString().block());
     }
 }
