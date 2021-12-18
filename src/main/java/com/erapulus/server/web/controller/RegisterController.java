@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.dto.EmployeeResponseDto;
 import com.erapulus.server.service.RegisterService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ import static com.erapulus.server.web.common.OpenApiConstants.*;
 @AllArgsConstructor
 public class RegisterController {
 
-    private RegisterService registerService;
+    private final RegisterService registerService;
 
     @NonNull
     @Operation(
@@ -33,7 +33,7 @@ public class RegisterController {
             description = "Create administrator",
             summary = "Create administrator",
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -58,7 +58,7 @@ public class RegisterController {
             description = "Create university administrator",
             summary = "Create university administrator",
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -83,7 +83,7 @@ public class RegisterController {
             description = "Create university employee",
             summary = "Create university employee",
             responses = {
-                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeCreatedDto.class))),
+                    @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),

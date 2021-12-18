@@ -1,5 +1,6 @@
 package com.erapulus.server.service;
 
+import com.erapulus.server.mapper.EmployeeEntityToResponseDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.repository.EmployeeRepository;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.dto.EmployeeResponseDto;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -40,7 +41,7 @@ class RegisterServiceTest {
 
     @BeforeEach
     void setUp() {
-        registerService = new RegisterService(bCryptPasswordEncoder, employeeRepository);
+        registerService = new RegisterService(bCryptPasswordEncoder, employeeRepository, new EmployeeEntityToResponseDtoMapper());
     }
 
     @Test
@@ -58,7 +59,7 @@ class RegisterServiceTest {
                 .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
 
         // when
-        Mono<EmployeeCreatedDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
+        Mono<EmployeeResponseDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)
@@ -87,7 +88,7 @@ class RegisterServiceTest {
         when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
 
         // when
-        Mono<EmployeeCreatedDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
+        Mono<EmployeeResponseDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
 
         // then
         StepVerifier.create(result)

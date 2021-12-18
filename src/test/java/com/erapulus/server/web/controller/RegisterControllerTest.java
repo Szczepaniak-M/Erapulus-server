@@ -3,7 +3,7 @@ package com.erapulus.server.web.controller;
 import com.erapulus.server.TestUtils;
 import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.dto.EmployeeResponseDto;
 import com.erapulus.server.service.RegisterService;
 import com.erapulus.server.web.router.RegisterRouter;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,12 +60,12 @@ class RegisterControllerTest {
                                                                                           .email(EMAIL)
                                                                                           .password(PASSWORD);
 
-        EmployeeCreatedDto employeeCreatedDto = new EmployeeCreatedDto().id(ID)
-                                                                        .type(UserType.EMPLOYEE)
-                                                                        .firstName(FIRST_NAME)
-                                                                        .lastName(LAST_NAME)
-                                                                        .universityId(UNIVERSITY_ID)
-                                                                        .email(EMAIL);
+        EmployeeResponseDto employeeResponseDto = new EmployeeResponseDto().id(ID)
+                                                                           .type(UserType.EMPLOYEE)
+                                                                           .firstName(FIRST_NAME)
+                                                                           .lastName(LAST_NAME)
+                                                                           .universityId(UNIVERSITY_ID)
+                                                                           .email(EMAIL);
         String expected = """
                 {
                   "status":201,
@@ -79,7 +79,7 @@ class RegisterControllerTest {
                   },
                   "message":null
                 }""";
-        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeCreatedDto));
+        when(registerService.createUniversityEmployee(any(EmployeeCreateRequestDto.class))).thenReturn(Mono.just(employeeResponseDto));
 
         // when-then
         webTestClient.post()

@@ -2,7 +2,7 @@ package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.dto.EmployeeCreatedDto;
+import com.erapulus.server.dto.EmployeeResponseDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +30,7 @@ class EmployeeToEmployeeEntityCreatedDtoMapperTest {
                                                       .build();
 
         // when
-        EmployeeCreatedDto result = EmployeeEntityToEmployeeCreatedDtoMapper.from(employeeEntity);
+        EmployeeResponseDto result = new EmployeeEntityToResponseDtoMapper().from(employeeEntity);
 
         //then
         assertEquals(ID, result.id());

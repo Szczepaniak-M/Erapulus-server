@@ -18,4 +18,21 @@ public class EmployeeEntity extends ApplicationUserEntity {
     @NotNull
     @Column("password")
     private String password;
+
+    public EmployeeEntity id(int id){
+        super.id(id);
+        return this;
+    }
+
+    @Override
+    public EmployeeEntity type(UserType userType){
+        super.type(userType);
+        return this;
+    }
+
+    @Override
+    public EmployeeEntity universityId(Integer universityId){
+        super.universityId(universityId);
+        return this;
+    }
 }

@@ -1,5 +1,8 @@
 package com.erapulus.server.database;
 
+import com.erapulus.server.database.model.EmployeeEntity;
+import com.erapulus.server.database.model.UserType;
+import com.erapulus.server.database.repository.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,13 @@ class StudentRepositoryTest {
 
     private static final String EMAIL_1 = "example1@gmail.com";
     private static final String EMAIL_2 = "example2@gmail.com";
+    private static final String EMAIL_3 = "example3@gmail.com";
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @AfterEach
     void setUp() {
@@ -30,7 +37,7 @@ class StudentRepositoryTest {
         // given
         var studentEntity1 = createStudent(EMAIL_1);
         var studentEntity2 = createStudent(EMAIL_2);
-        studentRepository.save(studentEntity1);
+        var employeeEntity = createEmployee(EMAIL_3);
 
         // when
         Mono<StudentEntity> result = studentRepository.findByEmail(EMAIL_1);
@@ -45,6 +52,8 @@ class StudentRepositoryTest {
     @Test
     void findByEmail_shouldReturnEmptyMonoWhenNoStudentFound() {
         // given
+        var employeeEntity = createEmployee(EMAIL_1);
+
         // when
         Mono<StudentEntity> result = studentRepository.findByEmail(EMAIL_1);
 
@@ -62,5 +71,14 @@ class StudentRepositoryTest {
                                                    .email(email)
                                                    .build();
         return studentRepository.save(studentEntity).block();
+    }
+    private EmployeeEntity createEmployee(String email) {
+        EmployeeEntity employee = EmployeeEntity.builder()
+                                                .type(UserType.EMPLOYEE)
+                                                .firstName("firstName")
+                                                .lastName("lastName")
+                                                .email(email)
+                                                .build();
+        return employeeRepository.save(employee).block();
     }
 }

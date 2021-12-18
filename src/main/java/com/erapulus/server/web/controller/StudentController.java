@@ -30,7 +30,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 public class StudentController {
 
     private static final String STUDENT = "student";
-    private StudentService studentService;
+    private final StudentService studentService;
 
     @NonNull
     @Operation(

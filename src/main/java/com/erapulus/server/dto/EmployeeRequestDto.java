@@ -1,6 +1,5 @@
 package com.erapulus.server.dto;
 
-import com.erapulus.server.database.model.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeCreatedDto {
-
-    @NotNull
-    @JsonProperty("id")
-    private Integer id;
-
-    @NotNull
-    @JsonProperty("type")
-    private UserType type;
+public class EmployeeRequestDto {
 
     @NotNull
     @JsonProperty("firstName")
@@ -30,10 +21,6 @@ public class EmployeeCreatedDto {
     @NotNull
     @JsonProperty("lastName")
     private String lastName;
-
-    @NotNull
-    @JsonProperty("university")
-    private Integer universityId;
 
     @NotNull
     @JsonProperty("email")
