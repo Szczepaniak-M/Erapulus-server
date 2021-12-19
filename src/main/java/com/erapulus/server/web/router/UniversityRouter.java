@@ -28,7 +28,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class UniversityRouter {
 
     public static final String UNIVERSITY_BASE_URL = "/api/university";
-    public static final String UNIVERSITY_DETAILS_URL = format("/api/university/{%s}/", UNIVERSITY_PATH_PARAM);
+    public static final String UNIVERSITY_DETAILS_URL = format("/api/university/{%s}", UNIVERSITY_PATH_PARAM);
 
     @RouterOperations({
             @RouterOperation(path = UNIVERSITY_BASE_URL_OPENAPI, method = GET, beanClass = UniversityController.class, beanMethod = "listUniversities"),

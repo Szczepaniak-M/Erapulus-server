@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -31,6 +32,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 @AllArgsConstructor
 public class BuildingController {
 
+    public static final String BUILDING = "building";
     private final BuildingService buildingService;
 
     @NonNull
@@ -68,6 +70,7 @@ public class BuildingController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -77,6 +80,7 @@ public class BuildingController {
                                        .flatMap(building -> buildingService.createEntity(building, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse(BUILDING))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -108,7 +112,7 @@ public class BuildingController {
                                              .flatMap(buildingDto -> buildingService.updateEntity(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(BUILDING))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                              .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -136,7 +140,7 @@ public class BuildingController {
         return withPathParam(request, BUILDING_PATH_PARAM,
                 buildingId -> buildingService.deleteEntity(buildingId)
                                              .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(BUILDING))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }
