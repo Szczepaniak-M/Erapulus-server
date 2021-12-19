@@ -33,11 +33,11 @@ public class BuildingEntity implements Entity {
 
     @NotNull
     @Column("latitude")
-    private Long latitude;
+    private Double latitude;
 
     @NotNull
     @Column("longitude")
-    private Integer longitude;
+    private Double longitude;
 
     @NotNull
     @Column("university")

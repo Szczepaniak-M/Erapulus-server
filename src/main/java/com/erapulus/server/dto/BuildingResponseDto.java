@@ -29,11 +29,11 @@ public class BuildingResponseDto {
 
     @NotNull
     @JsonProperty("latitude")
-    private Long latitude;
+    private Double latitude;
 
     @NotNull
     @JsonProperty("longitude")
-    private Integer longitude;
+    private Double longitude;
 
     @Null
     @JsonProperty("university")
