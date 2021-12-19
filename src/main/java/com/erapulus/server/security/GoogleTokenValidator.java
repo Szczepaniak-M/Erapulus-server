@@ -1,11 +1,12 @@
 package com.erapulus.server.security;
 
+import com.erapulus.server.database.model.StudentEntity;
 import com.erapulus.server.dto.StudentLoginDTO;
+import com.erapulus.server.service.exception.InvalidTokenException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.erapulus.server.database.model.StudentEntity;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -15,8 +16,9 @@ public class GoogleTokenValidator {
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
     public Mono<StudentEntity> validate(StudentLoginDTO studentLoginDTO) {
-
         return Mono.fromCallable(() -> googleIdTokenVerifier.verify(studentLoginDTO.token()))
+                   .switchIfEmpty(Mono.error(new InvalidTokenException()))
+                   .onErrorMap(IllegalArgumentException.class, e -> new InvalidTokenException())
                    .map(idToken -> {
                        GoogleIdToken.Payload payload = idToken.getPayload();
                        return StudentEntity.builder()

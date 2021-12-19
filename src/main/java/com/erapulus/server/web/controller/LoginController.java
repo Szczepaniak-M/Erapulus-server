@@ -5,6 +5,7 @@ import com.erapulus.server.dto.LoginResponseDTO;
 import com.erapulus.server.dto.StudentLoginDTO;
 import com.erapulus.server.service.LoginService;
 import com.erapulus.server.service.exception.InvalidPasswordException;
+import com.erapulus.server.service.exception.InvalidTokenException;
 import com.erapulus.server.service.exception.NoSuchUserException;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,6 +72,7 @@ public class LoginController {
                       .flatMap(loginService::validateGoogleStudentCredentials)
                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .onErrorResume(InvalidTokenException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidTokenErrorResponse())
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 }

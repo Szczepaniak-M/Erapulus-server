@@ -47,4 +47,19 @@ class AuthenticationFailureHandlerTest {
         assertEquals(MediaType.APPLICATION_JSON_VALUE, webExchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
         assertEquals(BODY, webExchange.getResponse().getBodyAsString().block());
     }
+
+    @Test
+    void commenceOnAuthenticationFailure_shouldGenerateResponse() {
+        // given
+        MockServerWebExchange webExchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")
+                                                                                            .header("Authorization", "Bearer myToken"));
+        // when
+        Mono<Void> result = authenticationFailureHandler.commence(webExchange, new BadCredentialsException("Bad credentials"));
+
+        // then
+        StepVerifier.create(result)
+                    .verifyComplete();
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, webExchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
+        assertEquals(BODY, webExchange.getResponse().getBodyAsString().block());
+    }
 }
