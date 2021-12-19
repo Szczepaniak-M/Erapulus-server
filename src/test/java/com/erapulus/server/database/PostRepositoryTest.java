@@ -70,7 +70,7 @@ class PostRepositoryTest {
         var pageRequest = PageRequest.of(0, 2);
 
         // when
-        var result = postRepository.findPostByFilters(university.id(), "", DATE_2, DATE_3, pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = postRepository.findPostByFilters(university.id(), null, DATE_2, DATE_3, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -94,7 +94,7 @@ class PostRepositoryTest {
         var pageRequest = PageRequest.of(1, 1);
 
         // when
-        var result = postRepository.findPostByFilters(university2.id(), "", DATE_1, DATE_3, pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = postRepository.findPostByFilters(university2.id(), null, DATE_1, DATE_3, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)

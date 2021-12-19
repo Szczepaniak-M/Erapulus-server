@@ -17,6 +17,9 @@ public class CommonRequestVariable {
     public static final String TITLE_QUERY_PARAM = "title";
     public static final String FROM_QUERY_PARAM = "from";
     public static final String TO_QUERY_PARAM = "to";
+    public static final String UNIVERSITY_QUERY_PARAM = "university";
+    public static final String TYPE_QUERY_PARAM = "type";
+    public static final String NAME_QUERY_PARAM = "name";
     public static final String PAGE_QUERY_PARAM = "page";
     public static final String PAGE_SIZE_QUERY_PARAM = "pageSize";
 }

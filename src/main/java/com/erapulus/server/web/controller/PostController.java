@@ -37,8 +37,8 @@ public class PostController {
     @Operation(
             operationId = "list-post",
             tags = "Post",
-            description = "List post",
-            summary = "List post by university ID with filtering by date and title",
+            summary = "List post",
+            description = "List post by university ID with filtering by date and title",
             parameters = {
                     @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
                     @Parameter(in = QUERY, name = TITLE_QUERY_PARAM, schema = @Schema(type = "integer")),

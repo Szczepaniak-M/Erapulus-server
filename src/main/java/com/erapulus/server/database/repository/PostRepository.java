@@ -17,7 +17,7 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
     @Query("""
             SELECT * FROM post
             WHERE university = :university
-            AND LOWER(title) LIKE LOWER(CONCAT('%', :title, '%'))
+            AND (:title IS NULL OR LOWER(title) LIKE LOWER(CONCAT('%', :title, '%')))
             AND date BETWEEN :fromDate AND :toDate
             ORDER BY id OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY

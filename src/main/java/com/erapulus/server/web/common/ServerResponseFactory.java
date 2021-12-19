@@ -40,8 +40,8 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
-    public static Mono<ServerResponse> createHttpBadRequestCantParseToIntegerErrorResponse(NumberFormatException exception) {
-        String message = "bad.request;cannot.parse.to.int";
+    public static Mono<ServerResponse> createHttpBadRequestCantParseToIntegerErrorResponse() {
+        String message = "bad.request;cannot.parse.parameter";
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(BodyInserters.fromValue(ResponseTemplate.builder()

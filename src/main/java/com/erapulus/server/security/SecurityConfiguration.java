@@ -23,7 +23,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @EnableWebFluxSecurity
-@EnableReactiveMethodSecurity(proxyTargetClass = true)
+@EnableReactiveMethodSecurity
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST = {"/v3/api-docs/**", "/documentation.html", "/documentation.yaml", "/webjars/**"};
@@ -40,20 +40,23 @@ public class SecurityConfiguration {
         authenticationWebFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 
         return http.formLogin().disable()
-                   .httpBasic().disable()
-                   .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                   .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                   .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                   .csrf().disable()
                    .exceptionHandling()
+                   .authenticationEntryPoint(authenticationFailureHandler)
                    .accessDeniedHandler(authorizationFailureHandler)
                    .and()
-                   .csrf().disable()
+
 
                    // Paths
                    .authorizeExchange()
                    .pathMatchers(WHITE_LIST).permitAll()
                    .pathMatchers("/api/user/login/**", "/api/user/register/**").permitAll()
                    .pathMatchers("/api/**").authenticated()
-                   .and().build();
+                   .and()
+                   .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                   .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                   .build();
     }
 
     @Bean
@@ -71,7 +74,7 @@ public class SecurityConfiguration {
     @Bean
     CorsWebFilter corsWebFilter() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "DELETE", "PATCH", "OPTIONS", "PUT"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
