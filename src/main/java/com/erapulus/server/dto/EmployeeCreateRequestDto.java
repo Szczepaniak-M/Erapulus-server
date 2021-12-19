@@ -29,6 +29,9 @@ public class EmployeeCreateRequestDto {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
+
     @NotNull
     @JsonProperty("password")
     private CharSequence password;

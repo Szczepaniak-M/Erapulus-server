@@ -1,6 +1,7 @@
 package com.erapulus.server.service;
 
 import com.erapulus.server.database.model.StudentEntity;
+import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.database.repository.StudentRepository;
 import com.erapulus.server.dto.StudentRequestDto;
 import com.erapulus.server.dto.StudentResponseDto;
@@ -14,7 +15,6 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 @Service
 @Validated
@@ -35,8 +35,13 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     }
 
     public Mono<StudentResponseDto> updateEntity(@Valid StudentRequestDto requestDto, int studentId) {
-        UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId);
-        return updateEntity(requestDto, addParamFromPath);
+        return Mono.just(requestDto)
+                   .map(requestDtoToEntityMapper::from)
+                   .map(employee -> employee.id(studentId).type(UserType.STUDENT))
+                   .flatMap(updatedT -> studentRepository.findById(updatedT.id())
+                                                         .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                         .flatMap(oldEntity -> studentRepository.save(updatedT.pictureUrl(oldEntity.pictureUrl()))))
+                   .map(entityToResponseDtoMapper::from);
     }
 
     @Override

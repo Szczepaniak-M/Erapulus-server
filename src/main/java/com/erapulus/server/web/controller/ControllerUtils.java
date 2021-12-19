@@ -40,6 +40,6 @@ public class ControllerUtils {
                        return PageRequest.of(page, size);
                    })
                    .flatMap(function)
-                   .onErrorResume(NumberFormatException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseToIntegerErrorResponse());
+                   .onErrorResume(NumberFormatException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse());
     }
 }

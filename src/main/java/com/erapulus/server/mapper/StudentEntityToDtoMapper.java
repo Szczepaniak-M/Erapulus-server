@@ -14,6 +14,8 @@ public class StudentEntityToDtoMapper implements EntityToResponseDtoMapper<Stude
                                  .lastName(studentEntity.lastName())
                                  .email(studentEntity.email())
                                  .universityId(studentEntity.universityId())
+                                 .phoneNumber(studentEntity.phoneNumber())
+                                 .pictureUrl(studentEntity.pictureUrl())
                                  .facebookUrl(studentEntity.facebookUrl())
                                  .whatsUpUrl(studentEntity.whatsUpUrl())
                                  .instagramUsername(studentEntity.instagramUsername())

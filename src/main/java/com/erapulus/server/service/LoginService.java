@@ -52,7 +52,7 @@ public class LoginService {
         if (isPasswordValid) {
             LoginResponseDTO responseDTO = LoginResponseDTO.builder()
                                                            .userId(employeeEntity.id())
-                                                           .token(jwtGenerator.generate(employeeEntity.email()))
+                                                           .token(jwtGenerator.generate(employeeEntity))
                                                            .build();
             return Mono.just(responseDTO);
         } else {
@@ -65,7 +65,7 @@ public class LoginService {
                                 .switchIfEmpty(studentRepository.save(studentEntity))
                                 .map(student -> LoginResponseDTO.builder()
                                                                 .userId(student.id())
-                                                                .token(jwtGenerator.generate(student.email()))
+                                                                .token(jwtGenerator.generate(student))
                                                                 .build());
     }
 }

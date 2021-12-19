@@ -13,6 +13,7 @@ public class StudentRequestDtoToEntityMapper implements RequestDtoToEntityMapper
                             .lastName(studentRequestDto.lastName())
                             .email(studentRequestDto.email())
                             .universityId(studentRequestDto.universityId())
+                            .phoneNumber(studentRequestDto.phoneNumber())
                             .facebookUrl(studentRequestDto.facebookUrl())
                             .whatsUpUrl(studentRequestDto.whatsUpUrl())
                             .instagramUsername(studentRequestDto.instagramUsername())

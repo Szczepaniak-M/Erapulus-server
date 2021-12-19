@@ -45,7 +45,7 @@ class JwtReactiveAuthenticationManagerTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
         when(erapulusProperties.jwt()).thenReturn(new ErapulusProperties.JwtProperties(ISSUER, SECRET));
         JwtGenerator jwtGenerator = new JwtGenerator(erapulusProperties);
-        String jwt = jwtGenerator.generate(EMAIL);
+        String jwt = jwtGenerator.generate(user);
         Authentication authentication = new JwtAuthenticationToken(jwt);
 
         // when

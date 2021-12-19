@@ -29,6 +29,12 @@ public class StudentResponseDto {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
+
+    @JsonProperty("pictureUrl")
+    private String pictureUrl;
+
     @JsonProperty("facebookUrl")
     private String facebookUrl;
 

@@ -1,10 +1,10 @@
 package com.erapulus.server.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmployeeCreateRequestToEmployeeEntityMapper {
@@ -16,6 +16,7 @@ public class EmployeeCreateRequestToEmployeeEntityMapper {
                              .lastName(employeeCreateRequestDto.lastName())
                              .email(employeeCreateRequestDto.email())
                              .universityId(employeeCreateRequestDto.universityId())
+                             .phoneNumber(employeeCreateRequestDto.phoneNumber())
                              .build();
     }
 }

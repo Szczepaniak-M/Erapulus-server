@@ -35,6 +35,7 @@ class RegisterControllerTest {
     public static final String LAST_NAME = "lastName";
     public static final String EMAIL = "example@gmail.com";
     public static final String PASSWORD = "password";
+    public static final String PHONE_NUMBER = "+48123456789";
     public static final int UNIVERSITY_ID = 2;
     public static final int ID = 1;
 
@@ -54,18 +55,16 @@ class RegisterControllerTest {
     @Test
     void createUniversityEmployee_shouldReturnCreatedWhenUserCorrect() {
         // given
-        EmployeeCreateRequestDto employeeCreateRequestDto = new EmployeeCreateRequestDto().firstName(FIRST_NAME)
-                                                                                          .lastName(LAST_NAME)
-                                                                                          .universityId(UNIVERSITY_ID)
-                                                                                          .email(EMAIL)
-                                                                                          .password(PASSWORD);
-
-        EmployeeResponseDto employeeResponseDto = new EmployeeResponseDto().id(ID)
-                                                                           .type(UserType.EMPLOYEE)
-                                                                           .firstName(FIRST_NAME)
-                                                                           .lastName(LAST_NAME)
-                                                                           .universityId(UNIVERSITY_ID)
-                                                                           .email(EMAIL);
+        EmployeeCreateRequestDto employeeCreateRequestDto = createEmployeeCreateRequestDto();
+        EmployeeResponseDto employeeResponseDto = EmployeeResponseDto.builder()
+                                                                     .id(ID)
+                                                                     .type(UserType.EMPLOYEE)
+                                                                     .firstName(FIRST_NAME)
+                                                                     .lastName(LAST_NAME)
+                                                                     .universityId(UNIVERSITY_ID)
+                                                                     .email(EMAIL)
+                                                                     .phoneNumber(PHONE_NUMBER)
+                                                                     .build();
         String expected = """
                 {
                   "status":201,
@@ -75,7 +74,8 @@ class RegisterControllerTest {
                     "firstName":"firstName",
                     "lastName":"lastName",
                     "university":2,
-                    "email":"example@gmail.com"
+                    "email":"example@gmail.com",
+                    "phoneNumber":"+48123456789"
                   },
                   "message":null
                 }""";
@@ -94,10 +94,7 @@ class RegisterControllerTest {
     @Test
     void createEmployee_shouldReturnBadRequestWhenMissingField() {
         // given
-        EmployeeCreateRequestDto employeeCreateRequestDto = new EmployeeCreateRequestDto().firstName(FIRST_NAME)
-                                                                                          .lastName(LAST_NAME)
-                                                                                          .universityId(UNIVERSITY_ID)
-                                                                                          .password(PASSWORD);
+        EmployeeCreateRequestDto employeeCreateRequestDto = createEmployeeCreateRequestDto().email(null);
         String expected = """
                 {
                   "status":400,
@@ -143,12 +140,7 @@ class RegisterControllerTest {
     @Test
     void createEmployee_shouldReturnConflictWhenEmployeeDuplicated() {
         // given
-        EmployeeCreateRequestDto employeeCreateRequestDto = new EmployeeCreateRequestDto().firstName(FIRST_NAME)
-                                                                                          .lastName(LAST_NAME)
-                                                                                          .universityId(UNIVERSITY_ID)
-                                                                                          .email(EMAIL)
-                                                                                          .password(PASSWORD);
-
+        EmployeeCreateRequestDto employeeCreateRequestDto = createEmployeeCreateRequestDto();
         String expected = """
                 {
                   "status":409,
@@ -170,12 +162,7 @@ class RegisterControllerTest {
     @Test
     void createEmployee_shouldReturnInternalServerErrorWhenUnexpectedErrorThrown() {
         // given
-        EmployeeCreateRequestDto employeeCreateRequestDto = new EmployeeCreateRequestDto().firstName(FIRST_NAME)
-                                                                                          .lastName(LAST_NAME)
-                                                                                          .universityId(UNIVERSITY_ID)
-                                                                                          .email(EMAIL)
-                                                                                          .password(PASSWORD);
-
+        EmployeeCreateRequestDto employeeCreateRequestDto = createEmployeeCreateRequestDto();
         String expected = """
                 {
                   "status":500,
@@ -192,6 +179,16 @@ class RegisterControllerTest {
                      .exchange()
                      .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
                      .expectBody().consumeWith(body -> TestUtils.assertJsonEquals(expected, TestUtils.getBodyAsString(body)));
+    }
+
+    private EmployeeCreateRequestDto createEmployeeCreateRequestDto() {
+        return EmployeeCreateRequestDto.builder()
+                                       .firstName(FIRST_NAME)
+                                       .lastName(LAST_NAME)
+                                       .universityId(UNIVERSITY_ID)
+                                       .email(EMAIL)
+                                       .password(PASSWORD)
+                                       .build();
     }
 }
 

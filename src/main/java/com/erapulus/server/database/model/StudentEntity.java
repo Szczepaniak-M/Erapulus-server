@@ -28,12 +28,18 @@ public class StudentEntity extends ApplicationUserEntity {
     private static final class StudentEntityBuilderImpl extends StudentEntity.StudentEntityBuilder<StudentEntity, StudentEntity.StudentEntityBuilderImpl> {
         @Override
         public StudentEntity build() {
-            return (StudentEntity) new StudentEntity(this).type(UserType.STUDENT);
+            return new StudentEntity(this).type(UserType.STUDENT);
         }
     }
 
     public StudentEntity id(int id){
         super.id(id);
+        return this;
+    }
+
+    @Override
+    public StudentEntity type(UserType type){
+        super.type(type);
         return this;
     }
 

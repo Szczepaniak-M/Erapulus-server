@@ -12,6 +12,7 @@ public class EmployeeRequestDtoToEntityMapper implements RequestDtoToEntityMappe
                              .firstName(employeeRequestDto.firstName())
                              .lastName(employeeRequestDto.lastName())
                              .email(employeeRequestDto.email())
+                             .phoneNumber(employeeRequestDto.phoneNumber())
                              .build();
     }
 }

@@ -40,7 +40,7 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
-    public static Mono<ServerResponse> createHttpBadRequestCantParseToIntegerErrorResponse() {
+    public static Mono<ServerResponse> createHttpBadRequestCantParseErrorResponse() {
         String message = "bad.request;cannot.parse.parameter";
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
                              .contentType(MediaType.APPLICATION_JSON)
@@ -69,12 +69,12 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
-    public static Mono<ServerResponse> createHttpBadRequestInvalidTokenErrorResponse() {
+    public static Mono<ServerResponse> createHttpBadRequestInvalidCredentialsErrorResponse() {
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(BodyInserters.fromValue(ResponseTemplate.builder()
                                                                            .status(HttpStatus.BAD_REQUEST.value())
-                                                                           .message("bad.request;invalid.token")
+                                                                           .message("bad.request;invalid.credentials")
                                                                            .build()));
     }
 

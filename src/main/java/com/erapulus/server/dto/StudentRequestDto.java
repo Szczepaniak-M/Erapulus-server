@@ -29,6 +29,9 @@ public class StudentRequestDto {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
+
     @JsonProperty("facebookUrl")
     private String facebookUrl;
 

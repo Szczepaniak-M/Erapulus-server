@@ -49,7 +49,7 @@ public class LoginController {
                       .flatMap(loginService::validateEmployeeCredentials)
                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                      .onErrorResume(NoSuchUserException.class, e -> ServerResponseFactory.createHttpUnauthorizedResponse())
+                      .onErrorResume(NoSuchUserException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidCredentialsErrorResponse())
                       .onErrorResume(InvalidPasswordException.class, e -> ServerResponseFactory.createHttpUnauthorizedResponse())
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
@@ -72,7 +72,7 @@ public class LoginController {
                       .flatMap(loginService::validateGoogleStudentCredentials)
                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                      .onErrorResume(InvalidTokenException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidTokenErrorResponse())
+                      .onErrorResume(InvalidTokenException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidCredentialsErrorResponse())
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 }

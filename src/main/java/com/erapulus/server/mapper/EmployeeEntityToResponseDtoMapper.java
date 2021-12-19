@@ -5,7 +5,7 @@ import com.erapulus.server.dto.EmployeeResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeEntityToResponseDtoMapper implements EntityToResponseDtoMapper<EmployeeEntity, EmployeeResponseDto>{
+public class EmployeeEntityToResponseDtoMapper implements EntityToResponseDtoMapper<EmployeeEntity, EmployeeResponseDto> {
 
     public EmployeeResponseDto from(EmployeeEntity employeeEntity) {
         return EmployeeResponseDto.builder()
@@ -15,6 +15,7 @@ public class EmployeeEntityToResponseDtoMapper implements EntityToResponseDtoMap
                                   .lastName(employeeEntity.lastName())
                                   .email(employeeEntity.email())
                                   .universityId(employeeEntity.universityId())
+                                  .phoneNumber(employeeEntity.phoneNumber())
                                   .build();
     }
 }

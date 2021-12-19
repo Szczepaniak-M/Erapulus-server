@@ -56,7 +56,7 @@ public class ApplicationUserController {
                                 name -> withPageParams(request,
                                         pageRequest -> applicationUserService.listEntities(universityId, userType, name, pageRequest)
                                                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                             .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseToIntegerErrorResponse())
+                                                                             .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse())
                                                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
     }
 }
