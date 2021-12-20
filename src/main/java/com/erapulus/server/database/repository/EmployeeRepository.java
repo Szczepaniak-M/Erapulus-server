@@ -12,11 +12,11 @@ import reactor.core.publisher.Mono;
 public interface EmployeeRepository extends R2dbcRepository<EmployeeEntity, Integer> {
 
     @Query("SELECT * FROM application_user WHERE email = :email AND type != 'STUDENT'")
-    Mono<EmployeeEntity> findByEmail(@Param("email") String email);
+    Mono<EmployeeEntity> findByEmailAndType(@Param("email") String email);
 
-    @Query("SELECT * FROM application_user WHERE id = :employeeId AND type = 'STUDENT'")
-    Mono<EmployeeEntity> findById(@Param("employeeId") int employeeId);
+    @Query("SELECT * FROM application_user WHERE id = :employeeId AND type != 'STUDENT'")
+    Mono<EmployeeEntity> findByIdAndType(@Param("employeeId") int employeeId);
 
     @Query("SELECT * FROM application_user WHERE university = :universityId AND (type = 'UNIVERSITY_ADMINISTRATOR' OR type = 'EMPLOYEE')")
-    Flux<EmployeeEntity> findAllEmployeeByUniversityId(@Param("universityId") int universityId);
+    Flux<EmployeeEntity> findAllByUniversityIdAndType(@Param("universityId") int universityId);
 }

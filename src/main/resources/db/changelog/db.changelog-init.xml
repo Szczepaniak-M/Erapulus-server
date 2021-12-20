@@ -179,7 +179,7 @@
             <column name="id" autoIncrement="true" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="type" type="VARCHAR(15)">
+            <column name="type" type="VARCHAR(31)">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="NVARCHAR(31)">
@@ -430,7 +430,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="type" type="VARCHAR(15)"/>
+            <column name="type" type="VARCHAR(31)"/>
             <column name="first_name" type="NVARCHAR(31)"/>
             <column name="last_name" type="NVARCHAR(31)"/>
             <column name="email" type="VARCHAR(63)"/>

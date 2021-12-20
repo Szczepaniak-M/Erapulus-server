@@ -3,7 +3,7 @@ package com.erapulus.server.security;
 import com.erapulus.server.configuration.ErapulusProperties;
 import com.erapulus.server.database.model.ApplicationUserEntity;
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.database.repository.UserRepository;
+import com.erapulus.server.database.repository.ApplicationUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class JwtReactiveAuthenticationManagerTest {
     private static final String SECRET = "my-incredibly-strong-and-secure-secret";
 
     @Mock
-    UserRepository userRepository;
+    ApplicationUserRepository applicationUserRepository;
 
     @Mock
     ErapulusProperties erapulusProperties;
@@ -35,14 +35,14 @@ class JwtReactiveAuthenticationManagerTest {
 
     @BeforeEach
     void setUp() {
-        jwtReactiveAuthenticationManager = new JwtReactiveAuthenticationManager(userRepository, erapulusProperties);
+        jwtReactiveAuthenticationManager = new JwtReactiveAuthenticationManager(applicationUserRepository, erapulusProperties);
     }
 
     @Test
     void authenticate_shouldReturnJwtAuthenticatedUserWhenJwtAuthenticationTokenPassed() {
         // given
         ApplicationUserEntity user = ApplicationUserEntity.builder().type(UserType.STUDENT).email(EMAIL).build();
-        when(userRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
+        when(applicationUserRepository.findByEmail(EMAIL)).thenReturn(Mono.just(user));
         when(erapulusProperties.jwt()).thenReturn(new ErapulusProperties.JwtProperties(ISSUER, SECRET));
         JwtGenerator jwtGenerator = new JwtGenerator(erapulusProperties);
         String jwt = jwtGenerator.generate(user);

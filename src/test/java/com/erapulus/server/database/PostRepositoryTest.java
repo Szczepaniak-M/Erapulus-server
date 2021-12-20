@@ -37,7 +37,7 @@ class PostRepositoryTest {
     private UniversityRepository universityRepository;
 
     @AfterEach
-    void setUp() {
+    void clean() {
         postRepository.deleteAll().block();
         universityRepository.deleteAll().block();
     }

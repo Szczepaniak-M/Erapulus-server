@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserRepository extends R2dbcRepository<ApplicationUserEntity, Integer> {
+public interface ApplicationUserRepository extends R2dbcRepository<ApplicationUserEntity, Integer> {
 
     @Query("SELECT * FROM application_user WHERE email = :email")
     Mono<ApplicationUserEntity> findByEmail(@Param("email") String email);
@@ -23,11 +23,11 @@ public interface UserRepository extends R2dbcRepository<ApplicationUserEntity, I
             ORDER BY id OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<ApplicationUserEntity> findByFilters(@Param("university") Integer universityId,
-                                              @Param("type") UserType userType,
-                                              @Param("name") String name,
-                                              @Param("offset") long offset,
-                                              @Param("size") int pageSize);
+    Flux<ApplicationUserEntity> findAllByFilters(@Param("university") Integer universityId,
+                                                 @Param("type") UserType userType,
+                                                 @Param("name") String name,
+                                                 @Param("offset") long offset,
+                                                 @Param("size") int pageSize);
 
     @Query("""
             SELECT COUNT(*) FROM application_user

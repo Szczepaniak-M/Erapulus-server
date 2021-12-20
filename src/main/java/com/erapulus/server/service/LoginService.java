@@ -31,7 +31,7 @@ public class LoginService {
     private final GoogleTokenValidator googleTokenValidator;
 
     public Mono<LoginResponseDTO> validateEmployeeCredentials(@Valid EmployeeLoginDTO employeeLoginDTO) {
-        return employeeRepository.findByEmail(employeeLoginDTO.email())
+        return employeeRepository.findByEmailAndType(employeeLoginDTO.email())
                                  .switchIfEmpty(Mono.error(new NoSuchUserException()))
                                  .flatMap(employee -> validatePassword(employeeLoginDTO, employee));
     }

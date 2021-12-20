@@ -27,7 +27,7 @@ public class DeviceService extends CrudGenericService<DeviceEntity, DeviceReques
     }
 
     public Mono<List<DeviceEntity>> listEntities(Integer studentId) {
-        return deviceRepository.findByStudentId(studentId)
+        return deviceRepository.findAllByStudentId(studentId)
                                .collectList();
     }
 

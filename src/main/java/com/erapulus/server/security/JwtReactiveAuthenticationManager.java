@@ -1,7 +1,7 @@
 package com.erapulus.server.security;
 
 import com.erapulus.server.configuration.ErapulusProperties;
-import com.erapulus.server.database.repository.UserRepository;
+import com.erapulus.server.database.repository.ApplicationUserRepository;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 @AllArgsConstructor
 public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 
-    private final UserRepository userRepository;
+    private final ApplicationUserRepository applicationUserRepository;
     private final ErapulusProperties erapulusProperties;
 
     @Override
@@ -35,7 +35,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
         return Mono.just(jwt)
                    .map(token -> parser.parseClaimsJws(token).getBody().getSubject())
-                   .flatMap(userRepository::findByEmail)
+                   .flatMap(applicationUserRepository::findByEmail)
                    .map(user -> new JwtAuthenticatedUser(user, new SimpleGrantedAuthority(user.type().toString())))
                    .onErrorResume(e -> Mono.error(new BadCredentialsException("bad.token")))
                    .map(JwtAuthenticatedUser::asAuthentication);

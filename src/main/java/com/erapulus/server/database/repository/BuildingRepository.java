@@ -11,5 +11,5 @@ import reactor.core.publisher.Flux;
 public interface BuildingRepository extends R2dbcRepository<BuildingEntity, Integer> {
 
     @Query("SELECT * FROM building WHERE university = :universityId")
-    Flux<BuildingEntity> findByUniversityId(@Param("universityId") int universityId);
+    Flux<BuildingEntity> findAllByUniversityId(@Param("universityId") int universityId);
 }

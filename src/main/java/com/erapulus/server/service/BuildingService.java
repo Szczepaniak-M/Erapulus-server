@@ -28,7 +28,7 @@ public class BuildingService extends CrudGenericService<BuildingEntity, Building
     }
 
     public Mono<List<BuildingResponseDto>> listEntities(int universityId) {
-        return buildingRepository.findByUniversityId(universityId)
+        return buildingRepository.findAllByUniversityId(universityId)
                                  .map(entityToResponseDtoMapper::from)
                                  .collectList();
     }

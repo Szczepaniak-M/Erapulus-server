@@ -35,13 +35,13 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
     public Mono<List<EmployeeResponseDto>> listEntities(Integer universityId) {
         return universityRepository.findById(universityId)
                                    .switchIfEmpty(Mono.error(new NoSuchElementException()))
-                                   .thenMany(employeeRepository.findAllEmployeeByUniversityId(universityId))
+                                   .thenMany(employeeRepository.findAllByUniversityIdAndType(universityId))
                                    .map(entityToResponseDtoMapper::from)
                                    .collectList();
     }
 
     public Mono<EmployeeResponseDto> getEntityById(int employeeId) {
-        Supplier<Mono<EmployeeEntity>> supplier = () -> employeeRepository.findById(employeeId);
+        Supplier<Mono<EmployeeEntity>> supplier = () -> employeeRepository.findByIdAndType(employeeId);
         return getEntityById(supplier);
     }
 
@@ -52,13 +52,14 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
                    .flatMap(updatedT -> employeeRepository.findById(updatedT.id())
                                                           .switchIfEmpty(Mono.error(new NoSuchElementException()))
                                                           .flatMap(oldEntity -> employeeRepository.save(updatedT.type(oldEntity.type())
+                                                                                                                .password(oldEntity.password())
                                                                                                                 .universityId(oldEntity.universityId()))))
                    .map(entityToResponseDtoMapper::from);
     }
 
     @Override
     public Mono<Boolean> deleteEntity(int employeeId) {
-        return employeeRepository.findById(employeeId)
+        return employeeRepository.findByIdAndType(employeeId)
                                  .switchIfEmpty(Mono.error(new NoSuchElementException()))
                                  .flatMap(b -> employeeRepository.deleteById(employeeId))
                                  .thenReturn(true);

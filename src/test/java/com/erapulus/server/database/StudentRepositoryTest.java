@@ -39,7 +39,7 @@ class StudentRepositoryTest {
     private FriendshipRepository friendshipRepository;
 
     @AfterEach
-    void setUp() {
+    void clean() {
         friendshipRepository.deleteAll().block();
         studentRepository.deleteAll().block();
     }
