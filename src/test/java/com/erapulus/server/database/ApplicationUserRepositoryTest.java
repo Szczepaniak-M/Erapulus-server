@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class ApplicationUserRepositoryTest {
 
-    private static final String FIRST_NAME_1 = "John";
+    private static final String FIRST_NAME_1 = "Johnson";
     private static final String FIRST_NAME_2 = "Anne";
     private static final String LAST_NAME_1 = "Smith";
     private static final String LAST_NAME_2 = "JOHNSON";
@@ -122,7 +122,7 @@ class ApplicationUserRepositoryTest {
         var userEntity1 = createUser(FIRST_NAME_1, LAST_NAME_1, UserType.STUDENT, EMAIL_1, universityEntity1.id());
         var userEntity2 = createUser(FIRST_NAME_2, LAST_NAME_2, UserType.EMPLOYEE, EMAIL_2, universityEntity2.id());
         var userEntity3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
-        String commonPart = "ohn";
+        String commonPart = "john";
 
         // when
         Flux<ApplicationUserEntity> result = userRepository.findByFilters(null, null, commonPart, 0, 3);
@@ -205,7 +205,7 @@ class ApplicationUserRepositoryTest {
         var userEntity1 = createUser(FIRST_NAME_1, LAST_NAME_1, UserType.STUDENT, EMAIL_1, universityEntity1.id());
         var userEntity2 = createUser(FIRST_NAME_2, LAST_NAME_2, UserType.EMPLOYEE, EMAIL_2, universityEntity2.id());
         var userEntity3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
-        String commonPart = "ohn";
+        String commonPart = "john";
         int expectedResult = 2;
 
         // when

@@ -217,7 +217,7 @@
             </column>
         </createTable>
         <createTable tableName="friendship">
-            <column name="id" type="INT">
+            <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="application_user" type="INT">

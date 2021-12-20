@@ -19,7 +19,7 @@ public interface UserRepository extends R2dbcRepository<ApplicationUserEntity, I
             SELECT * FROM application_user
             WHERE (:university IS NULL OR university = :university)
             AND (:type IS NULL OR type = :type)
-            AND (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT('%', :name, '%')))
+            AND (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT(:name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT(:name, '%')))
             ORDER BY id OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
@@ -33,7 +33,7 @@ public interface UserRepository extends R2dbcRepository<ApplicationUserEntity, I
             SELECT COUNT(*) FROM application_user
             WHERE (:university IS NULL OR university = :university)
             AND (:type IS NULL OR type = :type)
-            AND (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT('%', :name, '%')))
+            AND (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT(:name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT(:name, '%')))
             """)
     Mono<Integer> countByFilters(@Param("university") Integer universityId,
                                  @Param("type") UserType userType,
