@@ -36,7 +36,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     }
 
     public Mono<List<UniversityListDto>> listEntities() {
-        return universityRepository.findAllUniversitiesNameAndId()
+        return universityRepository.findAllUniversities()
                                    .map(universityEntityToUniversityListDtoMapper::from)
                                    .collectList();
     }

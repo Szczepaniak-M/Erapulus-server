@@ -11,6 +11,7 @@ public class UniversityEntityToUniversityListDtoMapper implements EntityToRespon
         return UniversityListDto.builder()
                                 .id(universityEntity.id())
                                 .name(universityEntity.name())
+                                .logoUrl(universityEntity.logoUrl())
                                 .build();
     }
 }

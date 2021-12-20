@@ -12,4 +12,7 @@ public class UniversityListDto {
 
     @JsonProperty("name")
     private String name;
+
+    @JsonProperty("logoUrl")
+    private String logoUrl;
 }
