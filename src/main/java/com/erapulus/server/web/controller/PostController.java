@@ -41,7 +41,7 @@ public class PostController {
             description = "List post by university ID with filtering by date and title",
             parameters = {
                     @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-                    @Parameter(in = QUERY, name = TITLE_QUERY_PARAM, schema = @Schema(type = "integer")),
+                    @Parameter(in = QUERY, name = TITLE_QUERY_PARAM, schema = @Schema(type = "string")),
                     @Parameter(in = QUERY, name = FROM_QUERY_PARAM, schema = @Schema(type = "date")),
                     @Parameter(in = QUERY, name = TO_QUERY_PARAM, schema = @Schema(type = "date")),
                     @Parameter(in = QUERY, name = PAGE_QUERY_PARAM, schema = @Schema(type = "integer")),

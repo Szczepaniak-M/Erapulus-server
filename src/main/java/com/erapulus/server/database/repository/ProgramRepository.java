@@ -16,15 +16,15 @@ public interface ProgramRepository extends R2dbcRepository<ProgramEntity, Intege
             ORDER BY name OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<ProgramEntity> findByFaculty(@Param("faculty") int facultyId,
-                                      @Param("offset") long offset,
-                                      @Param("size") int pageSize);
+    Flux<ProgramEntity> findByFacultyId(@Param("faculty") int facultyId,
+                                        @Param("offset") long offset,
+                                        @Param("size") int pageSize);
 
     @Query("""
             SELECT COUNT(*) FROM program
             WHERE faculty = :faculty
             """)
-    Mono<Integer> countByFaculty(@Param("faculty") int facultyId);
+    Mono<Integer> countByFacultyId(@Param("faculty") int facultyId);
 
     @Query("""
             SELECT * FROM program p

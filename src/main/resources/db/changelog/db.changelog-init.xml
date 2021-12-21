@@ -281,7 +281,7 @@
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
         <addForeignKeyConstraint baseTableName="module" baseColumnNames="program"
                                  constraintName="fk_module_program_program"
-                                 referencedTableName="university" referencedColumnNames="id"
+                                 referencedTableName="program" referencedColumnNames="id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT"/>
         <addForeignKeyConstraint baseTableName="application_user" baseColumnNames="university"
                                  constraintName="fk_application_user_university_university"

@@ -80,7 +80,7 @@ class DeviceRepositoryTest {
     }
 
     @Test
-    void findByEmail_shouldReturnEmptyMonoWhenWrongUser() {
+    void findByIdAndStudentId_shouldReturnEmptyMonoWhenWrongUser() {
         // given
         var student1 = createStudent(STUDENT_1);
         var student2 = createStudent(STUDENT_2);
@@ -90,7 +90,6 @@ class DeviceRepositoryTest {
         // when
         Mono<DeviceEntity> result = deviceRepository.findByIdAndStudentId(device1.id(), student2.id());
 
-
         // then
         StepVerifier.create(result)
                     .expectSubscription()
@@ -98,14 +97,13 @@ class DeviceRepositoryTest {
     }
 
     @Test
-    void findByEmail_shouldReturnEmptyMonoWhenWrongId() {
+    void findByIdAndStudentId_shouldReturnEmptyMonoWhenWrongId() {
         // given
-        var student1 = createStudent(STUDENT_1);
-        var device1 = createDevice(DEVICE_ID_1, student1);
+        var student = createStudent(STUDENT_1);
+        var device = createDevice(DEVICE_ID_1, student);
 
         // when
-        Mono<DeviceEntity> result = deviceRepository.findByIdAndStudentId(device1.id() + 1, student1.id());
-
+        Mono<DeviceEntity> result = deviceRepository.findByIdAndStudentId(device.id() + 1, student.id());
 
         // then
         StepVerifier.create(result)

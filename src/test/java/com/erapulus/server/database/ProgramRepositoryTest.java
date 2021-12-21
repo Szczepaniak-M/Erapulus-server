@@ -1,0 +1,216 @@
+package com.erapulus.server.database;
+
+import com.erapulus.server.database.model.FacultyEntity;
+import com.erapulus.server.database.model.ModuleEntity;
+import com.erapulus.server.database.model.ProgramEntity;
+import com.erapulus.server.database.model.UniversityEntity;
+import com.erapulus.server.database.repository.FacultyRepository;
+import com.erapulus.server.database.repository.ProgramRepository;
+import com.erapulus.server.database.repository.UniversityRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest
+class ProgramRepositoryTest {
+
+    private static final String FACULTY_1 = "faculty1";
+    private static final String FACULTY_2 = "faculty2";
+    private static final String PROGRAM_1 = "program1";
+    private static final String PROGRAM_2 = "program2";
+    private static final String PROGRAM_3 = "program3";
+
+    @Autowired
+    private ProgramRepository programRepository;
+
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    @Autowired
+    private UniversityRepository universityRepository;
+
+    @AfterEach
+    void clean() {
+        programRepository.deleteAll().block();
+        facultyRepository.deleteAll().block();
+        universityRepository.deleteAll().block();
+    }
+
+    @Test
+    void findByFacultyId_shouldReturnProgramForGivenFaculty() {
+        // given
+        var university = createUniversity();
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program1 = createProgram(PROGRAM_1, faculty1);
+        var program2 = createProgram(PROGRAM_2, faculty1);
+        var program3 = createProgram(PROGRAM_1, faculty2);
+        var program4 = createProgram(PROGRAM_2, faculty2);
+        var pageRequest = PageRequest.of(0, 4);
+
+        // when
+        var result = programRepository.findByFacultyId(faculty1.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().containsAll(List.of(program1.id(), program2.id())))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByFacultyId_shouldReturnProgramsWhenSecondPageRequested() {
+        // given
+        var university = createUniversity();
+        var faculty = createFaculty(FACULTY_1, university);
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_2, faculty);
+        var program3 = createProgram(PROGRAM_3, faculty);
+        var pageRequest = PageRequest.of(1, 2);
+
+        // when
+        var result = programRepository.findByFacultyId(faculty.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(faculties -> faculties.stream().map(ProgramEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(faculties -> faculties.stream().map(ProgramEntity::id).toList().contains(program3.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void countByFacultyId_shouldReturnProgramNumberForGivenFaculty() {
+        // given
+        var university = createUniversity();
+        var faculty = createFaculty(FACULTY_1, university);
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_2, faculty);
+        int expectedResult = 2;
+
+        // when
+        var result = programRepository.countByFacultyId(faculty.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(moduleCount -> assertEquals(expectedResult, moduleCount))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityIdAndFacultyId_shouldReturnProgramWhenUniversityAndFacultyAndIdExist() {
+        // given
+        var university = createUniversity();
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program1 = createProgram(PROGRAM_1, faculty1);
+        var program2 = createProgram(PROGRAM_2, faculty1);
+        var program3 = createProgram(PROGRAM_1, faculty2);
+        var program4 = createProgram(PROGRAM_2, faculty2);
+
+        // when
+        Mono<ProgramEntity> result = programRepository.findByIdAndUniversityIdAndFacultyId(program1.id(), university.id(), faculty1.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(programFromDatabase -> assertEquals(program1.id(), programFromDatabase.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityIdAndFacultyId_shouldReturnEmptyMonoWhenWrongFaculty() {
+        // given
+        var university = createUniversity();
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program1 = createProgram(PROGRAM_1, faculty1);
+        var program2 = createProgram(PROGRAM_2, faculty1);
+        var program3 = createProgram(PROGRAM_1, faculty2);
+        var program4 = createProgram(PROGRAM_2, faculty2);
+
+        // when
+        Mono<ProgramEntity> result = programRepository.findByIdAndUniversityIdAndFacultyId(program1.id(), university.id(), faculty2.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityIdAndFacultyId_shouldReturnEmptyMonoWhenWrongUniversity() {
+        // given
+        var university = createUniversity();
+        var faculty = createFaculty(FACULTY_1, university);
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_2, faculty);
+
+        // when
+        Mono<ProgramEntity> result = programRepository.findByIdAndUniversityIdAndFacultyId(program1.id(), university.id() + 1, faculty.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityIdAndFacultyId_shouldReturnEmptyMonoWhenWrongId() {
+        // given
+        var university = createUniversity();
+        var faculty = createFaculty(FACULTY_1, university);
+        var program = createProgram(PROGRAM_1, faculty);
+
+        // when
+        Mono<ProgramEntity> result = programRepository.findByIdAndUniversityIdAndFacultyId(program.id() + 1, university.id(), faculty.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+    }
+
+    private ProgramEntity createProgram(String name, FacultyEntity facultyEntity) {
+        ProgramEntity programEntity = ProgramEntity.builder()
+                                                   .name(name)
+                                                   .abbrev("abbrev")
+                                                   .facultyId(facultyEntity.id())
+                                                   .build();
+        return programRepository.save(programEntity).block();
+    }
+
+    private FacultyEntity createFaculty(String name, UniversityEntity universityEntity) {
+        FacultyEntity facultyEntity = FacultyEntity.builder()
+                                                   .universityId(universityEntity.id())
+                                                   .name(name)
+                                                   .address("address")
+                                                   .build();
+        return facultyRepository.save(facultyEntity).block();
+    }
+
+    private UniversityEntity createUniversity() {
+        UniversityEntity universityEntity = UniversityEntity.builder()
+                                                            .name("name")
+                                                            .address("Some address")
+                                                            .zipcode("00000")
+                                                            .city("city")
+                                                            .country("country")
+                                                            .websiteUrl("url")
+                                                            .build();
+        return universityRepository.save(universityEntity).block();
+    }
+}

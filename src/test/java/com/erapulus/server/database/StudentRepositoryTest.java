@@ -76,7 +76,7 @@ class StudentRepositoryTest {
     }
 
     @Test
-    void findById_shouldReturnStudentEntityWhenStudentFound() {
+    void findByIdAndType_shouldReturnStudentEntityWhenStudentFound() {
         // given
         var studentEntity1 = createStudent(EMAIL_1);
         var studentEntity2 = createStudent(EMAIL_2);
@@ -93,9 +93,9 @@ class StudentRepositoryTest {
     }
 
     @Test
-    void findById_shouldReturnEmptyMonoWhenNoStudentFound() {
+    void findByIdAndType_shouldReturnEmptyMonoWhenNoStudentFound() {
         // given
-        var studentEntity1 = createStudent(EMAIL_1);
+        var studentEntity = createStudent(EMAIL_1);
         var employeeEntity = createEmployee(EMAIL_2);
 
         // when

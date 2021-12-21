@@ -36,10 +36,10 @@ public class ProgramService extends CrudGenericService<ProgramEntity, ProgramReq
 
     public Mono<PageablePayload<ProgramResponseDto>> listEntities(int universityId, int facultyId, PageRequest pageRequest) {
         return checkIfFacultyExists(universityId, facultyId)
-                .then(programRepository.findByFaculty(facultyId, pageRequest.getOffset(), pageRequest.getPageSize())
+                .then(programRepository.findByFacultyId(facultyId, pageRequest.getOffset(), pageRequest.getPageSize())
                                        .map(entityToResponseDtoMapper::from)
                                        .collectList()
-                                       .zipWith(programRepository.countByFaculty(facultyId))
+                                       .zipWith(programRepository.countByFacultyId(facultyId))
                                        .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
     }
 

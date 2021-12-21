@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import com.erapulus.server.database.model.UniversityEntity;
 import com.erapulus.server.database.repository.UniversityRepository;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ class PostRepositoryTest {
     }
 
     @Test
-    void findPostByFiltersByTitleTest() {
+    void findPostByFilters_shouldReturnPostEntityWhenFriendsFound() {
         // given
         var university = createUniversity(UNIVERSITY_1);
         var post1 = createPost(TITLE_1, DATE_1, university);
@@ -61,7 +62,7 @@ class PostRepositoryTest {
     }
 
     @Test
-    void findPostByFiltersByDateTest() {
+    void findPostByFilters_shouldReturnPostEntityWhenDatesGivenFound() {
         // given
         var university = createUniversity(UNIVERSITY_1);
         var post1 = createPost(TITLE_1, DATE_1, university);
@@ -81,7 +82,7 @@ class PostRepositoryTest {
     }
 
     @Test
-    void findPostByFiltersPaginationTest() {
+    void findPostByFilters_shouldReturnModulesWhenSecondPageRequested() {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
@@ -104,7 +105,7 @@ class PostRepositoryTest {
     }
 
     @Test
-    void countPostByFilters() {
+    void countPostByFilters_shouldReturnPostNumberForGivenUniversity() {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
@@ -125,6 +126,58 @@ class PostRepositoryTest {
                     .verifyComplete();
     }
 
+    @Test
+    void findByIdAndUniversityId_shouldReturnPostWhenUniversityAndIdExists() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var post1 = createPost(TITLE_1, DATE_1, university1);
+        var post2 = createPost(TITLE_2, DATE_1, university1);
+        var post3 = createPost(TITLE_1, DATE_1, university2);
+        var post4 = createPost(TITLE_2, DATE_1, university2);
+
+        // when
+        Mono<PostEntity> result = postRepository.findByIdAndUniversityId(post1.id(), university1.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(facultyFromDatabase -> assertEquals(post1.id(), facultyFromDatabase.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityId_shouldReturnEmptyMonoWhenWrongUniversity() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var post1 = createPost(TITLE_1, DATE_1, university1);
+        var post2 = createPost(TITLE_1, DATE_1, university2);
+
+        // when
+        Mono<PostEntity> result = postRepository.findByIdAndUniversityId(post1.id(), university2.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByIdAndUniversityId_shouldReturnEmptyMonoWhenWrongId() {
+        // given
+        var university = createUniversity(UNIVERSITY_1);
+        var post = createPost(TITLE_1, DATE_1, university);
+
+        // when
+        Mono<PostEntity> result = postRepository.findByIdAndUniversityId(post.id() + 1, university.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+    }
+
     private UniversityEntity createUniversity(String name) {
         var universityEntity = UniversityEntity.builder()
                                                .name(name)
@@ -137,10 +190,10 @@ class PostRepositoryTest {
         return universityRepository.save(universityEntity).block();
     }
 
-    private PostEntity createPost(String title, LocalDate date, UniversityEntity university) {
+    private PostEntity createPost(String title, LocalDate date, UniversityEntity universityEntity) {
         var postEntity = PostEntity.builder()
                                    .title(title)
-                                   .universityId(university.id())
+                                   .universityId(universityEntity.id())
                                    .date(date)
                                    .content("Content")
                                    .build();
