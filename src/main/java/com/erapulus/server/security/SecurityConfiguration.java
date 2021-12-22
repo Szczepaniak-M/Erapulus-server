@@ -6,6 +6,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -51,6 +52,7 @@ public class SecurityConfiguration {
                    // Paths
                    .authorizeExchange()
                    .pathMatchers(WHITE_LIST).permitAll()
+                   .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                    .pathMatchers("/api/user/login/**", "/api/user/register/**").permitAll()
                    .pathMatchers("/api/**").authenticated()
                    .and()
