@@ -82,7 +82,7 @@ class ApplicationApplicationUserRepositoryTest {
         var user3 = createUser(FIRST_NAME_1, LAST_NAME_2, UserType.ADMINISTRATOR, EMAIL_3, null);
 
         // when
-        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(university1.id(), null, null, 0, 3);
+        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(university1.id(), null, null, null,0, 3);
 
         // then
         StepVerifier.create(result)
@@ -103,7 +103,7 @@ class ApplicationApplicationUserRepositoryTest {
         var user3 = createUser(FIRST_NAME_1, LAST_NAME_2, UserType.ADMINISTRATOR, EMAIL_3, null);
 
         // when
-        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, UserType.EMPLOYEE, null, 0, 3);
+        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, UserType.EMPLOYEE, null, null, 0, 3);
 
         // then
         StepVerifier.create(result)
@@ -122,10 +122,10 @@ class ApplicationApplicationUserRepositoryTest {
         var user1 = createUser(FIRST_NAME_1, LAST_NAME_1, UserType.STUDENT, EMAIL_1, university1.id());
         var user2 = createUser(FIRST_NAME_2, LAST_NAME_2, UserType.EMPLOYEE, EMAIL_2, university2.id());
         var user3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
-        String commonPart = "john";
+        String commonPart = "ohn";
 
         // when
-        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, null, commonPart, 0, 3);
+        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, null, commonPart, null, 0, 3);
 
         // then
         StepVerifier.create(result)
@@ -133,6 +133,28 @@ class ApplicationApplicationUserRepositoryTest {
                     .thenConsumeWhile(x -> true)
                     .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 2)
                     .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(user1.id(), user2.id())))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByFilters_shouldReturnUserWhenEmailGiven() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var user1 = createUser(FIRST_NAME_1, LAST_NAME_1, UserType.STUDENT, EMAIL_1, university1.id());
+        var user2 = createUser(FIRST_NAME_2, LAST_NAME_2, UserType.EMPLOYEE, EMAIL_2, university2.id());
+        var user3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
+        String emailPart = "example3";
+
+        // when
+        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, null, null, emailPart, 0, 3);
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().contains(user3.id()))
                     .verifyComplete();
     }
 
@@ -146,7 +168,7 @@ class ApplicationApplicationUserRepositoryTest {
         var user3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
 
         // when
-        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, null, null, 2, 2);
+        Flux<ApplicationUserEntity> result = applicationUserRepository.findAllByFilters(null, null, null, null, 2, 2);
 
         // then
         StepVerifier.create(result)
@@ -168,7 +190,7 @@ class ApplicationApplicationUserRepositoryTest {
         int expectedResult = 1;
 
         // when
-        Mono<Integer> result = applicationUserRepository.countByFilters(university1.id(), null, null);
+        Mono<Integer> result = applicationUserRepository.countByFilters(university1.id(), null, null, null);
 
         // then
         StepVerifier.create(result)
@@ -188,7 +210,7 @@ class ApplicationApplicationUserRepositoryTest {
         int expectedResult = 1;
 
         // when
-        Mono<Integer> result = applicationUserRepository.countByFilters(null, UserType.EMPLOYEE, null);
+        Mono<Integer> result = applicationUserRepository.countByFilters(null, UserType.EMPLOYEE, null, null);
 
         // then
         StepVerifier.create(result)
@@ -209,7 +231,28 @@ class ApplicationApplicationUserRepositoryTest {
         int expectedResult = 2;
 
         // when
-        Mono<Integer> result = applicationUserRepository.countByFilters(null, null, commonPart);
+        Mono<Integer> result = applicationUserRepository.countByFilters(null, null, commonPart, null);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(postCount -> assertEquals(expectedResult, postCount))
+                    .verifyComplete();
+    }
+
+    @Test
+    void countByFilters_shouldReturnUserWhenEmailGiven() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var user1 = createUser(FIRST_NAME_1, LAST_NAME_1, UserType.STUDENT, EMAIL_1, university1.id());
+        var user2 = createUser(FIRST_NAME_2, LAST_NAME_2, UserType.EMPLOYEE, EMAIL_2, university2.id());
+        var user3 = createUser(FIRST_NAME_2, LAST_NAME_1, UserType.ADMINISTRATOR, EMAIL_3, null);
+        String commonEmail = "example2";
+        int expectedResult = 1;
+
+        // when
+        Mono<Integer> result = applicationUserRepository.countByFilters(null, null, null, commonEmail);
 
         // then
         StepVerifier.create(result)
@@ -229,7 +272,7 @@ class ApplicationApplicationUserRepositoryTest {
         int expectedResult = 3;
 
         // when
-        Mono<Integer> result = applicationUserRepository.countByFilters(null, null, null);
+        Mono<Integer> result = applicationUserRepository.countByFilters(null, null, null, null);
 
         // then
         StepVerifier.create(result)

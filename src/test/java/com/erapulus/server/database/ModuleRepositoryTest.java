@@ -26,6 +26,7 @@ class ModuleRepositoryTest {
 
     private static final String MODULE_1 = "module1";
     private static final String MODULE_2 = "module2";
+    private static final String MODULE_22 = "module22";
     private static final String MODULE_3 = "module3";
     private static final String PROGRAM_1 = "program1";
     private static final String PROGRAM_2 = "program2";
@@ -51,7 +52,7 @@ class ModuleRepositoryTest {
     }
 
     @Test
-    void findByProgramId_shouldReturnModulesForGivenProgram() {
+    void findByProgramIdAndName_shouldReturnModulesForGivenProgram() {
         // given
         var faculty = createFaculty();
         var program1 = createProgram(PROGRAM_1, faculty);
@@ -63,7 +64,7 @@ class ModuleRepositoryTest {
         var pageRequest = PageRequest.of(0, 4);
 
         // when
-        var result = moduleRepository.findByProgramId(program1.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = moduleRepository.findByProgramIdAndName(program1.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -75,7 +76,31 @@ class ModuleRepositoryTest {
     }
 
     @Test
-    void findByProgramId_shouldReturnModulesWhenSecondPageRequested() {
+    void findByProgramIdAndName_shouldReturnModulesForGivenProgramAndName() {
+        // given
+        var faculty = createFaculty();
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_2, faculty);
+        var module1 = createModule(MODULE_1, program1);
+        var module2 = createModule(MODULE_22, program1);
+        var module3 = createModule(MODULE_1, program2);
+        var module4 = createModule(MODULE_2, program2);
+        var pageRequest = PageRequest.of(0, 4);
+
+        // when
+        var result = moduleRepository.findByProgramIdAndName(program1.id(), MODULE_2, pageRequest.getOffset(), pageRequest.getPageSize());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(modules -> modules.stream().map(ModuleEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(modules -> modules.stream().map(ModuleEntity::id).toList().contains(module2.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByProgramIdAndName_shouldReturnModulesWhenSecondPageRequested() {
         // given
         var faculty = createFaculty();
         var program = createProgram(PROGRAM_1, faculty);
@@ -85,7 +110,7 @@ class ModuleRepositoryTest {
         var pageRequest = PageRequest.of(1, 2);
 
         // when
-        var result = moduleRepository.findByProgramId(program.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = moduleRepository.findByProgramIdAndName(program.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -97,7 +122,7 @@ class ModuleRepositoryTest {
     }
 
     @Test
-    void countByProgramId_shouldReturnModuleNumberForGivenProgram() {
+    void countByProgramIdAndName_shouldReturnModuleNumberForGivenProgram() {
         // given
         var faculty = createFaculty();
         var program = createProgram(PROGRAM_1, faculty);
@@ -106,7 +131,26 @@ class ModuleRepositoryTest {
         int expectedResult = 2;
 
         // when
-        var result = moduleRepository.countByProgramId(program.id());
+        var result = moduleRepository.countByProgramIdAndName(program.id(), null);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(moduleCount -> assertEquals(expectedResult, moduleCount))
+                    .verifyComplete();
+    }
+
+    @Test
+    void countByProgramIdAndName_shouldReturnModuleNumberForGivenProgramAndName() {
+        // given
+        var faculty = createFaculty();
+        var program = createProgram(PROGRAM_1, faculty);
+        var module1 = createModule(MODULE_1, program);
+        var module2 = createModule(MODULE_22, program);
+        int expectedResult = 1;
+
+        // when
+        var result = moduleRepository.countByProgramIdAndName(program.id(), MODULE_2);
 
         // then
         StepVerifier.create(result)

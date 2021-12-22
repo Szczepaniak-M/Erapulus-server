@@ -215,7 +215,7 @@ class StudentRepositoryTest {
         createFriend(studentEntity1, studentEntity2, FriendshipStatus.ACCEPTED);
         createFriend(studentEntity1, studentEntity3, FriendshipStatus.ACCEPTED);
         createFriend(studentEntity1, studentEntity4, FriendshipStatus.ACCEPTED);
-        String commonPart = "john";
+        String commonPart = "ohn";
         int expectedResult = 2;
 
         // when

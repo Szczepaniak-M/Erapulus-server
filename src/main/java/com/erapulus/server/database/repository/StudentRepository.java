@@ -20,7 +20,8 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
     @Query("""
             SELECT id, first_name, last_name, picture_url
             FROM application_user AS a
-            WHERE (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT(:name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT(:name, '%')))
+            WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
+                                 OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
             AND EXISTS(SELECT 1 FROM friendship AS f
                          WHERE f.application_user = :studentId
                          AND f.status = 'ACCEPTED'
@@ -36,7 +37,8 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
     @Query("""
             SELECT COUNT(*)
             FROM application_user AS a
-            WHERE (:name IS NULL OR LOWER(first_name) LIKE LOWER(CONCAT(:name, '%')) OR LOWER(last_name) LIKE LOWER(CONCAT(:name, '%')))
+            WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
+                                 OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
             AND EXISTS(SELECT 1 FROM friendship AS f
                          WHERE f.application_user = :studentId
                          AND f.status = 'ACCEPTED'

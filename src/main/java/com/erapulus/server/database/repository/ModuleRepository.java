@@ -13,18 +13,22 @@ public interface ModuleRepository extends R2dbcRepository<ModuleEntity, Integer>
     @Query("""
             SELECT * FROM module
             WHERE program = :program
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             ORDER BY name OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<ModuleEntity> findByProgramId(@Param("program") int programId,
-                                       @Param("offset") long offset,
-                                       @Param("size") int pageSize);
+    Flux<ModuleEntity> findByProgramIdAndName(@Param("program") int programId,
+                                              @Param("name") String name,
+                                              @Param("offset") long offset,
+                                              @Param("size") int pageSize);
 
     @Query("""
             SELECT COUNT(*) FROM module
             WHERE program = :program
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             """)
-    Mono<Integer> countByProgramId(@Param("program") int programId);
+    Mono<Integer> countByProgramIdAndName(@Param("program") int programId,
+                                          @Param("name") String name);
 
     @Query("SELECT * FROM module WHERE id = :id AND program = :program")
     Mono<ModuleEntity> findByIdAndProgramId(@Param("id") int moduleId,

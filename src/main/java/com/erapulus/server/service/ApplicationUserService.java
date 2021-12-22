@@ -19,21 +19,23 @@ public class ApplicationUserService {
     private final ApplicationUserRepository applicationUserRepository;
     private final ApplicationUserEntityToDtoMapper applicationUserEntityToDtoMapper;
 
-    public Mono<PageablePayload<ApplicationUserDto>> listEntities(String universityId, String userType, String name, PageRequest pageRequest) {
+    public Mono<PageablePayload<ApplicationUserDto>> listEntities(String universityId, String userType, String name, String email, PageRequest pageRequest) {
         Integer universityParsed;
         UserType userTypeParsed;
         String nameParsed;
+        String emailParsed;
         try {
             universityParsed = parseInteger(universityId);
             userTypeParsed = parseUseType(userType);
             nameParsed = parseString(name);
+            emailParsed = parseString(email);
         } catch (IllegalArgumentException e) {
             return Mono.error(new IllegalArgumentException());
         }
-        return applicationUserRepository.findAllByFilters(universityParsed, userTypeParsed, nameParsed, pageRequest.getOffset(), pageRequest.getPageSize())
+        return applicationUserRepository.findAllByFilters(universityParsed, userTypeParsed, nameParsed, emailParsed, pageRequest.getOffset(), pageRequest.getPageSize())
                                         .map(applicationUserEntityToDtoMapper::from)
                                         .collectList()
-                                        .zipWith(applicationUserRepository.countByFilters(universityParsed, userTypeParsed, nameParsed))
+                                        .zipWith(applicationUserRepository.countByFilters(universityParsed, userTypeParsed, nameParsed, emailParsed))
                                         .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
     }
 

@@ -38,6 +38,7 @@ public class ApplicationUserController {
                     @Parameter(in = QUERY, name = UNIVERSITY_QUERY_PARAM, schema = @Schema(type = "integer")),
                     @Parameter(in = QUERY, name = TYPE_QUERY_PARAM, schema = @Schema(type = "string")),
                     @Parameter(in = QUERY, name = NAME_QUERY_PARAM, schema = @Schema(type = "string")),
+                    @Parameter(in = QUERY, name = EMAIL_QUERY_PARAM, schema = @Schema(type = "string")),
                     @Parameter(in = QUERY, name = PAGE_QUERY_PARAM, schema = @Schema(type = "integer")),
                     @Parameter(in = QUERY, name = PAGE_SIZE_QUERY_PARAM, schema = @Schema(type = "integer"))
             },
@@ -52,11 +53,12 @@ public class ApplicationUserController {
     public Mono<ServerResponse> listApplicationUsers(ServerRequest request) {
         return withQueryParam(request, UNIVERSITY_QUERY_PARAM,
                 universityId -> withQueryParam(request, TYPE_QUERY_PARAM,
-                        userType -> withQueryParam(request, NAME_QUERY_PARAM,
-                                name -> withPageParams(request,
-                                        pageRequest -> applicationUserService.listEntities(universityId, userType, name, pageRequest)
-                                                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                             .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse())
-                                                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
+                        userType -> withQueryParam(request, EMAIL_QUERY_PARAM,
+                                email -> withQueryParam(request, NAME_QUERY_PARAM,
+                                        name -> withPageParams(request,
+                                                pageRequest -> applicationUserService.listEntities(universityId, userType, name, email, pageRequest)
+                                                                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                                                     .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse())
+                                                                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
     }
 }

@@ -24,8 +24,7 @@ import java.util.NoSuchElementException;
 
 import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
-import static com.erapulus.server.web.controller.ControllerUtils.withPageParams;
-import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
+import static com.erapulus.server.web.controller.ControllerUtils.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -45,6 +44,7 @@ public class ModuleController {
                     @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
                     @Parameter(in = PATH, name = FACULTY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
                     @Parameter(in = PATH, name = PROGRAM_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = QUERY, name = NAME_QUERY_PARAM, schema = @Schema(type = "string")),
                     @Parameter(in = QUERY, name = PAGE_QUERY_PARAM, schema = @Schema(type = "integer")),
                     @Parameter(in = QUERY, name = PAGE_SIZE_QUERY_PARAM, schema = @Schema(type = "integer"))
             },
@@ -60,10 +60,11 @@ public class ModuleController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
-                                programId -> withPageParams(request,
-                                        pageRequest -> moduleService.listEntities(universityId, facultyId, programId, pageRequest)
-                                                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
+                                programId -> withQueryParam(request, NAME_QUERY_PARAM,
+                                        name -> withPageParams(request,
+                                                pageRequest -> moduleService.listEntities(universityId, facultyId, programId, name, pageRequest)
+                                                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
     }
 
     @NonNull

@@ -14,18 +14,22 @@ public interface FacultyRepository extends R2dbcRepository<FacultyEntity, Intege
     @Query("""
             SELECT * FROM faculty
             WHERE university = :university
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             ORDER BY name OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<FacultyEntity> findByUniversityId(@Param("university") int universityId,
-                                           @Param("offset") long offset,
-                                           @Param("size") int pageSize);
+    Flux<FacultyEntity> findByUniversityIdAndName(@Param("university") int universityId,
+                                                  @Param("name") String name,
+                                                  @Param("offset") long offset,
+                                                  @Param("size") int pageSize);
 
     @Query("""
             SELECT COUNT(*) FROM faculty
             WHERE university = :university
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             """)
-    Mono<Integer> countByUniversityId(@Param("university") int universityId);
+    Mono<Integer> countByUniversityIdAndName(@Param("university") int universityId,
+                                             @Param("name") String name);
 
     @Query("SELECT * FROM faculty WHERE id = :facultyId AND university = :universityId")
     Mono<FacultyEntity> findByIdAndUniversityId(@Param("facultyId") int facultyId,

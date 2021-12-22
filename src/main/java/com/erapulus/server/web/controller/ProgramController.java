@@ -23,8 +23,7 @@ import java.util.NoSuchElementException;
 
 import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
-import static com.erapulus.server.web.controller.ControllerUtils.withPageParams;
-import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
+import static com.erapulus.server.web.controller.ControllerUtils.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -44,6 +43,7 @@ public class ProgramController {
             parameters = {
                     @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
                     @Parameter(in = PATH, name = FACULTY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = QUERY, name = NAME_QUERY_PARAM, schema = @Schema(type = "string")),
                     @Parameter(in = QUERY, name = PAGE_QUERY_PARAM, schema = @Schema(type = "integer")),
                     @Parameter(in = QUERY, name = PAGE_SIZE_QUERY_PARAM, schema = @Schema(type = "integer"))
             },
@@ -58,10 +58,11 @@ public class ProgramController {
     public Mono<ServerResponse> listPrograms(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
-                        facultyId -> withPageParams(request,
-                                pageRequest -> programService.listEntities(universityId, facultyId, pageRequest)
-                                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
+                        facultyId -> withQueryParam(request, NAME_QUERY_PARAM,
+                                name -> withPageParams(request,
+                                        pageRequest -> programService.listEntities(universityId, facultyId, name, pageRequest)
+                                                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
     }
 
     @NonNull

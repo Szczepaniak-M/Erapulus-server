@@ -15,6 +15,8 @@ import reactor.core.publisher.Mono;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static com.erapulus.server.service.QueryParamParser.parseString;
+
 @Service
 @Validated
 public class FacultyService extends CrudGenericService<FacultyEntity, FacultyRequestDto, FacultyResponseDto> {
@@ -28,11 +30,12 @@ public class FacultyService extends CrudGenericService<FacultyEntity, FacultyReq
         this.facultyRepository = facultyRepository;
     }
 
-    public Mono<PageablePayload<FacultyResponseDto>> listEntities(int universityId, PageRequest pageRequest) {
-        return facultyRepository.findByUniversityId(universityId, pageRequest.getOffset(), pageRequest.getPageSize())
+    public Mono<PageablePayload<FacultyResponseDto>> listEntities(int universityId, String name, PageRequest pageRequest) {
+        String parsedName = parseString(name);
+        return facultyRepository.findByUniversityIdAndName(universityId, parsedName, pageRequest.getOffset(), pageRequest.getPageSize())
                                 .map(entityToResponseDtoMapper::from)
                                 .collectList()
-                                .zipWith(facultyRepository.countByUniversityId(universityId))
+                                .zipWith(facultyRepository.countByUniversityIdAndName(universityId, parsedName))
                                 .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
     }
 

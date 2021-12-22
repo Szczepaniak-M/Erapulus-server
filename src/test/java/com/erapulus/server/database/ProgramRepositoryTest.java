@@ -1,7 +1,6 @@
 package com.erapulus.server.database;
 
 import com.erapulus.server.database.model.FacultyEntity;
-import com.erapulus.server.database.model.ModuleEntity;
 import com.erapulus.server.database.model.ProgramEntity;
 import com.erapulus.server.database.model.UniversityEntity;
 import com.erapulus.server.database.repository.FacultyRepository;
@@ -27,6 +26,7 @@ class ProgramRepositoryTest {
     private static final String FACULTY_2 = "faculty2";
     private static final String PROGRAM_1 = "program1";
     private static final String PROGRAM_2 = "program2";
+    private static final String PROGRAM_21 = "program21";
     private static final String PROGRAM_3 = "program3";
 
     @Autowired
@@ -46,7 +46,7 @@ class ProgramRepositoryTest {
     }
 
     @Test
-    void findByFacultyId_shouldReturnProgramForGivenFaculty() {
+    void findByFacultyIdAndName_shouldReturnProgramForGivenFaculty() {
         // given
         var university = createUniversity();
         var faculty1 = createFaculty(FACULTY_1, university);
@@ -58,7 +58,7 @@ class ProgramRepositoryTest {
         var pageRequest = PageRequest.of(0, 4);
 
         // when
-        var result = programRepository.findByFacultyId(faculty1.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = programRepository.findByFacultyIdAndName(faculty1.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -70,7 +70,31 @@ class ProgramRepositoryTest {
     }
 
     @Test
-    void findByFacultyId_shouldReturnProgramsWhenSecondPageRequested() {
+    void findByFacultyIdAndName_shouldReturnProgramForGivenFacultyAndName() {
+        // given
+        var university = createUniversity();
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program1 = createProgram(PROGRAM_1, faculty1);
+        var program2 = createProgram(PROGRAM_21, faculty1);
+        var program3 = createProgram(PROGRAM_1, faculty2);
+        var program4 = createProgram(PROGRAM_2, faculty2);
+        var pageRequest = PageRequest.of(0, 4);
+
+        // when
+        var result = programRepository.findByFacultyIdAndName(faculty1.id(), PROGRAM_2, pageRequest.getOffset(), pageRequest.getPageSize());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().contains(program2.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByFacultyIdAndName_shouldReturnProgramsWhenSecondPageRequested() {
         // given
         var university = createUniversity();
         var faculty = createFaculty(FACULTY_1, university);
@@ -80,7 +104,7 @@ class ProgramRepositoryTest {
         var pageRequest = PageRequest.of(1, 2);
 
         // when
-        var result = programRepository.findByFacultyId(faculty.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = programRepository.findByFacultyIdAndName(faculty.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -92,7 +116,7 @@ class ProgramRepositoryTest {
     }
 
     @Test
-    void countByFacultyId_shouldReturnProgramNumberForGivenFaculty() {
+    void countByFacultyIdAndName_shouldReturnProgramNumberForGivenFaculty() {
         // given
         var university = createUniversity();
         var faculty = createFaculty(FACULTY_1, university);
@@ -101,7 +125,26 @@ class ProgramRepositoryTest {
         int expectedResult = 2;
 
         // when
-        var result = programRepository.countByFacultyId(faculty.id());
+        var result = programRepository.countByFacultyIdAndName(faculty.id(), null);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(moduleCount -> assertEquals(expectedResult, moduleCount))
+                    .verifyComplete();
+    }
+
+    @Test
+    void countByFacultyIdAndName_shouldReturnProgramNumberForGivenFacultyAndName() {
+        // given
+        var university = createUniversity();
+        var faculty = createFaculty(FACULTY_1, university);
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_21, faculty);
+        int expectedResult = 1;
+
+        // when
+        var result = programRepository.countByFacultyIdAndName(faculty.id(), PROGRAM_2);
 
         // then
         StepVerifier.create(result)

@@ -13,18 +13,22 @@ public interface ProgramRepository extends R2dbcRepository<ProgramEntity, Intege
     @Query("""
             SELECT * FROM program
             WHERE faculty = :faculty
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             ORDER BY name OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<ProgramEntity> findByFacultyId(@Param("faculty") int facultyId,
-                                        @Param("offset") long offset,
-                                        @Param("size") int pageSize);
+    Flux<ProgramEntity> findByFacultyIdAndName(@Param("faculty") int facultyId,
+                                               @Param("name") String name,
+                                               @Param("offset") long offset,
+                                               @Param("size") int pageSize);
 
     @Query("""
             SELECT COUNT(*) FROM program
             WHERE faculty = :faculty
+            AND (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT(:name, '%')))
             """)
-    Mono<Integer> countByFacultyId(@Param("faculty") int facultyId);
+    Mono<Integer> countByFacultyIdAndName(@Param("faculty") int facultyId,
+                                          @Param("name") String name);
 
     @Query("""
             SELECT * FROM program p

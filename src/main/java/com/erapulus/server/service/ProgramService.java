@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static com.erapulus.server.service.QueryParamParser.parseString;
+
 @Service
 @Validated
 public class ProgramService extends CrudGenericService<ProgramEntity, ProgramRequestDto, ProgramResponseDto> {
@@ -34,12 +36,13 @@ public class ProgramService extends CrudGenericService<ProgramEntity, ProgramReq
         this.facultyRepository = facultyRepository;
     }
 
-    public Mono<PageablePayload<ProgramResponseDto>> listEntities(int universityId, int facultyId, PageRequest pageRequest) {
+    public Mono<PageablePayload<ProgramResponseDto>> listEntities(int universityId, int facultyId, String name, PageRequest pageRequest) {
+        String parsedName = parseString(name);
         return checkIfFacultyExists(universityId, facultyId)
-                .then(programRepository.findByFacultyId(facultyId, pageRequest.getOffset(), pageRequest.getPageSize())
+                .then(programRepository.findByFacultyIdAndName(facultyId, parsedName, pageRequest.getOffset(), pageRequest.getPageSize())
                                        .map(entityToResponseDtoMapper::from)
                                        .collectList()
-                                       .zipWith(programRepository.countByFacultyId(facultyId))
+                                       .zipWith(programRepository.countByFacultyIdAndName(facultyId, parsedName))
                                        .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
     }
 

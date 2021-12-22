@@ -22,6 +22,7 @@ class FacultyRepositoryTest {
 
     private static final String FACULTY_1 = "faculty1";
     private static final String FACULTY_2 = "faculty2";
+    private static final String FACULTY_21 = "faculty21";
     private static final String FACULTY_3 = "faculty3";
     private static final String UNIVERSITY_1 = "university1";
     private static final String UNIVERSITY_2 = "university2";
@@ -39,7 +40,7 @@ class FacultyRepositoryTest {
     }
 
     @Test
-    void findByUniversityId_shouldReturnFacultiesForGivenUniversity() {
+    void findByUniversityIdAndName_shouldReturnFacultiesForGivenUniversity() {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
@@ -50,7 +51,7 @@ class FacultyRepositoryTest {
         var pageRequest = PageRequest.of(0, 4);
 
         // when
-        var result = facultyRepository.findByUniversityId(university1.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = facultyRepository.findByUniversityIdAndName(university1.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -62,7 +63,30 @@ class FacultyRepositoryTest {
     }
 
     @Test
-    void findByUniversityId_shouldReturnFacultiesWhenSecondPageRequested() {
+    void findByUniversityIdAndName_shouldReturnFacultiesForGivenUniversityAndName() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var faculty1 = createFaculty(FACULTY_1, university1);
+        var faculty2 = createFaculty(FACULTY_21, university1);
+        var faculty3 = createFaculty(FACULTY_1, university2);
+        var faculty4 = createFaculty(FACULTY_2, university2);
+        var pageRequest = PageRequest.of(0, 4);
+
+        // when
+        var result = facultyRepository.findByUniversityIdAndName(university1.id(), FACULTY_2, pageRequest.getOffset(), pageRequest.getPageSize());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(faculties -> faculties.stream().map(FacultyEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(faculties -> faculties.stream().map(FacultyEntity::id).toList().contains(faculty2.id()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void findByUniversityIdAndName_shouldReturnFacultiesWhenSecondPageRequested() {
         // given
         var university = createUniversity(UNIVERSITY_1);
         var faculty1 = createFaculty(FACULTY_1, university);
@@ -71,7 +95,7 @@ class FacultyRepositoryTest {
         var pageRequest = PageRequest.of(1, 2);
 
         // when
-        var result = facultyRepository.findByUniversityId(university.id(), pageRequest.getOffset(), pageRequest.getPageSize());
+        var result = facultyRepository.findByUniversityIdAndName(university.id(), null, pageRequest.getOffset(), pageRequest.getPageSize());
 
         // then
         StepVerifier.create(result)
@@ -83,7 +107,7 @@ class FacultyRepositoryTest {
     }
 
     @Test
-    void countByUniversityId_shouldReturnFacultiesNumberForGivenUniversity() {
+    void countByUniversityIdAndName_shouldReturnFacultiesNumberForGivenUniversity() {
         // given
         var university = createUniversity(UNIVERSITY_1);
         var faculty1 = createFaculty(FACULTY_1, university);
@@ -91,7 +115,25 @@ class FacultyRepositoryTest {
         int expectedResult = 2;
 
         // when
-        var result = facultyRepository.countByUniversityId(university.id());
+        var result = facultyRepository.countByUniversityIdAndName(university.id(), null);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(facultyCount -> assertEquals(expectedResult, facultyCount))
+                    .verifyComplete();
+    }
+
+    @Test
+    void countByUniversityIdAndName_shouldReturnFacultiesNumberForGivenUniversityAndName() {
+        // given
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_21, university);
+        int expectedResult = 1;
+
+        // when
+        var result = facultyRepository.countByUniversityIdAndName(university.id(), FACULTY_2);
 
         // then
         StepVerifier.create(result)
