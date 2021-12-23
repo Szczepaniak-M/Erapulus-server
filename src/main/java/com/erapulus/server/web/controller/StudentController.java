@@ -90,30 +90,6 @@ public class StudentController {
 
     @NonNull
     @Operation(
-            operationId = "delete-student",
-            tags = "Student",
-            description = "Delete student by ID",
-            summary = "Delete student",
-            parameters = @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-            responses = {
-                    @ApiResponse(responseCode = "204", description = NO_CONTENT),
-                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
-                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
-                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
-            }
-    )
-    public Mono<ServerResponse> deleteStudent(ServerRequest request) {
-        return withPathParam(request, STUDENT_PATH_PARAM,
-                studentId -> studentService.deleteEntity(studentId)
-                                           .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
-                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
-    }
-
-    @NonNull
-    @Operation(
             operationId = "list-student-friends",
             tags = "Student",
             summary = "List friends",

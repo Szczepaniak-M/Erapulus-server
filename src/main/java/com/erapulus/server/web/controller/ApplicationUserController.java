@@ -16,16 +16,19 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.NoSuchElementException;
+
 import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
-import static com.erapulus.server.web.controller.ControllerUtils.withPageParams;
-import static com.erapulus.server.web.controller.ControllerUtils.withQueryParam;
+import static com.erapulus.server.web.controller.ControllerUtils.*;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 @RestController
 @AllArgsConstructor
 public class ApplicationUserController {
 
+    private static final String USER = "user";
     private final ApplicationUserService applicationUserService;
 
     @NonNull
@@ -60,5 +63,29 @@ public class ApplicationUserController {
                                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                                      .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse())
                                                                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
+    }
+
+    @NonNull
+    @Operation(
+            operationId = "delete-user",
+            tags = "User",
+            description = "Delete user by ID",
+            summary = "Delete user",
+            parameters = @Parameter(in = PATH, name = USER_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            responses = {
+                    @ApiResponse(responseCode = "204", description = NO_CONTENT),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> deleteApplicationUser(ServerRequest request) {
+        return withPathParam(request, USER_PATH_PARAM,
+                userId -> applicationUserService.deleteEntity(userId)
+                                                .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                                .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(USER))
+                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

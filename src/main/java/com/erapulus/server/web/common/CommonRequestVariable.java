@@ -11,6 +11,7 @@ public class CommonRequestVariable {
     public static final String FACULTY_PATH_PARAM = "facultyId";
     public static final String PROGRAM_PATH_PARAM = "programId";
     public static final String MODULE_PATH_PARAM = "moduleId";
+    public static final String USER_PATH_PARAM = "userId";
     public static final String STUDENT_PATH_PARAM = "studentId";
     public static final String EMPLOYEE_PATH_PARAM = "employeeId";
     public static final String DEVICE_PATH_PARAM = "deviceId";

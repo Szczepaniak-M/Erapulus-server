@@ -7,6 +7,7 @@ import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -32,6 +33,7 @@ public class RegisterController {
             tags = "Employee",
             description = "Create administrator",
             summary = "Create administrator",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = EmployeeCreateRequestDto.class)), required = true),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -57,6 +59,7 @@ public class RegisterController {
             tags = "Employee",
             description = "Create university administrator",
             summary = "Create university administrator",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = EmployeeCreateRequestDto.class)), required = true),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
@@ -82,6 +85,7 @@ public class RegisterController {
             tags = "Employee",
             description = "Create university employee",
             summary = "Create university employee",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = EmployeeCreateRequestDto.class)), required = true),
             responses = {
                     @ApiResponse(responseCode = "201", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),

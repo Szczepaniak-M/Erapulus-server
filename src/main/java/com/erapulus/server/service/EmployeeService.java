@@ -56,12 +56,4 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
                                                                                                                 .universityId(oldEntity.universityId()))))
                    .map(entityToResponseDtoMapper::from);
     }
-
-    @Override
-    public Mono<Boolean> deleteEntity(int employeeId) {
-        return employeeRepository.findByIdAndType(employeeId)
-                                 .switchIfEmpty(Mono.error(new NoSuchElementException()))
-                                 .flatMap(b -> employeeRepository.deleteById(employeeId))
-                                 .thenReturn(true);
-    }
 }

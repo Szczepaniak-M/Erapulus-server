@@ -15,12 +15,10 @@ import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
@@ -55,16 +53,6 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
                                                          .switchIfEmpty(Mono.error(new NoSuchElementException()))
                                                          .flatMap(oldEntity -> studentRepository.save(updatedT.pictureUrl(oldEntity.pictureUrl()))))
                    .map(entityToResponseDtoMapper::from);
-    }
-
-    @Override
-    @Transactional
-    public Mono<Boolean> deleteEntity(int studentId) {
-        // TODO Add deleting Friendship and Devices
-        return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(new NoSuchElementException()))
-                                .flatMap(b -> studentRepository.deleteById(studentId))
-                                .thenReturn(true);
     }
 
     public Mono<PageablePayload<StudentListDto>> listFriends(int studentId, String name, PageRequest pageRequest) {
