@@ -24,4 +24,5 @@ public class CommonRequestVariable {
     public static final String EMAIL_QUERY_PARAM = "email";
     public static final String PAGE_QUERY_PARAM = "page";
     public static final String PAGE_SIZE_QUERY_PARAM = "pageSize";
+    public static final String FILE_QUERY_PARAM = "file";
 }

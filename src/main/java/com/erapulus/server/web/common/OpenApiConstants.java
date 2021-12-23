@@ -27,6 +27,7 @@ public class OpenApiConstants {
     public static final String STUDENT_DETAILS_URL_OPENAPI = "/api/student/{studentId}";
     public static final String STUDENT_LIST_FRIENDS_URL_OPENAPI = "/api/student/{studentId}/friend";
     public static final String STUDENT_UPDATE_UNIVERSITY_URL_OPENAPI = "/api/student/{studentId}/university";
+    public static final String STUDENT_UPDATE_PHOTO_URL_OPENAPI= "/api/student/{studentId}/photo";
 
     // Employee
     public static final String EMPLOYEE_LIST_URL_OPENAPI = "/api/university/{universityId}/employee";

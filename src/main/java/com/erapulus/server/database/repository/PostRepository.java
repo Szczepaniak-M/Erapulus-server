@@ -19,7 +19,7 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
             WHERE university = :university
             AND (:title IS NULL OR LOWER(title) LIKE LOWER(CONCAT('%', :title, '%')))
             AND date BETWEEN :fromDate AND :toDate
-            ORDER BY id OFFSET :offset ROWS
+            ORDER BY id DESC OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
     Flux<PostEntity> findPostByFilters(@Param("university") int universityId,

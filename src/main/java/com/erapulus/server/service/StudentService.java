@@ -14,6 +14,7 @@ import com.erapulus.server.mapper.StudentEntityToListDtoMapper;
 import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
@@ -22,7 +23,7 @@ import javax.validation.Valid;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
-import static com.erapulus.server.service.QueryParamParser.*;
+import static com.erapulus.server.service.QueryParamParser.parseString;
 
 @Service
 @Validated
@@ -30,14 +31,18 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     private final StudentRepository studentRepository;
     private final UniversityRepository universityRepository;
+    private final AzureStorageService azureStorageService;
+    private static final String URL_COMMON_PART = "https://erapulus.blob.core.windows.net/erapulus";
 
     public StudentService(StudentRepository studentRepository,
                           RequestDtoToEntityMapper<StudentRequestDto, StudentEntity> requestDtoToEntityMapper,
                           EntityToResponseDtoMapper<StudentEntity, StudentResponseDto> entityToResponseDtoMapper,
-                          UniversityRepository universityRepository) {
+                          UniversityRepository universityRepository,
+                          AzureStorageService azureStorageService) {
         super(studentRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
         this.studentRepository = studentRepository;
         this.universityRepository = universityRepository;
+        this.azureStorageService = azureStorageService;
     }
 
     public Mono<StudentResponseDto> getEntityById(int studentId) {
@@ -71,7 +76,16 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
                                 .switchIfEmpty(Mono.error(NoSuchParentElementException::new))
                                 .flatMap(student -> universityRepository.existsById(universityDto.universityId())
                                                                         .flatMap(exist -> exist ? Mono.just(student.universityId(universityDto.universityId()))
-                                                                                                : Mono.error(NoSuchElementException::new)))
+                                                                                : Mono.error(NoSuchElementException::new)))
                                 .thenReturn(universityDto);
+    }
+
+    public Mono<Object> updatePhoto(int studentId, FilePart photo) {
+        String filePath = "user/%d/photo/%s".formatted(studentId, photo.filename());
+        return studentRepository.findByIdAndType(studentId)
+                                .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                .flatMap(student -> azureStorageService.uploadFile(photo, filePath)
+                                                                       .then(studentRepository.save(student.pictureUrl(URL_COMMON_PART + filePath))))
+                                .map(entityToResponseDtoMapper::from);
     }
 }

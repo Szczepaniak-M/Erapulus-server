@@ -1,6 +1,9 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.*;
+import com.erapulus.server.dto.StudentResponseDto;
+import com.erapulus.server.dto.UniversityListDto;
+import com.erapulus.server.dto.UniversityRequestDto;
+import com.erapulus.server.dto.UniversityResponseDto;
 import com.erapulus.server.service.UniversityService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,12 +15,14 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
@@ -26,6 +31,7 @@ import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class UniversityController {
@@ -49,6 +55,8 @@ public class UniversityController {
     public Mono<ServerResponse> listUniversities(ServerRequest request) {
         return universityService.listEntities()
                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                .doOnError(e -> log.error(e.getMessage()))
+                                .doOnError(e -> log.error(String.valueOf(e)))
                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 

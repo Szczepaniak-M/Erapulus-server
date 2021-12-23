@@ -16,7 +16,11 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -146,6 +150,42 @@ public class StudentController {
                                     .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("university"))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
+    }
+
+    @NonNull
+    @Operation(
+            operationId = "update-student-photo",
+            tags = "Student",
+            summary = "Update student's photo",
+            description = "Update student's photo",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = StudentUniversityUpdateDto.class)), required = true),
+            parameters = {
+                    @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+                    @Parameter(in = QUERY, name = FILE_QUERY_PARAM, schema = @Schema(type = "file"), required = true)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = StudentUniversityUpdateDto.class)))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> updateStudentPhoto(ServerRequest request) {
+        return withPathParam(request, STUDENT_PATH_PARAM,
+                studentId -> request.body(BodyExtractors.toMultipartData())
+                                    .map(this::extractPhoto)
+                                    .flatMap(photo -> studentService.updatePhoto(studentId, photo))
+                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("university"))
+                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                    .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
+    }
+
+    private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {
+        return (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
+
     }
 }
 
