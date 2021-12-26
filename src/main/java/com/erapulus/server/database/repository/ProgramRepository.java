@@ -33,9 +33,23 @@ public interface ProgramRepository extends R2dbcRepository<ProgramEntity, Intege
     @Query("""
             SELECT * FROM program p
             JOIN faculty f ON p.faculty = f.id
-            WHERE p.id = :program AND f.id = :faculty AND f.university = :university
+            WHERE p.id = :program
+            AND f.id = :faculty
+            AND f.university = :university
             """)
     Mono<ProgramEntity> findByIdAndUniversityIdAndFacultyId(@Param("program") int programId,
                                                             @Param("university") int universityId,
                                                             @Param("faculty") int facultyId);
+
+    @Query("""
+            SELECT CASE WHEN (count(*) > 0) THEN true ELSE false end
+            FROM program p
+            JOIN faculty f ON p.faculty = f.id
+            WHERE p.id = :program
+            AND f.id = :faculty
+            AND f.university = :university
+            """)
+    Mono<Boolean> existsByIdAndUniversityIdAndFacultyId(@Param("program") int programId,
+                                                        @Param("university") int universityId,
+                                                        @Param("faculty") int facultyId);
 }

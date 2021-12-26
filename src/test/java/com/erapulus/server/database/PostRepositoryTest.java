@@ -163,21 +163,6 @@ class PostRepositoryTest {
                     .verifyComplete();
     }
 
-    @Test
-    void findByIdAndUniversityId_shouldReturnEmptyMonoWhenWrongId() {
-        // given
-        var university = createUniversity(UNIVERSITY_1);
-        var post = createPost(TITLE_1, DATE_1, university);
-
-        // when
-        Mono<PostEntity> result = postRepository.findByIdAndUniversityId(post.id() + 1, university.id());
-
-        // then
-        StepVerifier.create(result)
-                    .expectSubscription()
-                    .verifyComplete();
-    }
-
     private UniversityEntity createUniversity(String name) {
         var universityEntity = UniversityEntity.builder()
                                                .name(name)

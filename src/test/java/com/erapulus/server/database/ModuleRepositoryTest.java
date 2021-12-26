@@ -9,6 +9,7 @@ import com.erapulus.server.database.repository.ModuleRepository;
 import com.erapulus.server.database.repository.ProgramRepository;
 import com.erapulus.server.database.repository.UniversityRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +20,7 @@ import reactor.test.StepVerifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ModuleRepositoryTest {
@@ -30,6 +31,10 @@ class ModuleRepositoryTest {
     private static final String MODULE_3 = "module3";
     private static final String PROGRAM_1 = "program1";
     private static final String PROGRAM_2 = "program2";
+    private static final String FACULTY_1 = "faculty1";
+    private static final String FACULTY_2 = "faculty2";
+    private static final String UNIVERSITY_1 = "university1";
+    private static final String UNIVERSITY_2 = "university2";
 
     @Autowired
     private ModuleRepository moduleRepository;
@@ -54,7 +59,8 @@ class ModuleRepositoryTest {
     @Test
     void findByProgramIdAndName_shouldReturnModulesForGivenProgram() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program1 = createProgram(PROGRAM_1, faculty);
         var program2 = createProgram(PROGRAM_2, faculty);
         var module1 = createModule(MODULE_1, program1);
@@ -78,7 +84,8 @@ class ModuleRepositoryTest {
     @Test
     void findByProgramIdAndName_shouldReturnModulesForGivenProgramAndName() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program1 = createProgram(PROGRAM_1, faculty);
         var program2 = createProgram(PROGRAM_2, faculty);
         var module1 = createModule(MODULE_1, program1);
@@ -102,7 +109,8 @@ class ModuleRepositoryTest {
     @Test
     void findByProgramIdAndName_shouldReturnModulesWhenSecondPageRequested() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program = createProgram(PROGRAM_1, faculty);
         var module1 = createModule(MODULE_1, program);
         var module2 = createModule(MODULE_2, program);
@@ -124,7 +132,8 @@ class ModuleRepositoryTest {
     @Test
     void countByProgramIdAndName_shouldReturnModuleNumberForGivenProgram() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program = createProgram(PROGRAM_1, faculty);
         var module1 = createModule(MODULE_1, program);
         var module2 = createModule(MODULE_2, program);
@@ -143,7 +152,8 @@ class ModuleRepositoryTest {
     @Test
     void countByProgramIdAndName_shouldReturnModuleNumberForGivenProgramAndName() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program = createProgram(PROGRAM_1, faculty);
         var module1 = createModule(MODULE_1, program);
         var module2 = createModule(MODULE_22, program);
@@ -162,7 +172,8 @@ class ModuleRepositoryTest {
     @Test
     void findByIdAndProgramId_shouldReturnModuleWhenProgramAndIdExists() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program1 = createProgram(PROGRAM_1, faculty);
         var program2 = createProgram(PROGRAM_2, faculty);
         var module1 = createModule(MODULE_1, program1);
@@ -183,7 +194,8 @@ class ModuleRepositoryTest {
     @Test
     void findByIdAndProgramId_shouldReturnEmptyMonoWhenWrongProgram() {
         // given
-        var faculty = createFaculty();
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program1 = createProgram(PROGRAM_1, faculty);
         var program2 = createProgram(PROGRAM_2, faculty);
         var module1 = createModule(MODULE_1, program1);
@@ -199,18 +211,73 @@ class ModuleRepositoryTest {
     }
 
     @Test
-    void findByIdAndProgramId_shouldReturnEmptyMonoWhenWrongId() {
-        // given
-        var faculty = createFaculty();
+    void existsByIdAndUniversityIdAndFacultyIdAndProgramId_shouldReturnTrueWhenModuleExists() {
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
         var program = createProgram(PROGRAM_1, faculty);
         var module = createModule(MODULE_1, program);
 
         // when
-        Mono<ModuleEntity> result = moduleRepository.findByIdAndProgramId(module.id() + 1, program.id());
+        Mono<Boolean> result = moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(module.id(), university.id(), faculty.id(), program.id());
 
         // then
         StepVerifier.create(result)
                     .expectSubscription()
+                    .assertNext(Assertions::assertTrue)
+                    .verifyComplete();
+    }
+
+    @Test
+    void existsByIdAndUniversityIdAndFacultyIdAndProgramId_shouldReturnFalseWhenProgramNotExists() {
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty = createFaculty(FACULTY_1, university);
+        var program1 = createProgram(PROGRAM_1, faculty);
+        var program2 = createProgram(PROGRAM_2, faculty);
+        var module = createModule(MODULE_1, program1);
+
+        // when
+        Mono<Boolean> result = moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(module.id(), university.id(), faculty.id(), program2.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(Assertions::assertFalse)
+                    .verifyComplete();
+    }
+
+    @Test
+    void existsByIdAndUniversityIdAndFacultyIdAndProgramId_shouldReturnFalseWhenFacultyNotExists() {
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program = createProgram(PROGRAM_1, faculty1);
+        var module = createModule(MODULE_1, program);
+
+        // when
+        Mono<Boolean> result = moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(module.id(), university.id(), faculty2.id(), program.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(Assertions::assertFalse)
+                    .verifyComplete();
+    }
+
+    @Test
+    void existsByIdAndUniversityIdAndFacultyIdAndProgramId_shouldReturnFalseWhenUniversityNotExists() {
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var faculty = createFaculty(FACULTY_1, university1);
+        var program = createProgram(PROGRAM_1, faculty);
+        var module = createModule(MODULE_1, program);
+
+        // when
+        Mono<Boolean> result = moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(module.id(), university2.id(), faculty.id(), program.id());
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(Assertions::assertFalse)
                     .verifyComplete();
     }
 
@@ -232,19 +299,22 @@ class ModuleRepositoryTest {
         return programRepository.save(programEntity).block();
     }
 
-    private FacultyEntity createFaculty() {
+    private UniversityEntity createUniversity(String name) {
         UniversityEntity universityEntity = UniversityEntity.builder()
-                                                            .name("name")
+                                                            .name(name)
                                                             .address("Some address")
                                                             .zipcode("00000")
                                                             .city("city")
                                                             .country("country")
                                                             .websiteUrl("url")
                                                             .build();
-        var savedUniversity = universityRepository.save(universityEntity).block();
+        return universityRepository.save(universityEntity).block();
+    }
+
+    private FacultyEntity createFaculty(String name, UniversityEntity universityEntity) {
         FacultyEntity facultyEntity = FacultyEntity.builder()
-                                                   .universityId(savedUniversity.id())
-                                                   .name("name")
+                                                   .universityId(universityEntity.id())
+                                                   .name(name)
                                                    .address("address")
                                                    .build();
         return facultyRepository.save(facultyEntity).block();

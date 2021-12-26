@@ -27,13 +27,13 @@
             <column name="country" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
-            <column name="website_url" type="VARCHAR(63)">
+            <column name="website_url" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="NVARCHAR(MAX)">
                 <constraints nullable="true"/>
             </column>
-            <column name="logo_url" type="VARCHAR(63)">
+            <column name="logo_url" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
             <column name="primary_color" type="VARCHAR(7)">
@@ -159,7 +159,7 @@
             <column name="description" type="NVARCHAR(MAX)">
                 <constraints nullable="true"/>
             </column>
-            <column name="path" type="VARCHAR(63)">
+            <column name="path" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="university" type="INT">
@@ -197,10 +197,10 @@
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="facebook_url" type="VARCHAR(63)">
+            <column name="facebook_url" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="whats_up_url" type="VARCHAR(63)">
+            <column name="whats_up_url" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
             <column name="instagram_username" type="VARCHAR(63)">
@@ -393,9 +393,9 @@
             <column name="zipcode" type="VARCHAR(31)"/>
             <column name="city" type="NVARCHAR(63)"/>
             <column name="country" type="NVARCHAR(63)"/>
-            <column name="website_url" type="VARCHAR(63)"/>
+            <column name="website_url" type="VARCHAR(255)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
-            <column name="logo_url" type="VARCHAR(63)"/>
+            <column name="logo_url" type="VARCHAR(255)"/>
             <column name="primary_color" type="VARCHAR(7)"/>
             <column name="secondary_color" type="VARCHAR(7)"/>
             <column name="last_modified_by" type="INT"/>
@@ -413,7 +413,7 @@
             <column name="id" type="INT"/>
             <column name="name" type="NVARCHAR(255)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
-            <column name="path" type="VARCHAR(64)"/>
+            <column name="path" type="VARCHAR(255)"/>
             <column name="university" type="INT"/>
             <column name="program" type="INT"/>
             <column name="module" type="INT"/>
@@ -436,8 +436,8 @@
             <column name="email" type="VARCHAR(63)"/>
             <column name="phone_number" type="VARCHAR(15)"/>
             <column name="password" type="VARCHAR(255)"/>
-            <column name="facebook_url" type="VARCHAR(63)"/>
-            <column name="whats_up_url" type="VARCHAR(63)"/>
+            <column name="facebook_url" type="VARCHAR(255)"/>
+            <column name="whats_up_url" type="VARCHAR(255)"/>
             <column name="instagram_username" type="VARCHAR(63)"/>
             <column name="picture_url" type="VARCHAR(255)"/>
             <column name="university" type="int"/>

@@ -96,21 +96,6 @@ class DeviceRepositoryTest {
                     .verifyComplete();
     }
 
-    @Test
-    void findByIdAndStudentId_shouldReturnEmptyMonoWhenWrongId() {
-        // given
-        var student = createStudent(STUDENT_1);
-        var device = createDevice(DEVICE_ID_1, student);
-
-        // when
-        Mono<DeviceEntity> result = deviceRepository.findByIdAndStudentId(device.id() + 1, student.id());
-
-        // then
-        StepVerifier.create(result)
-                    .expectSubscription()
-                    .verifyComplete();
-    }
-
     private DeviceEntity createDevice(String deviceId, StudentEntity student) {
         DeviceEntity deviceEntity = DeviceEntity.builder()
                                                 .name("name")

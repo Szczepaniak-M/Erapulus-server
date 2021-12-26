@@ -33,4 +33,19 @@ public interface ModuleRepository extends R2dbcRepository<ModuleEntity, Integer>
     @Query("SELECT * FROM module WHERE id = :id AND program = :program")
     Mono<ModuleEntity> findByIdAndProgramId(@Param("id") int moduleId,
                                             @Param("program") int programId);
+
+    @Query("""
+            SELECT CASE WHEN (count(*) > 0) THEN true ELSE false end
+            FROM module m
+            JOIN program p ON m.program = p.id
+            JOIN faculty f ON p.faculty = f.id
+            WHERE m.id = :module
+            AND p.id = :program
+            AND f.id = :faculty
+            AND f.university = :university
+            """)
+    Mono<Boolean> existsByIdAndUniversityIdAndFacultyIdAndProgramId(@Param("module") int moduleId,
+                                                                    @Param("university") int universityId,
+                                                                    @Param("faculty") int facultyId,
+                                                                    @Param("program") int programId);
 }

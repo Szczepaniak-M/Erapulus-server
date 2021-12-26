@@ -36,13 +36,12 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
 
     @Query("""
             SELECT COUNT(*)
-            FROM application_user AS a
+            FROM application_user a
+            JOIN friendship f ON a.id = f.friend
             WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
                                  OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
-            AND EXISTS(SELECT 1 FROM friendship AS f
-                         WHERE f.application_user = :studentId
-                         AND f.status = 'ACCEPTED'
-                         AND a.id = f.friend)
+            AND f.application_user = :studentId
+            AND f.status = 'ACCEPTED'
             """)
     Mono<Integer> countFriendsByIdAndFilters(@Param("studentId") int studentId,
                                              @Param("name") String name);

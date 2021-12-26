@@ -62,4 +62,10 @@ public class OpenApiConstants {
     // Device
     public static final String DEVICE_BASE_URL_OPENAPI = "/api/student/{studentId}/device";
     public static final String DEVICE_DETAILS_URL_OPENAPI = "/api/student/{studentId}/device/{deviceId}";
+
+    // Document
+    public static final String DOCUMENT_UNIVERSITY_BASE_URL_OPENAPI = "/api/university/{universityId}/document";
+    public static final String DOCUMENT_PROGRAM_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/document";
+    public static final String DOCUMENT_MODULE_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document";
+
 }

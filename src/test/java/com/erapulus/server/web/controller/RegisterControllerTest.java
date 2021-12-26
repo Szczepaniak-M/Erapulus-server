@@ -73,7 +73,7 @@ class RegisterControllerTest {
                     "type":"EMPLOYEE",
                     "firstName":"firstName",
                     "lastName":"lastName",
-                    "university":2,
+                    "universityId":2,
                     "email":"example@gmail.com",
                     "phoneNumber":"+48123456789"
                   },

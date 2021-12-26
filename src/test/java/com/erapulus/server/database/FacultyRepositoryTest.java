@@ -179,21 +179,6 @@ class FacultyRepositoryTest {
                     .verifyComplete();
     }
 
-    @Test
-    void findByIdAndUniversityId_shouldReturnEmptyMonoWhenWrongId() {
-        // given
-        var university = createUniversity(UNIVERSITY_1);
-        var faculty = createFaculty(FACULTY_1, university);
-
-        // when
-        Mono<FacultyEntity> result = facultyRepository.findByIdAndUniversityId(faculty.id() + 1, university.id());
-
-        // then
-        StepVerifier.create(result)
-                    .expectSubscription()
-                    .verifyComplete();
-    }
-
     private UniversityEntity createUniversity(String name) {
         UniversityEntity universityEntity = UniversityEntity.builder()
                                                             .name(name)
