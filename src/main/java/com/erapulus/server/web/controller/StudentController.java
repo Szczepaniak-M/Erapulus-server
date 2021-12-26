@@ -1,9 +1,6 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.PostResponseDto;
-import com.erapulus.server.dto.StudentRequestDto;
-import com.erapulus.server.dto.StudentResponseDto;
-import com.erapulus.server.dto.StudentUniversityUpdateDto;
+import com.erapulus.server.dto.*;
 import com.erapulus.server.service.StudentService;
 import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.ServerResponseFactory;
@@ -105,7 +102,7 @@ public class StudentController {
                     @Parameter(in = QUERY, name = PAGE_SIZE_QUERY_PARAM, schema = @Schema(type = "integer"))
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostResponseDto.class)))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = StudentListDto.class)))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -132,7 +129,7 @@ public class StudentController {
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = StudentUniversityUpdateDto.class)), required = true),
             parameters = @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = StudentUniversityUpdateDto.class)))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = StudentUniversityUpdateDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -158,13 +155,10 @@ public class StudentController {
             tags = "Student",
             summary = "Update student's photo",
             description = "Update student's photo",
-            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = StudentUniversityUpdateDto.class)), required = true),
-            parameters = {
-                    @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-                    @Parameter(in = QUERY, name = FILE_QUERY_PARAM, schema = @Schema(type = "file"), required = true)
-            },
+            requestBody = @RequestBody(content = @Content(schema = @Schema(type = "file")), required = true),
+            parameters = @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = StudentUniversityUpdateDto.class)))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = StudentResponseDto.class)))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
@@ -178,14 +172,13 @@ public class StudentController {
                                     .map(this::extractPhoto)
                                     .flatMap(photo -> studentService.updatePhoto(studentId, photo))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("university"))
+                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
 
     private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {
         return (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
-
     }
 }
 

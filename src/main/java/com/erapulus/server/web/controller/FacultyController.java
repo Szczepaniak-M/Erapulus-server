@@ -31,6 +31,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 @AllArgsConstructor
 public class FacultyController {
 
+    private static final String FACULTY = "faculty";
     private final FacultyService facultyService;
 
     @NonNull
@@ -111,7 +112,7 @@ public class FacultyController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> facultyService.getEntityById(facultyId, universityId)
                                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                   .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                                   .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(FACULTY))
                                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 
@@ -142,7 +143,7 @@ public class FacultyController {
                                             .flatMap(facultyDto -> facultyService.updateEntity(facultyDto, facultyId, universityId))
                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                             .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                            .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                            .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(FACULTY))
                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                             .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -170,7 +171,7 @@ public class FacultyController {
         return withPathParam(request, FACULTY_PATH_PARAM,
                 facultyId -> facultyService.deleteEntity(facultyId)
                                            .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(FACULTY))
                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

@@ -15,6 +15,6 @@ import javax.validation.constraints.NotNull;
 public class StudentUniversityUpdateDto {
 
     @NotNull
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 }

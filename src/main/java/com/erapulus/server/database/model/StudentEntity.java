@@ -32,7 +32,8 @@ public class StudentEntity extends ApplicationUserEntity {
         }
     }
 
-    public StudentEntity id(int id){
+    @Override
+    public StudentEntity id(Integer id){
         super.id(id);
         return this;
     }
@@ -40,6 +41,12 @@ public class StudentEntity extends ApplicationUserEntity {
     @Override
     public StudentEntity type(UserType type){
         super.type(type);
+        return this;
+    }
+
+    @Override
+    public StudentEntity universityId(Integer universityId){
+        super.universityId(universityId);
         return this;
     }
 

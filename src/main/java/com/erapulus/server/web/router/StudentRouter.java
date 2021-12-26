@@ -32,7 +32,7 @@ public class StudentRouter {
             @RouterOperation(path = STUDENT_DETAILS_URL_OPENAPI, method = PUT, beanClass = StudentController.class, beanMethod = "updateStudent"),
             @RouterOperation(path = STUDENT_LIST_FRIENDS_URL_OPENAPI, method = GET, beanClass = StudentController.class, beanMethod = "listFriends"),
             @RouterOperation(path = STUDENT_UPDATE_UNIVERSITY_URL_OPENAPI, method = PATCH, beanClass = StudentController.class, beanMethod = "updateStudentUniversity"),
-            @RouterOperation(path = STUDENT_UPDATE_PHOTO_URL_OPENAPI, method = PATCH, beanClass = StudentController.class, beanMethod = "updateStudentUniversity")
+            @RouterOperation(path = STUDENT_UPDATE_PHOTO_URL_OPENAPI, method = PATCH, beanClass = StudentController.class, beanMethod = "updateStudentPhoto")
     })
     @Bean
     RouterFunction<ServerResponse> studentRoutes(StudentController studentController) {
