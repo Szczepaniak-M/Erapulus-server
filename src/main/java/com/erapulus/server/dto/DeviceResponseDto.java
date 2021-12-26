@@ -14,7 +14,7 @@ public class DeviceResponseDto {
     private Integer id;
 
     @NotNull
-    @JsonProperty("applicationUser")
+    @JsonProperty("applicationUserId")
     private Integer applicationUserId;
 
     @NotNull

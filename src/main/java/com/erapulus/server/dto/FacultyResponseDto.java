@@ -26,6 +26,6 @@ public class FacultyResponseDto {
     private String email;
 
     @NotNull
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 }

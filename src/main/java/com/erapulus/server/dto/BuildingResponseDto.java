@@ -36,6 +36,6 @@ public class BuildingResponseDto {
     private Double longitude;
 
     @Null
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 }

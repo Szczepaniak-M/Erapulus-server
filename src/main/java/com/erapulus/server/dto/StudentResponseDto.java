@@ -22,7 +22,7 @@ public class StudentResponseDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 
     @NotNull

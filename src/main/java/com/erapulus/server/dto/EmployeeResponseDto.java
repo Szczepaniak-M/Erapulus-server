@@ -31,7 +31,7 @@ public class EmployeeResponseDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 
     @NotNull

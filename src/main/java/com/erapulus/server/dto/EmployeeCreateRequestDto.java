@@ -22,7 +22,7 @@ public class EmployeeCreateRequestDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 
     @NotNull

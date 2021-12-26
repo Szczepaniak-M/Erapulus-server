@@ -25,6 +25,6 @@ public class ModuleResponseDto {
     private String description;
 
     @NotNull
-    @JsonProperty("program")
+    @JsonProperty("programId")
     private Integer programId;
 }

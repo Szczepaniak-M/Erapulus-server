@@ -28,6 +28,6 @@ public class PostRequestDto {
     private String content;
 
     @NotNull
-    @JsonProperty("university")
+    @JsonProperty("universityId")
     private Integer universityId;
 }

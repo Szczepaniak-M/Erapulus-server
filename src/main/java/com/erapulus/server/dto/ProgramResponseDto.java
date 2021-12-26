@@ -25,6 +25,6 @@ public class ProgramResponseDto {
     private String description;
 
     @NotNull
-    @JsonProperty("faculty")
+    @JsonProperty("facultyId")
     private Integer facultyId;
 }

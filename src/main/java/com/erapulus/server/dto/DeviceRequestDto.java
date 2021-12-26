@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class DeviceRequestDto {
     @NotNull
-    @JsonProperty("applicationUser")
+    @JsonProperty("applicationUserId")
     private Integer applicationUserId;
 
     @NotNull
