@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -65,13 +66,9 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
     }
 
     public Mono<PostResponseDto> updateEntity(@Valid PostRequestDto requestDto, int postId, int universityId) {
-        return Mono.just(requestDto)
-                   .map(requestDtoToEntityMapper::from)
-                   .map(post -> post.id(postId).universityId(universityId))
-                   .flatMap(updatedPost -> postRepository.findById(updatedPost.id())
-                                                         .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                         .flatMap(oldEntity -> postRepository.save(updatedPost.date(oldEntity.date()))))
-                   .map(entityToResponseDtoMapper::from);
+        UnaryOperator<PostEntity> addParamFromPath = post -> post.id(postId).universityId(universityId);
+        BinaryOperator<PostEntity> mergeEntity = (oldPost, newPost) -> newPost.date(oldPost.date());
+        return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 
     private Mono<LocalDate> convertDate(String date, LocalDate defaultValue) {

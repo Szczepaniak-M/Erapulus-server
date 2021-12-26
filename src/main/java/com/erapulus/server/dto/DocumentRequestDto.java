@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DocumentRequestDto {
-    
+
     @NotNull
     @JsonProperty("name")
     private String name;
@@ -23,13 +23,13 @@ public class DocumentRequestDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("universityId")
+    @JsonIgnore
     private Integer universityId;
 
-    @JsonProperty("programId")
+    @JsonIgnore
     private Integer programId;
 
-    @JsonProperty("moduleId")
+    @JsonIgnore
     private Integer moduleId;
 
     @JsonIgnore

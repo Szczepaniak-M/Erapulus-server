@@ -27,7 +27,7 @@ public class OpenApiConstants {
     public static final String STUDENT_DETAILS_URL_OPENAPI = "/api/student/{studentId}";
     public static final String STUDENT_LIST_FRIENDS_URL_OPENAPI = "/api/student/{studentId}/friend";
     public static final String STUDENT_UPDATE_UNIVERSITY_URL_OPENAPI = "/api/student/{studentId}/university";
-    public static final String STUDENT_UPDATE_PHOTO_URL_OPENAPI= "/api/student/{studentId}/photo";
+    public static final String STUDENT_UPDATE_PHOTO_URL_OPENAPI = "/api/student/{studentId}/photo";
 
     // Employee
     public static final String EMPLOYEE_LIST_URL_OPENAPI = "/api/university/{universityId}/employee";
@@ -65,7 +65,10 @@ public class OpenApiConstants {
 
     // Document
     public static final String DOCUMENT_UNIVERSITY_BASE_URL_OPENAPI = "/api/university/{universityId}/document";
+    public static final String DOCUMENT_UNIVERSITY_DETAILS_URL_OPENAPI = "/api/university/{universityId}/document/{documentId}";
     public static final String DOCUMENT_PROGRAM_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/document";
+    public static final String DOCUMENT_PROGRAM_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/document/{documentId}";
     public static final String DOCUMENT_MODULE_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document";
+    public static final String DOCUMENT_MODULE_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document/{documentId}";
 
 }

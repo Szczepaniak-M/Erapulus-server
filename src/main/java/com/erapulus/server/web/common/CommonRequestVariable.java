@@ -15,6 +15,7 @@ public class CommonRequestVariable {
     public static final String STUDENT_PATH_PARAM = "studentId";
     public static final String EMPLOYEE_PATH_PARAM = "employeeId";
     public static final String DEVICE_PATH_PARAM = "deviceId";
+    public static final String DOCUMENT_PATH_PARAM = "documentId";
     public static final String TITLE_QUERY_PARAM = "title";
     public static final String FROM_QUERY_PARAM = "from";
     public static final String TO_QUERY_PARAM = "to";

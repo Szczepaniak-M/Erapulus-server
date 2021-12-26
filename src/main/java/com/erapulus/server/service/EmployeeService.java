@@ -2,7 +2,6 @@ package com.erapulus.server.service;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.repository.EmployeeRepository;
-import com.erapulus.server.database.repository.UniversityRepository;
 import com.erapulus.server.dto.EmployeeRequestDto;
 import com.erapulus.server.dto.EmployeeResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
@@ -13,8 +12,9 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 @Service
 @Validated
@@ -41,14 +41,10 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
     }
 
     public Mono<EmployeeResponseDto> updateEntity(@Valid EmployeeRequestDto requestDto, int employeeId) {
-        return Mono.just(requestDto)
-                   .map(requestDtoToEntityMapper::from)
-                   .map(employee -> employee.id(employeeId))
-                   .flatMap(updatedT -> employeeRepository.findById(updatedT.id())
-                                                          .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                          .flatMap(oldEntity -> employeeRepository.save(updatedT.type(oldEntity.type())
-                                                                                                                .password(oldEntity.password())
-                                                                                                                .universityId(oldEntity.universityId()))))
-                   .map(entityToResponseDtoMapper::from);
+        UnaryOperator<EmployeeEntity> addParamFromPath = employee -> employee.id(employeeId);
+        BinaryOperator<EmployeeEntity> mergeEntity = (oldEmployee, newEmployee) -> newEmployee.type(oldEmployee.type())
+                                                                                              .password(oldEmployee.password())
+                                                                                              .universityId(oldEmployee.universityId());
+        return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 }

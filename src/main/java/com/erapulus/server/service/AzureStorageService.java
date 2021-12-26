@@ -4,6 +4,7 @@ import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.models.ParallelTransferOptions;
 import com.erapulus.server.configuration.AzureStorageProperties;
+import com.erapulus.server.database.model.DocumentEntity;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -34,6 +35,13 @@ public class AzureStorageService {
                                                .flatMapMany(Flux::just);
         return blobAsyncClient.upload(data, parallelTransferOptions, true)
                               .thenReturn(storageContainerUrl + path);
+    }
+
+    public Mono<Boolean> deleteFile(DocumentEntity document) {
+        String path = document.path().replace(storageContainerUrl, "");
+        BlobAsyncClient blobAsyncClient = blobContainerAsyncClient.getBlobAsyncClient(path);
+        return blobAsyncClient.delete()
+                              .thenReturn(true);
     }
 
     private ByteBuffer toByteBuffer(DataBuffer dataBuffer) {

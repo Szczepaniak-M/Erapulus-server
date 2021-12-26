@@ -18,7 +18,9 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static com.erapulus.server.service.QueryParamParser.parseString;
 
@@ -50,13 +52,9 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     }
 
     public Mono<StudentResponseDto> updateEntity(@Valid StudentRequestDto requestDto, int studentId) {
-        return Mono.just(requestDto)
-                   .map(requestDtoToEntityMapper::from)
-                   .map(student -> student.id(studentId).type(UserType.STUDENT))
-                   .flatMap(updatedStudent -> studentRepository.findById(updatedStudent.id())
-                                                               .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                               .flatMap(oldEntity -> studentRepository.save(updatedStudent.pictureUrl(oldEntity.pictureUrl()))))
-                   .map(entityToResponseDtoMapper::from);
+        UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId).type(UserType.STUDENT);
+        BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl());
+        return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 
     public Mono<PageablePayload<StudentListDto>> listFriends(int studentId, String name, PageRequest pageRequest) {

@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -45,6 +46,16 @@ public abstract class CrudGenericService<T extends Entity, R, S> {
                    .flatMap(updatedT -> repository.findById(updatedT.id())
                                                   .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                                   .flatMap(b -> repository.save(updatedT)))
+                   .map(entityToResponseDtoMapper::from);
+    }
+
+    protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform, BinaryOperator<T> mergeEntity) {
+        return Mono.just(requestDto)
+                   .map(requestDtoToEntityMapper::from)
+                   .map(transform)
+                   .flatMap(updatedT -> repository.findById(updatedT.id())
+                                                  .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
+                                                  .flatMap(oldEntity -> repository.save(mergeEntity.apply(oldEntity, updatedT))))
                    .map(entityToResponseDtoMapper::from);
     }
 

@@ -8,17 +8,18 @@ import com.erapulus.server.dto.DocumentRequestDto;
 import com.erapulus.server.dto.DocumentResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static com.erapulus.server.web.common.CommonRequestVariable.FILE_QUERY_PARAM;
 
@@ -50,9 +51,10 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                 .collectList();
     }
 
+    @Transactional
     public Mono<DocumentResponseDto> createEntity(Integer universityId, Integer facultyId, Integer programId, Integer moduleId, Map<String, Part> body) {
         return validateRequest(universityId, facultyId, programId, moduleId)
-                .flatMap(requestDto -> transformMapToDto(requestDto, body))
+                .flatMap(requestDto -> extractFileName(requestDto, body))
                 .map(requestDtoToEntityMapper::from)
                 .flatMap(documentRepository::save)
                 .flatMap(entity -> saveFileToAzure(body, universityId, entity))
@@ -60,13 +62,30 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                 .map(entityToResponseDtoMapper::from);
     }
 
-    private Mono<DocumentRequestDto> transformMapToDto(DocumentRequestDto documentRequestDto, Map<String, Part> body) {
-        Mono<String> fileName = getFileName(body);
-        Mono<String> description = getDescription(body);
-        return Mono.zip(fileName, description,
-                (name, desc) -> documentRequestDto.name(name)
-                                                  .description(desc)
-                                                  .path(name));
+    public Mono<DocumentResponseDto> getEntityById(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+        Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
+        return validateRequest(universityId, facultyId, programId, moduleId)
+                .then(getEntityById(supplier));
+    }
+
+    public Mono<DocumentResponseDto> updateEntity(DocumentRequestDto documentDto, Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+        UnaryOperator<DocumentEntity> addParamFromBody = document -> document.id(documentId).name(documentDto.name()).description(documentDto.description());
+        BinaryOperator<DocumentEntity> mergeEntity = (oldDocument, newDocument) -> newDocument.path(oldDocument.path());
+        return validateRequest(universityId, facultyId, programId, moduleId)
+                .flatMap(document -> updateEntity(document, addParamFromBody, mergeEntity));
+    }
+
+    public Mono<Boolean> deleteEntity(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+        return validateRequest(universityId, facultyId, programId, moduleId)
+                .then(documentRepository.findById(documentId))
+                .flatMap(document -> deleteEntity(documentId)
+                        .then(azureStorageService.deleteFile(document)));
+    }
+
+    private Mono<DocumentRequestDto> extractFileName(DocumentRequestDto documentRequestDto, Map<String, Part> body) {
+        return getFileName(body)
+                .map(name -> documentRequestDto.name(name)
+                                               .path(name));
     }
 
     private Mono<String> getFileName(Map<String, Part> body) {
@@ -76,29 +95,15 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                    .map(FilePart::filename);
     }
 
-    private Mono<String> getDescription(Map<String, Part> body) {
-        return Mono.justOrEmpty(body.get("description"))
-                   .flatMap(part -> DataBufferUtils.join(part.content()))
-                   .flatMap(this::toString)
-                   .switchIfEmpty(Mono.just(""));
-    }
-
-    private Mono<String> toString(DataBuffer dataBuffer) {
-        byte[] bytes = new byte[dataBuffer.readableByteCount()];
-        dataBuffer.read(bytes);
-        DataBufferUtils.release(dataBuffer);
-        return Mono.just(new String(bytes, StandardCharsets.UTF_8));
-    }
-
     private Mono<DocumentRequestDto> validateRequest(Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         if (moduleId != null) {
             return moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(programId, universityId, facultyId, moduleId)
                                    .flatMap(exists -> exists ? Mono.just(DocumentRequestDto.builder().programId(programId).build())
-                                                             : Mono.error(new NoSuchElementException("module")));
+                                           : Mono.error(new NoSuchElementException("module")));
         } else if (programId != null) {
             return programRepository.existsByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId)
                                     .flatMap(exists -> exists ? Mono.just(DocumentRequestDto.builder().programId(programId).build())
-                                                              : Mono.error(new NoSuchElementException("program")));
+                                            : Mono.error(new NoSuchElementException("program")));
         } else {
             return Mono.just(DocumentRequestDto.builder().universityId(universityId).build());
         }

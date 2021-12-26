@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -56,13 +57,9 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     }
 
     public Mono<UniversityResponseDto> updateEntity(@Valid UniversityRequestDto requestDto, int universityId) {
-        return Mono.just(requestDto)
-                   .map(requestDtoToEntityMapper::from)
-                   .map(university -> university.id(universityId))
-                   .flatMap(updatedUniversity -> universityRepository.findById(updatedUniversity.id())
-                                                                     .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                                     .flatMap(oldEntity -> universityRepository.save(updatedUniversity.logoUrl(oldEntity.logoUrl()))))
-                   .map(entityToResponseDtoMapper::from);
+        UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
+        BinaryOperator<UniversityEntity> mergeEntity = (oldUniversity, newUniversity) -> newUniversity.logoUrl(oldUniversity.logoUrl());
+        return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 
     @Override
