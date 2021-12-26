@@ -40,8 +40,8 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
                                      @Param("fromDate") LocalDate fromDate,
                                      @Param("toDate") LocalDate toDate);
 
-    @Query("SELECT * FROM post WHERE id = :postId AND university = :universityId")
-    Mono<PostEntity> findByIdAndUniversityId(@Param("postId") int postId,
-                                             @Param("universityId")int universityId);
+    @Query("SELECT * FROM post WHERE id = :post AND university = :university")
+    Mono<PostEntity> findByIdAndUniversityId(@Param("post") int postId,
+                                             @Param("university")int universityId);
 
 }

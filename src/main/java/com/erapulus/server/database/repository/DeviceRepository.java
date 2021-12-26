@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface DeviceRepository extends R2dbcRepository<DeviceEntity, Integer> {
-    @Query("SELECT * FROM device WHERE application_user = :studentId")
-    Flux<DeviceEntity> findAllByStudentId(@Param("studentId") int studentId);
+    @Query("SELECT * FROM device WHERE application_user = :student")
+    Flux<DeviceEntity> findAllByStudentId(@Param("student") int studentId);
 
-    @Query("SELECT * FROM device WHERE id = :deviceId AND application_user = :studentId")
-    Mono<DeviceEntity> findByIdAndStudentId(@Param("deviceId") int deviceId,
-                                            @Param("studentId") int studentId);
+    @Query("SELECT * FROM device WHERE id = :device AND application_user = :student")
+    Mono<DeviceEntity> findByIdAndStudentId(@Param("device") int deviceId,
+                                            @Param("student") int studentId);
 }

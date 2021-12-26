@@ -34,6 +34,7 @@ public class BuildingRouter {
     @RouterOperations({
             @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = GET, beanClass = BuildingController.class, beanMethod = "listBuildings"),
             @RouterOperation(path = BUILDING_BASE_URL_OPENAPI, method = POST, beanClass = BuildingController.class, beanMethod = "createBuilding"),
+            @RouterOperation(path = BUILDING_DETAILS_URL_OPENAPI, method = GET, beanClass = BuildingController.class, beanMethod = "getBuildingById"),
             @RouterOperation(path = BUILDING_DETAILS_URL_OPENAPI, method = PUT, beanClass = BuildingController.class, beanMethod = "updateBuilding"),
             @RouterOperation(path = BUILDING_DETAILS_URL_OPENAPI, method = DELETE, beanClass = BuildingController.class, beanMethod = "deleteBuilding")
     })
@@ -41,6 +42,7 @@ public class BuildingRouter {
     RouterFunction<ServerResponse> buildingRoutes(BuildingController buildingController) {
         return route(GET(BUILDING_BASE_URL).and(accept(APPLICATION_JSON)), buildingController::listBuildings)
                 .andRoute(POST(BUILDING_BASE_URL).and(contentType(APPLICATION_JSON)), buildingController::createBuilding)
+                .andRoute(GET(BUILDING_DETAILS_URL).and(accept(APPLICATION_JSON)), buildingController::getBuildingById)
                 .andRoute(PUT(BUILDING_DETAILS_URL).and(contentType(APPLICATION_JSON)), buildingController::updateBuilding)
                 .andRoute(DELETE(BUILDING_DETAILS_URL).and(accept(APPLICATION_JSON)), buildingController::deleteBuilding);
     }

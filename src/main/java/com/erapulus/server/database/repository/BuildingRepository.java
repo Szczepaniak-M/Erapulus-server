@@ -1,15 +1,20 @@
 package com.erapulus.server.database.repository;
 
+import com.erapulus.server.database.model.BuildingEntity;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.erapulus.server.database.model.BuildingEntity;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 public interface BuildingRepository extends R2dbcRepository<BuildingEntity, Integer> {
 
-    @Query("SELECT * FROM building WHERE university = :universityId")
-    Flux<BuildingEntity> findAllByUniversityId(@Param("universityId") int universityId);
+    @Query("SELECT * FROM building WHERE university = :university")
+    Flux<BuildingEntity> findAllByUniversityId(@Param("university") int universityId);
+
+    @Query("SELECT * FROM building WHERE id = :building AND university = :university")
+    Mono<BuildingEntity> findByIdAndUniversityId(@Param("building") int buildingId,
+                                                 @Param("university") int universityId);
 }

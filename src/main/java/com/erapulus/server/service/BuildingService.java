@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 @Service
@@ -43,6 +44,11 @@ public class BuildingService extends CrudGenericService<BuildingEntity, Building
     public Mono<BuildingResponseDto> createEntity(@Valid BuildingRequestDto requestDto, int universityId) {
         UnaryOperator<BuildingEntity> addParamFromPath = building -> building.universityId(universityId);
         return createEntity(requestDto, addParamFromPath);
+    }
+
+    public Mono<BuildingResponseDto> getEntityById(Integer buildingId, Integer universityId) {
+        Supplier<Mono<BuildingEntity>> supplier = () -> buildingRepository.findByIdAndUniversityId(buildingId, universityId);
+        return getEntityById(supplier);
     }
 
     public Mono<BuildingResponseDto> updateEntity(@Valid BuildingRequestDto requestDto, int buildingId, int universityId) {

@@ -14,22 +14,21 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
     @Query("SELECT * FROM application_user WHERE email = :email AND type = 'STUDENT'")
     Mono<StudentEntity> findByEmail(@Param("email") String email);
 
-    @Query("SELECT * FROM application_user WHERE id = :studentId AND type = 'STUDENT'")
-    Mono<StudentEntity> findByIdAndType(@Param("studentId") int studentId);
+    @Query("SELECT * FROM application_user WHERE id = :student AND type = 'STUDENT'")
+    Mono<StudentEntity> findByIdAndType(@Param("student") int studentId);
 
     @Query("""
-            SELECT id, first_name, last_name, picture_url
+            SELECT a.id, first_name, last_name, picture_url
             FROM application_user AS a
+            JOIN friendship f ON a.id = f.friend
             WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
                                  OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
-            AND EXISTS(SELECT 1 FROM friendship AS f
-                         WHERE f.application_user = :studentId
-                         AND f.status = 'ACCEPTED'
-                         AND a.id = f.friend)
+            AND f.application_user = :student
+            AND f.status = 'ACCEPTED'
             ORDER BY id OFFSET :offset ROWS
             FETCH NEXT :size ROWS ONLY
             """)
-    Flux<StudentEntity> findFriendsByIdAndFilters(@Param("studentId") int studentId,
+    Flux<StudentEntity> findFriendsByIdAndFilters(@Param("student") int studentId,
                                                   @Param("name") String name,
                                                   @Param("offset") long offset,
                                                   @Param("size") int pageSize);
@@ -40,9 +39,9 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
             JOIN friendship f ON a.id = f.friend
             WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
                                  OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
-            AND f.application_user = :studentId
+            AND f.application_user = :student
             AND f.status = 'ACCEPTED'
             """)
-    Mono<Integer> countFriendsByIdAndFilters(@Param("studentId") int studentId,
+    Mono<Integer> countFriendsByIdAndFilters(@Param("student") int studentId,
                                              @Param("name") String name);
 }

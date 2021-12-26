@@ -14,9 +14,9 @@ public interface EmployeeRepository extends R2dbcRepository<EmployeeEntity, Inte
     @Query("SELECT * FROM application_user WHERE email = :email AND type != 'STUDENT'")
     Mono<EmployeeEntity> findByEmailAndType(@Param("email") String email);
 
-    @Query("SELECT * FROM application_user WHERE id = :employeeId AND type != 'STUDENT'")
-    Mono<EmployeeEntity> findByIdAndType(@Param("employeeId") int employeeId);
+    @Query("SELECT * FROM application_user WHERE id = :employee AND type != 'STUDENT'")
+    Mono<EmployeeEntity> findByIdAndType(@Param("employee") int employeeId);
 
-    @Query("SELECT * FROM application_user WHERE university = :universityId AND (type = 'UNIVERSITY_ADMINISTRATOR' OR type = 'EMPLOYEE')")
-    Flux<EmployeeEntity> findAllByUniversityIdAndType(@Param("universityId") int universityId);
+    @Query("SELECT * FROM application_user WHERE university = :university AND (type = 'UNIVERSITY_ADMINISTRATOR' OR type = 'EMPLOYEE')")
+    Flux<EmployeeEntity> findAllByUniversityIdAndType(@Param("university") int universityId);
 }

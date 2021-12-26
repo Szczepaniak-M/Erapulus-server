@@ -31,7 +31,7 @@ public interface FacultyRepository extends R2dbcRepository<FacultyEntity, Intege
     Mono<Integer> countByUniversityIdAndName(@Param("university") int universityId,
                                              @Param("name") String name);
 
-    @Query("SELECT * FROM faculty WHERE id = :facultyId AND university = :universityId")
-    Mono<FacultyEntity> findByIdAndUniversityId(@Param("facultyId") int facultyId,
-                                                @Param("universityId") int universityId);
+    @Query("SELECT * FROM faculty WHERE id = :faculty AND university = :university")
+    Mono<FacultyEntity> findByIdAndUniversityId(@Param("faculty") int facultyId,
+                                                @Param("university") int universityId);
 }
