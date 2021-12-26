@@ -3,7 +3,7 @@ package com.erapulus.server.service;
 import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.models.ParallelTransferOptions;
-import lombok.AllArgsConstructor;
+import com.erapulus.server.configuration.AzureStorageProperties;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -14,10 +14,17 @@ import reactor.core.publisher.Mono;
 import java.nio.ByteBuffer;
 
 @Service
-@AllArgsConstructor
 public class AzureStorageService {
 
+    private static final String URL_COMMON_PART = "https://%s.blob.core.windows.net/%s/";
     private final BlobContainerAsyncClient blobContainerAsyncClient;
+    private final String storageContainerUrl;
+
+    public AzureStorageService(BlobContainerAsyncClient blobContainerAsyncClient,
+                               AzureStorageProperties storageProperties) {
+        this.blobContainerAsyncClient = blobContainerAsyncClient;
+        storageContainerUrl = URL_COMMON_PART.formatted(storageProperties.getAccountName(), storageProperties.getContainerName());
+    }
 
     public Mono<String> uploadFile(FilePart resource, String path) {
         BlobAsyncClient blobAsyncClient = blobContainerAsyncClient.getBlobAsyncClient(path);
@@ -26,7 +33,7 @@ public class AzureStorageService {
                                                .map(this::toByteBuffer)
                                                .flatMapMany(Flux::just);
         return blobAsyncClient.upload(data, parallelTransferOptions, true)
-                              .thenReturn(path);
+                              .thenReturn(storageContainerUrl + path);
     }
 
     private ByteBuffer toByteBuffer(DataBuffer dataBuffer) {

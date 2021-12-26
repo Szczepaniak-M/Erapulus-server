@@ -3,6 +3,7 @@ package com.erapulus.server.service;
 import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.models.BlockBlobItem;
+import com.erapulus.server.configuration.AzureStorageProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +38,17 @@ class AzureStorageServiceTest {
 
     @BeforeEach
     void setUp() {
-        azureStorageService = new AzureStorageService(blobContainerAsyncClient);
+        AzureStorageProperties azureStorageProperties = new AzureStorageProperties();
+        azureStorageProperties.setAccountName("example");
+        azureStorageProperties.setContainerName("example");
+        azureStorageService = new AzureStorageService(blobContainerAsyncClient, azureStorageProperties);
     }
 
     @Test
     void uploadFile() {
         // given
         String path = "app/path";
-        String resultPath = "https://erapulus.blob.core.windows.net/erapulus/app/path";
+        String resultPath = "https://example.blob.core.windows.net/example/app/path";
         when(blobContainerAsyncClient.getBlobAsyncClient(path)).thenReturn(blobAsyncClient);
         when(filePart.content()).thenReturn(Flux.just(new DefaultDataBufferFactory().wrap(new byte[]{1,2,3,4})));
         when(blobAsyncClient.upload(any(), any(), eq(true))).thenReturn(Mono.just(new BlockBlobItem(null, null, null, false, null)));
@@ -55,7 +59,7 @@ class AzureStorageServiceTest {
         // then
         StepVerifier.create(result)
                 .expectSubscription()
-                .assertNext(pathFromMono -> assertEquals(path, pathFromMono))
+                .assertNext(pathFromMono -> assertEquals(resultPath, pathFromMono))
                 .verifyComplete();
         verify(blobContainerAsyncClient).getBlobAsyncClient(path);
         verify(filePart).content();

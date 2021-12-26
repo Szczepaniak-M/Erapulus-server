@@ -44,9 +44,6 @@ public class UniversityRequestDto {
     @JsonProperty("websiteUrl")
     private String websiteUrl;
 
-    @JsonProperty("logoUrl")
-    private String logoUrl;
-
     @MatchesPattern("#[A-F0-9]{6}")
     @JsonProperty("primaryColor")
     private String primaryColor;

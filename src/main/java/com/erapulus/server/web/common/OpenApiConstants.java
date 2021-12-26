@@ -36,6 +36,8 @@ public class OpenApiConstants {
     // University
     public static final String UNIVERSITY_BASE_URL_OPENAPI = "/api/university";
     public static final String UNIVERSITY_DETAILS_URL_OPENAPI = "/api/university/{universityId}";
+    public static final String UNIVERSITY_UPDATE_LOGO_URL_OPENAPI = "/api/university/{universityId}/logo";
+
 
     // Building
     public static final String BUILDING_BASE_URL_OPENAPI = "/api/university/{universityId}/building";

@@ -8,6 +8,7 @@ import com.erapulus.server.dto.UniversityResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.mapper.UniversityEntityToUniversityListDtoMapper;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -25,14 +26,17 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
 
     private final UniversityRepository universityRepository;
     private final UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper;
+    private final AzureStorageService azureStorageService;
 
     public UniversityService(UniversityRepository universityRepository,
                              RequestDtoToEntityMapper<UniversityRequestDto, UniversityEntity> requestDtoToEntityMapper,
                              EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> entityToResponseDtoMapper,
-                             UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper) {
+                             UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper,
+                             AzureStorageService azureStorageService) {
         super(universityRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
         this.universityRepository = universityRepository;
         this.universityEntityToUniversityListDtoMapper = universityEntityToUniversityListDtoMapper;
+        this.azureStorageService = azureStorageService;
     }
 
     public Mono<List<UniversityListDto>> listEntities() {
@@ -52,8 +56,13 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     }
 
     public Mono<UniversityResponseDto> updateEntity(@Valid UniversityRequestDto requestDto, int universityId) {
-        UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
-        return updateEntity(requestDto, addParamFromPath);
+        return Mono.just(requestDto)
+                   .map(requestDtoToEntityMapper::from)
+                   .map(university -> university.id(universityId))
+                   .flatMap(updatedUniversity -> universityRepository.findById(updatedUniversity.id())
+                                                                     .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                                     .flatMap(oldEntity -> universityRepository.save(updatedUniversity.logoUrl(oldEntity.logoUrl()))))
+                   .map(entityToResponseDtoMapper::from);
     }
 
     @Override
@@ -64,5 +73,14 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
                                    .switchIfEmpty(Mono.error(new NoSuchElementException()))
                                    .flatMap(b -> universityRepository.deleteById(universityId))
                                    .thenReturn(true);
+    }
+
+    public Mono<UniversityResponseDto> updateLogo(Integer universityId, FilePart photo) {
+        String filePath = "university/%d/logo/%s".formatted(universityId, photo.filename());
+        return universityRepository.findById(universityId)
+                                   .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                   .flatMap(student -> azureStorageService.uploadFile(photo, filePath)
+                                                                          .flatMap(path -> universityRepository.save(student.logoUrl(path))))
+                                   .map(entityToResponseDtoMapper::from);
     }
 }

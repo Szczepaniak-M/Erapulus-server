@@ -1,9 +1,6 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.StudentResponseDto;
-import com.erapulus.server.dto.UniversityListDto;
-import com.erapulus.server.dto.UniversityRequestDto;
-import com.erapulus.server.dto.UniversityResponseDto;
+import com.erapulus.server.dto.*;
 import com.erapulus.server.service.UniversityService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -25,10 +26,11 @@ import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
 import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 
 @Slf4j
@@ -157,5 +159,37 @@ public class UniversityController {
                                                  .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                                  .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+    }
+
+    @NonNull
+    @Operation(
+            operationId = "update-university-logo",
+            tags = "University",
+            summary = "Update university's photo",
+            description = "Update university's photo",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(type = "file")), required = true),
+            parameters = @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = UniversityResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
+                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> updateUniversityPhoto(ServerRequest request) {
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> request.body(BodyExtractors.toMultipartData())
+                                    .map(this::extractPhoto)
+                                    .flatMap(photo -> universityService.updateLogo(universityId, photo))
+                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                    .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
+    }
+
+    private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {
+        return (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
     }
 }

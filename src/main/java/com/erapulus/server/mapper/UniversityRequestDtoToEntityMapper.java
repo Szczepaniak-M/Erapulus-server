@@ -16,7 +16,6 @@ public class UniversityRequestDtoToEntityMapper implements RequestDtoToEntityMap
                                .country(universityRequestDto.country())
                                .description(universityRequestDto.description())
                                .websiteUrl(universityRequestDto.websiteUrl())
-                               .logoUrl(universityRequestDto.logoUrl())
                                .primaryColor(universityRequestDto.primaryColor())
                                .secondaryColor(universityRequestDto.secondaryColor())
                                .build();
