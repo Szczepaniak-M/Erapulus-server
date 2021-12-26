@@ -1,20 +1,22 @@
 package com.erapulus.server.service;
 
+import com.erapulus.server.database.model.PostEntity;
+import com.erapulus.server.database.repository.PostRepository;
+import com.erapulus.server.database.repository.UniversityRepository;
+import com.erapulus.server.dto.PostRequestDto;
+import com.erapulus.server.dto.PostResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
+import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import com.erapulus.server.database.model.PostEntity;
-import com.erapulus.server.database.repository.PostRepository;
-import com.erapulus.server.dto.PostRequestDto;
-import com.erapulus.server.dto.PostResponseDto;
-import com.erapulus.server.web.common.PageablePayload;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -28,22 +30,27 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
     private static final LocalDate MAX_DATE = LocalDate.of(9999, 12, 31);
     private static final Pattern PATTERN = Pattern.compile("^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$");
     private final PostRepository postRepository;
+    private final UniversityRepository universityRepository;
 
     public PostService(PostRepository repository,
                        RequestDtoToEntityMapper<PostRequestDto, PostEntity> requestDtoToEntityMapper,
-                       EntityToResponseDtoMapper<PostEntity, PostResponseDto> entityToResponseDtoMapper) {
-        super(repository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+                       EntityToResponseDtoMapper<PostEntity, PostResponseDto> entityToResponseDtoMapper,
+                       UniversityRepository universityRepository) {
+        super(repository, requestDtoToEntityMapper, entityToResponseDtoMapper, "post");
         this.postRepository = repository;
+        this.universityRepository = universityRepository;
     }
 
     public Mono<PageablePayload<PostResponseDto>> listEntities(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
-        return convertDate(fromDate, MIN_DATE)
-                .zipWith(convertDate(toDate, MAX_DATE))
-                .flatMap(fromAndToDate -> postRepository.findPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2(), pageRequest.getOffset(), pageRequest.getPageSize())
-                                                        .map(entityToResponseDtoMapper::from)
-                                                        .collectList()
-                                                        .zipWith(postRepository.countPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2()))
-                                                        .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
+        return universityRepository.existsById(universityId)
+                                   .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
+                                   .then(convertDate(fromDate, MIN_DATE))
+                                   .zipWith(convertDate(toDate, MAX_DATE))
+                                   .flatMap(fromAndToDate -> postRepository.findPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2(), pageRequest.getOffset(), pageRequest.getPageSize())
+                                                                           .map(entityToResponseDtoMapper::from)
+                                                                           .collectList()
+                                                                           .zipWith(postRepository.countPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2()))
+                                                                           .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
 
     }
 

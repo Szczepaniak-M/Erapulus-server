@@ -21,23 +21,18 @@ import java.util.function.Supplier;
 public class EmployeeService extends CrudGenericService<EmployeeEntity, EmployeeRequestDto, EmployeeResponseDto> {
 
     private final EmployeeRepository employeeRepository;
-    private final UniversityRepository universityRepository;
 
     public EmployeeService(EmployeeRepository employeeRepository,
                            RequestDtoToEntityMapper<EmployeeRequestDto, EmployeeEntity> requestDtoToEntityMapper,
-                           EntityToResponseDtoMapper<EmployeeEntity, EmployeeResponseDto> entityToResponseDtoMapper,
-                           UniversityRepository universityRepository) {
-        super(employeeRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+                           EntityToResponseDtoMapper<EmployeeEntity, EmployeeResponseDto> entityToResponseDtoMapper) {
+        super(employeeRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "employee");
         this.employeeRepository = employeeRepository;
-        this.universityRepository = universityRepository;
     }
 
     public Mono<List<EmployeeResponseDto>> listEntities(Integer universityId) {
-        return universityRepository.findById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchElementException()))
-                                   .thenMany(employeeRepository.findAllByUniversityIdAndType(universityId))
-                                   .map(entityToResponseDtoMapper::from)
-                                   .collectList();
+        return employeeRepository.findAllByUniversityIdAndType(universityId)
+                                 .map(entityToResponseDtoMapper::from)
+                                 .collectList();
     }
 
     public Mono<EmployeeResponseDto> getEntityById(int employeeId) {
@@ -50,7 +45,7 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
                    .map(requestDtoToEntityMapper::from)
                    .map(employee -> employee.id(employeeId))
                    .flatMap(updatedT -> employeeRepository.findById(updatedT.id())
-                                                          .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                          .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                                           .flatMap(oldEntity -> employeeRepository.save(updatedT.type(oldEntity.type())
                                                                                                                 .password(oldEntity.password())
                                                                                                                 .universityId(oldEntity.universityId()))))

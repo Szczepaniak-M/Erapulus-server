@@ -11,11 +11,11 @@ import com.erapulus.server.database.repository.FacultyRepository;
 import com.erapulus.server.database.repository.ProgramRepository;
 import com.erapulus.server.dto.ProgramRequestDto;
 import com.erapulus.server.dto.ProgramResponseDto;
-import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.PageablePayload;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -31,7 +31,7 @@ public class ProgramService extends CrudGenericService<ProgramEntity, ProgramReq
                           FacultyRepository facultyRepository,
                           RequestDtoToEntityMapper<ProgramRequestDto, ProgramEntity> requestDtoToEntityMapper,
                           EntityToResponseDtoMapper<ProgramEntity, ProgramResponseDto> entityToResponseDtoMapper) {
-        super(programRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        super(programRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "program");
         this.programRepository = programRepository;
         this.facultyRepository = facultyRepository;
     }
@@ -65,6 +65,6 @@ public class ProgramService extends CrudGenericService<ProgramEntity, ProgramReq
 
     private Mono<FacultyEntity> checkIfFacultyExists(int universityId, int facultyId) {
         return facultyRepository.findByIdAndUniversityId(facultyId, universityId)
-                                .switchIfEmpty(Mono.error(new NoSuchParentElementException()));
+                                .switchIfEmpty(Mono.error(new NoSuchElementException("faculty")));
     }
 }

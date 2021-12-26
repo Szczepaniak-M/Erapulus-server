@@ -22,7 +22,7 @@ public class DeviceService extends CrudGenericService<DeviceEntity, DeviceReques
     public DeviceService(DeviceRepository deviceRepository,
                          RequestDtoToEntityMapper<DeviceRequestDto, DeviceEntity> requestDtoToEntityMapper,
                          EntityToResponseDtoMapper<DeviceEntity, DeviceResponseDto> entityToResponseDtoMapper) {
-        super(deviceRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        super(deviceRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "device");
         this.deviceRepository = deviceRepository;
     }
 

@@ -33,7 +33,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
                              EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> entityToResponseDtoMapper,
                              UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper,
                              AzureStorageService azureStorageService) {
-        super(universityRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        super(universityRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "university");
         this.universityRepository = universityRepository;
         this.universityEntityToUniversityListDtoMapper = universityEntityToUniversityListDtoMapper;
         this.azureStorageService = azureStorageService;
@@ -60,7 +60,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
                    .map(requestDtoToEntityMapper::from)
                    .map(university -> university.id(universityId))
                    .flatMap(updatedUniversity -> universityRepository.findById(updatedUniversity.id())
-                                                                     .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                                     .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                                                      .flatMap(oldEntity -> universityRepository.save(updatedUniversity.logoUrl(oldEntity.logoUrl()))))
                    .map(entityToResponseDtoMapper::from);
     }
@@ -70,7 +70,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     public Mono<Boolean> deleteEntity(int universityId) {
         // TODO Add deleting Posts, Building, Documents, Programs and Modules,
         return universityRepository.findById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                   .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                    .flatMap(b -> universityRepository.deleteById(universityId))
                                    .thenReturn(true);
     }
@@ -78,7 +78,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     public Mono<UniversityResponseDto> updateLogo(Integer universityId, FilePart photo) {
         String filePath = "university/%d/logo/%s".formatted(universityId, photo.filename());
         return universityRepository.findById(universityId)
-                                   .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                   .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                    .flatMap(student -> azureStorageService.uploadFile(photo, filePath)
                                                                           .flatMap(path -> universityRepository.save(student.logoUrl(path))))
                                    .map(entityToResponseDtoMapper::from);

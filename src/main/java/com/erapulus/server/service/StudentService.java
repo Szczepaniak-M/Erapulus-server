@@ -9,7 +9,6 @@ import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.mapper.StudentEntityToListDtoMapper;
 import com.erapulus.server.mapper.UniversityEntityToResponseDtoMapper;
-import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.codec.multipart.FilePart;
@@ -38,7 +37,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
                           UniversityRepository universityRepository,
                           AzureStorageService azureStorageService,
                           UniversityEntityToResponseDtoMapper universityEntityToResponseDtoMapper) {
-        super(studentRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        super(studentRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "student");
         this.studentRepository = studentRepository;
         this.universityRepository = universityRepository;
         this.azureStorageService = azureStorageService;
@@ -55,7 +54,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
                    .map(requestDtoToEntityMapper::from)
                    .map(student -> student.id(studentId).type(UserType.STUDENT))
                    .flatMap(updatedStudent -> studentRepository.findById(updatedStudent.id())
-                                                               .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                               .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                                                .flatMap(oldEntity -> studentRepository.save(updatedStudent.pictureUrl(oldEntity.pictureUrl()))))
                    .map(entityToResponseDtoMapper::from);
     }
@@ -63,7 +62,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     public Mono<PageablePayload<StudentListDto>> listFriends(int studentId, String name, PageRequest pageRequest) {
         String nameParsed = parseString(name);
         return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                 .thenMany(studentRepository.findFriendsByIdAndFilters(studentId, nameParsed, pageRequest.getOffset(), pageRequest.getPageSize()))
                                 .map(StudentEntityToListDtoMapper::from)
                                 .collectList()
@@ -73,10 +72,10 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     public Mono<UniversityResponseDto> updateUniversity(@Valid StudentUniversityUpdateDto universityDto, int studentId) {
         return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(NoSuchParentElementException::new))
+                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                 .flatMap(student -> universityRepository.findById(universityDto.universityId())
                                                                         .zipWith(Mono.just(student.universityId(universityDto.universityId()))))
-                                .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
                                 .flatMap(universityAndStudent -> studentRepository.save(universityAndStudent.getT2())
                                                                                   .thenReturn(universityAndStudent.getT1()))
                                 .map(universityEntityToResponseDtoMapper::from);
@@ -86,7 +85,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     public Mono<StudentResponseDto> updatePhoto(int studentId, FilePart photo) {
         String filePath = "user/%d/photo/%s".formatted(studentId, photo.filename());
         return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(NoSuchElementException::new))
+                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                 .flatMap(student -> azureStorageService.uploadFile(photo, filePath)
                                                                        .flatMap(path -> studentRepository.save(student.pictureUrl(path))))
                                 .map(entityToResponseDtoMapper::from);

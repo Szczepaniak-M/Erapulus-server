@@ -1,8 +1,10 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.*;
+import com.erapulus.server.dto.StudentListDto;
+import com.erapulus.server.dto.StudentRequestDto;
+import com.erapulus.server.dto.StudentResponseDto;
+import com.erapulus.server.dto.StudentUniversityUpdateDto;
 import com.erapulus.server.service.StudentService;
-import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
@@ -31,6 +34,7 @@ import static com.erapulus.server.web.controller.ControllerUtils.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class StudentController {
@@ -57,7 +61,8 @@ public class StudentController {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> studentService.getEntityById(studentId)
                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
+                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                           .doOnError(e -> log.error(e.getMessage(), e))
                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -84,7 +89,8 @@ public class StudentController {
                                     .flatMap(studentDto -> studentService.updateEntity(studentDto, studentId))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
+                                    .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                    .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -116,7 +122,8 @@ public class StudentController {
                         name -> withPageParams(request,
                                 pageRequest -> studentService.listFriends(studentId, name, pageRequest)
                                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
+                                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                             .doOnError(e -> log.error(e.getMessage(), e))
                                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
     }
 
@@ -143,8 +150,8 @@ public class StudentController {
                                     .flatMap(universityDto -> studentService.updateUniversity(universityDto, studentId))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                    .onErrorResume(NoSuchParentElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
-                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("university"))
+                                    .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                    .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -172,7 +179,8 @@ public class StudentController {
                                     .map(this::extractPhoto)
                                     .flatMap(photo -> studentService.updatePhoto(studentId, photo))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(STUDENT))
+                                    .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                    .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }

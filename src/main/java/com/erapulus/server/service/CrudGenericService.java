@@ -22,6 +22,7 @@ public abstract class CrudGenericService<T extends Entity, R, S> {
     protected final R2dbcRepository<T, Integer> repository;
     protected final RequestDtoToEntityMapper<R, T> requestDtoToEntityMapper;
     protected final EntityToResponseDtoMapper<T, S> entityToResponseDtoMapper;
+    protected final String entityName;
 
     protected Mono<S> createEntity(@Valid R requestDto, UnaryOperator<T> transform) {
         return Mono.just(requestDto)
@@ -34,7 +35,7 @@ public abstract class CrudGenericService<T extends Entity, R, S> {
     protected Mono<S> getEntityById(Supplier<Mono<T>> supplier) {
         return supplier.get()
                        .map(entityToResponseDtoMapper::from)
-                       .switchIfEmpty(Mono.error(new NoSuchElementException()));
+                       .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)));
     }
 
     protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform) {
@@ -42,14 +43,14 @@ public abstract class CrudGenericService<T extends Entity, R, S> {
                    .map(requestDtoToEntityMapper::from)
                    .map(transform)
                    .flatMap(updatedT -> repository.findById(updatedT.id())
-                                                  .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                                  .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                                   .flatMap(b -> repository.save(updatedT)))
                    .map(entityToResponseDtoMapper::from);
     }
 
     public Mono<Boolean> deleteEntity(int entityId) {
         return repository.findById(entityId)
-                         .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                         .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                          .flatMap(b -> repository.deleteById(entityId))
                          .thenReturn(true);
     }

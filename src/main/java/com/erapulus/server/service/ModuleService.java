@@ -7,7 +7,6 @@ import com.erapulus.server.dto.ModuleRequestDto;
 import com.erapulus.server.dto.ModuleResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
-import com.erapulus.server.service.exception.NoSuchParentElementException;
 import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -31,7 +31,7 @@ public class ModuleService extends CrudGenericService<ModuleEntity, ModuleReques
                          ProgramRepository programRepository,
                          RequestDtoToEntityMapper<ModuleRequestDto, ModuleEntity> requestDtoToEntityMapper,
                          EntityToResponseDtoMapper<ModuleEntity, ModuleResponseDto> entityToResponseDtoMapper) {
-        super(moduleRepository, requestDtoToEntityMapper, entityToResponseDtoMapper);
+        super(moduleRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "module");
         this.moduleRepository = moduleRepository;
         this.programRepository = programRepository;
     }
@@ -67,6 +67,6 @@ public class ModuleService extends CrudGenericService<ModuleEntity, ModuleReques
 
     private Mono<Boolean> checkIfProgramExists(int universityId, int facultyId, int programId) {
         return programRepository.existsByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId)
-                                .switchIfEmpty(Mono.error(new NoSuchParentElementException()));
+                                .switchIfEmpty(Mono.error(new NoSuchElementException("program")));
     }
 }

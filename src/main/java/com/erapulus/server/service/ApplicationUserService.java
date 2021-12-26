@@ -46,7 +46,7 @@ public class ApplicationUserService {
     @Transactional
     public Mono<Boolean> deleteEntity(int userId) {
         return applicationUserRepository.findById(userId)
-                                        .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                                        .switchIfEmpty(Mono.error(new NoSuchElementException("user")))
                                         .flatMap(this::deleteApplicationUser)
                                         .thenReturn(true);
     }

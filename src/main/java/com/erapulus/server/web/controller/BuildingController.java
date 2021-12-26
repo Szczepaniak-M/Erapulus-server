@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -28,11 +29,11 @@ import static com.erapulus.server.web.common.OpenApiConstants.*;
 import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class BuildingController {
 
-    public static final String BUILDING = "building";
     private final BuildingService buildingService;
 
     @NonNull
@@ -47,6 +48,7 @@ public class BuildingController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -54,6 +56,8 @@ public class BuildingController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> buildingService.listEntities(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                               .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                               .doOnError(e -> log.error(e.getMessage(), e))
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -80,7 +84,8 @@ public class BuildingController {
                                        .flatMap(building -> buildingService.createEntity(building, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse(BUILDING))
+                                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("building"))
+                                       .doOnError(e -> log.error(e.getMessage(), e))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -112,7 +117,8 @@ public class BuildingController {
                                              .flatMap(buildingDto -> buildingService.updateEntity(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(BUILDING))
+                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                             .doOnError(e -> log.error(e.getMessage(), e))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                              .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -140,7 +146,8 @@ public class BuildingController {
         return withPathParam(request, BUILDING_PATH_PARAM,
                 buildingId -> buildingService.deleteEntity(buildingId)
                                              .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(BUILDING))
+                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                             .doOnError(e -> log.error(e.getMessage(), e))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

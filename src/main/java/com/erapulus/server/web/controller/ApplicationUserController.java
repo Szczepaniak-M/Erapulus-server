@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -24,11 +25,11 @@ import static com.erapulus.server.web.controller.ControllerUtils.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class ApplicationUserController {
 
-    private static final String USER = "user";
     private final ApplicationUserService applicationUserService;
 
     @NonNull
@@ -61,7 +62,7 @@ public class ApplicationUserController {
                                         name -> withPageParams(request,
                                                 pageRequest -> applicationUserService.listEntities(universityId, userType, name, email, pageRequest)
                                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                                     .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse())
+                                                                                     .doOnError(e -> log.error(e.getMessage(), e))
                                                                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
     }
 
@@ -85,7 +86,8 @@ public class ApplicationUserController {
         return withPathParam(request, USER_PATH_PARAM,
                 userId -> applicationUserService.deleteEntity(userId)
                                                 .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                                .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(USER))
+                                                .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                .doOnError(e -> log.error(e.getMessage(), e))
                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

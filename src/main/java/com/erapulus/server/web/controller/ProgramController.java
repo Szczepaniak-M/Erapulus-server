@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,8 +28,8 @@ import static com.erapulus.server.web.controller.ControllerUtils.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+@Slf4j
 @RestController
-
 @AllArgsConstructor
 public class ProgramController {
 
@@ -52,6 +53,7 @@ public class ProgramController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -62,6 +64,8 @@ public class ProgramController {
                                 name -> withPageParams(request,
                                         pageRequest -> programService.listEntities(universityId, facultyId, name, pageRequest)
                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                                     .doOnError(e -> log.error(e.getMessage(), e))
                                                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
     }
 
@@ -81,6 +85,7 @@ public class ProgramController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -91,6 +96,8 @@ public class ProgramController {
                                             .flatMap(program -> programService.createEntity(program, universityId, facultyId))
                                             .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                             .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                            .doOnError(e -> log.error(e.getMessage(), e))
                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                             .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -120,7 +127,8 @@ public class ProgramController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> programService.getEntityById(programId, universityId, facultyId)
                                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                           .doOnError(e -> log.error(e.getMessage(), e))
                                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
     }
 
@@ -153,7 +161,8 @@ public class ProgramController {
                                                     .flatMap(program -> programService.updateEntity(program, programId, universityId, facultyId))
                                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                                    .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                    .doOnError(e -> log.error(e.getMessage(), e))
                                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()))));
     }
@@ -182,7 +191,8 @@ public class ProgramController {
         return withPathParam(request, PROGRAM_PATH_PARAM,
                 programId -> programService.deleteEntity(programId)
                                            .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                           .doOnError(e -> log.error(e.getMessage(), e))
                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

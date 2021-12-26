@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -24,6 +25,7 @@ import javax.validation.ConstraintViolationException;
 
 import static com.erapulus.server.web.common.OpenApiConstants.*;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class LoginController {
@@ -51,6 +53,7 @@ public class LoginController {
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(NoSuchUserException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidCredentialsErrorResponse())
                       .onErrorResume(InvalidPasswordException.class, e -> ServerResponseFactory.createHttpUnauthorizedResponse())
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 
@@ -73,6 +76,7 @@ public class LoginController {
                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(InvalidTokenException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidCredentialsErrorResponse())
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 }

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,9 +28,11 @@ import static com.erapulus.server.web.common.OpenApiConstants.*;
 import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class DeviceController {
+
     private final DeviceService deviceService;
 
     @NonNull
@@ -51,6 +54,7 @@ public class DeviceController {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> deviceService.listEntities(studentId)
                                           .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                          .doOnError(e -> log.error(e.getMessage(), e))
                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -76,6 +80,7 @@ public class DeviceController {
                                     .flatMap(device -> deviceService.createEntity(device, studentId))
                                     .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                    .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -103,7 +108,8 @@ public class DeviceController {
                 studentId -> withPathParam(request, DEVICE_PATH_PARAM,
                         deviceId -> deviceService.getEntityById(deviceId, studentId)
                                                  .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                 .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("post"))
+                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                 .doOnError(e -> log.error(e.getMessage(), e))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 
@@ -134,7 +140,8 @@ public class DeviceController {
                                            .flatMap(device -> deviceService.updateEntity(device, deviceId, studentId))
                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                            .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                           .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                           .doOnError(e -> log.error(e.getMessage(), e))
                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                            .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
@@ -162,7 +169,8 @@ public class DeviceController {
         return withPathParam(request, DEVICE_PATH_PARAM,
                 facultyId -> deviceService.deleteEntity(facultyId)
                                           .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                          .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse("building"))
+                                          .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                          .doOnError(e -> log.error(e.getMessage(), e))
                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 }

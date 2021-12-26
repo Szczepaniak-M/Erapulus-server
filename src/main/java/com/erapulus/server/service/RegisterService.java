@@ -4,7 +4,6 @@ import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.mapper.EmployeeEntityToResponseDtoMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -45,8 +44,6 @@ public class RegisterService {
                    .map(dto -> EmployeeCreateRequestToEmployeeEntityMapper.from(dto, userType))
                    .map(employee -> employee.password(encryptedPassword))
                    .flatMap(employeeRepository::save)
-                   .map(employeeEntityToResponseDtoMapper::from)
-                   .doOnError(DataIntegrityViolationException.class, e -> log.info("Duplicated email for request:" + employeeCreateRequestDto))
-                   .doOnError(e -> log.info("Unexpected error" + e.getMessage()));
+                   .map(employeeEntityToResponseDtoMapper::from);
     }
 }

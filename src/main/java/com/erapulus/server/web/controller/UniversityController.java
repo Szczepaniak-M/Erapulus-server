@@ -1,6 +1,9 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.*;
+import com.erapulus.server.dto.StudentResponseDto;
+import com.erapulus.server.dto.UniversityListDto;
+import com.erapulus.server.dto.UniversityRequestDto;
+import com.erapulus.server.dto.UniversityResponseDto;
 import com.erapulus.server.service.UniversityService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,14 +26,13 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.*;
+import static com.erapulus.server.web.common.CommonRequestVariable.FILE_QUERY_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
 import static com.erapulus.server.web.controller.ControllerUtils.withPathParam;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
-import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 
 @Slf4j
@@ -38,7 +40,6 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 @AllArgsConstructor
 public class UniversityController {
 
-    private static final String UNIVERSITY = "university";
     private final UniversityService universityService;
 
     @NonNull
@@ -57,8 +58,7 @@ public class UniversityController {
     public Mono<ServerResponse> listUniversities(ServerRequest request) {
         return universityService.listEntities()
                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                .doOnError(e -> log.error(e.getMessage()))
-                                .doOnError(e -> log.error(String.valueOf(e)))
+                                .doOnError(e -> log.error(e.getMessage(), e))
                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
 
@@ -82,6 +82,7 @@ public class UniversityController {
                       .flatMap(universityService::createEntity)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
     }
@@ -105,7 +106,8 @@ public class UniversityController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> universityService.getEntityById(universityId)
                                                  .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                 .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                 .doOnError(e -> log.error(e.getMessage(), e))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -132,7 +134,8 @@ public class UniversityController {
                                        .flatMap(universityDto -> universityService.updateEntity(universityDto, universityId))
                                        .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                                       .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                       .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                       .doOnError(e -> log.error(e.getMessage(), e))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
@@ -157,7 +160,8 @@ public class UniversityController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> universityService.deleteEntity(universityId)
                                                  .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                                 .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
+                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                 .doOnError(e -> log.error(e.getMessage(), e))
                                                  .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
 
@@ -181,12 +185,13 @@ public class UniversityController {
     public Mono<ServerResponse> updateUniversityPhoto(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.body(BodyExtractors.toMultipartData())
-                                    .map(this::extractPhoto)
-                                    .flatMap(photo -> universityService.updateLogo(universityId, photo))
-                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                    .onErrorResume(NoSuchElementException.class, e -> ServerResponseFactory.createHttpNotFoundResponse(UNIVERSITY))
-                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
-                                    .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
+                                       .map(this::extractPhoto)
+                                       .flatMap(photo -> universityService.updateLogo(universityId, photo))
+                                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                       .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                       .doOnError(e -> log.error(e.getMessage(), e))
+                                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
 
     private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {

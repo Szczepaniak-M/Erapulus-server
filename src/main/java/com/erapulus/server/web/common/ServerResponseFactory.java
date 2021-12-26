@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -98,12 +99,12 @@ public class ServerResponseFactory {
                                .build();
     }
 
-    public static Mono<ServerResponse> createHttpNotFoundResponse(String objectName) {
+    public static Mono<ServerResponse> createHttpNotFoundResponse(NoSuchElementException e) {
         return ServerResponse.status(HttpStatus.NOT_FOUND)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(BodyInserters.fromValue(ResponseTemplate.builder()
                                                                            .status(HttpStatus.NOT_FOUND.value())
-                                                                           .message(objectName + ".not.found")
+                                                                           .message(e.getMessage() + ".not.found")
                                                                            .build()));
     }
 

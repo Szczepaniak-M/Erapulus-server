@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -21,6 +22,7 @@ import javax.validation.ConstraintViolationException;
 
 import static com.erapulus.server.web.common.OpenApiConstants.*;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class RegisterController {
@@ -49,6 +51,7 @@ public class RegisterController {
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("administrator"))
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
     }
@@ -75,6 +78,7 @@ public class RegisterController {
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("universityAdministrator"))
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
     }
@@ -100,7 +104,8 @@ public class RegisterController {
                       .flatMap(registerService::createUniversityEmployee)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))
+                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))                                                                     .doOnError(e -> log.error(e.getMessage(), e))
+                      .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
     }
