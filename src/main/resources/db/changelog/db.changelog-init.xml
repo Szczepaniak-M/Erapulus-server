@@ -136,7 +136,7 @@
             <column name="title" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
-            <column name="date" type="DATE">
+            <column name="date" type="DATE" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
             <column name="content" type="NVARCHAR(MAX)">

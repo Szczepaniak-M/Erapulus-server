@@ -26,4 +26,8 @@ public class PostResponseDto {
     @NotNull
     @JsonProperty("content")
     private String content;
+
+    @NotNull
+    @JsonProperty("universityId")
+    private Integer universityId;
 }

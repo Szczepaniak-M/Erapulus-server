@@ -12,6 +12,7 @@ public class PostEntityToResponseDtoMapper implements EntityToResponseDtoMapper<
                               .title(postEntity.title())
                               .date(postEntity.date())
                               .content(postEntity.content())
+                              .universityId(postEntity.universityId())
                               .build();
     }
 

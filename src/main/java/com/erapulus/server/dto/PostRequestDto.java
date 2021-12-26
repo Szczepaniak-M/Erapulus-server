@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -20,14 +19,6 @@ public class PostRequestDto {
     private String title;
 
     @NotNull
-    @JsonProperty("date")
-    private LocalDate date;
-
-    @NotNull
     @JsonProperty("content")
     private String content;
-
-    @NotNull
-    @JsonProperty("universityId")
-    private Integer universityId;
 }

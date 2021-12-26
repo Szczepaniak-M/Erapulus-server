@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -84,6 +85,7 @@ public class PostController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -93,6 +95,7 @@ public class PostController {
                                        .flatMap(post -> postService.createEntity(post, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("post"))
                                        .doOnError(e -> log.error(e.getMessage(), e))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
@@ -143,6 +146,7 @@ public class PostController {
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -154,6 +158,7 @@ public class PostController {
                                          .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                          .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                          .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                         .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("post"))
                                          .doOnError(e -> log.error(e.getMessage(), e))
                                          .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                          .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));

@@ -55,7 +55,7 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
     }
 
     public Mono<PostResponseDto> createEntity(@Valid PostRequestDto requestDto, int universityId) {
-        UnaryOperator<PostEntity> addParamFromPath = postEntity -> postEntity.universityId(universityId);
+        UnaryOperator<PostEntity> addParamFromPath = postEntity -> postEntity.universityId(universityId).date(LocalDate.now());
         return createEntity(requestDto, addParamFromPath);
     }
 
@@ -65,8 +65,13 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
     }
 
     public Mono<PostResponseDto> updateEntity(@Valid PostRequestDto requestDto, int postId, int universityId) {
-        UnaryOperator<PostEntity> addParamFromPath = post -> post.id(postId).universityId(universityId);
-        return updateEntity(requestDto, addParamFromPath);
+        return Mono.just(requestDto)
+                   .map(requestDtoToEntityMapper::from)
+                   .map(post -> post.id(postId).universityId(universityId))
+                   .flatMap(updatedPost -> postRepository.findById(updatedPost.id())
+                                                         .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
+                                                         .flatMap(oldEntity -> postRepository.save(updatedPost.date(oldEntity.date()))))
+                   .map(entityToResponseDtoMapper::from);
     }
 
     private Mono<LocalDate> convertDate(String date, LocalDate defaultValue) {

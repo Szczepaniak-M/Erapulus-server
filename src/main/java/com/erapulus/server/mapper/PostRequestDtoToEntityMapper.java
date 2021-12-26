@@ -9,7 +9,6 @@ public class PostRequestDtoToEntityMapper implements RequestDtoToEntityMapper<Po
     public PostEntity from(PostRequestDto postRequestDto) {
         return PostEntity.builder()
                          .title(postRequestDto.title())
-                         .date(postRequestDto.date())
                          .content(postRequestDto.content())
                          .build();
     }
