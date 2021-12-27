@@ -28,6 +28,9 @@ public class DocumentResponseDto {
     @JsonProperty("universityId")
     private Integer universityId;
 
+    @JsonProperty("facultyId")
+    private Integer facultyId;
+
     @JsonProperty("programId")
     private Integer programId;
 

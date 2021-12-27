@@ -35,7 +35,7 @@ public interface ModuleRepository extends R2dbcRepository<ModuleEntity, Integer>
                                             @Param("program") int programId);
 
     @Query("""
-            SELECT CASE WHEN (count(*) > 0) THEN true ELSE false end
+            SELECT CAST(CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS BIT)
             FROM module m
             JOIN program p ON m.program = p.id
             JOIN faculty f ON p.faculty = f.id

@@ -48,6 +48,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .flatMapMany(requestDto -> documentRepository.findAllByFilters(requestDto.universityId(), requestDto.programId(), requestDto.moduleId()))
                 .map(entityToResponseDtoMapper::from)
+                .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId))
                 .collectList();
     }
 
@@ -59,20 +60,23 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                 .flatMap(documentRepository::save)
                 .flatMap(entity -> saveFileToAzure(body, universityId, entity))
                 .flatMap(documentRepository::save)
-                .map(entityToResponseDtoMapper::from);
+                .map(entityToResponseDtoMapper::from)
+                .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
     public Mono<DocumentResponseDto> getEntityById(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
         return validateRequest(universityId, facultyId, programId, moduleId)
-                .then(getEntityById(supplier));
+                .then(getEntityById(supplier))
+                .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
     public Mono<DocumentResponseDto> updateEntity(DocumentRequestDto documentDto, Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         UnaryOperator<DocumentEntity> addParamFromBody = document -> document.id(documentId).name(documentDto.name()).description(documentDto.description());
         BinaryOperator<DocumentEntity> mergeEntity = (oldDocument, newDocument) -> newDocument.path(oldDocument.path());
         return validateRequest(universityId, facultyId, programId, moduleId)
-                .flatMap(document -> updateEntity(document, addParamFromBody, mergeEntity));
+                .flatMap(document -> updateEntity(document, addParamFromBody, mergeEntity))
+                .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
     public Mono<Boolean> deleteEntity(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
@@ -114,5 +118,12 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
         String filePath = "university/%d/document/%d/%s".formatted(universityId, documentEntity.id(), file.filename());
         return azureStorageService.uploadFile(file, filePath)
                                   .map(documentEntity::path);
+    }
+
+    private DocumentResponseDto addParamFromPath(DocumentResponseDto response, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+        return response.universityId(universityId)
+                       .facultyId(facultyId)
+                       .programId(programId)
+                       .moduleId(moduleId);
     }
 }

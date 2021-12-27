@@ -42,7 +42,7 @@ public interface ProgramRepository extends R2dbcRepository<ProgramEntity, Intege
                                                             @Param("faculty") int facultyId);
 
     @Query("""
-            SELECT CASE WHEN (count(*) > 0) THEN true ELSE false end
+            SELECT CAST(CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS BIT)
             FROM program p
             JOIN faculty f ON p.faculty = f.id
             WHERE p.id = :program

@@ -20,7 +20,8 @@ public class ControllerUtils {
     public static Mono<ServerResponse> withPathParam(ServerRequest request, String paramName, Function<Integer, Mono<ServerResponse>> function) {
         return Mono.just(request.pathVariable(paramName))
                    .map(Integer::parseInt)
-                   .flatMap(function);
+                   .flatMap(function)
+                   .onErrorResume(NumberFormatException.class, e -> ServerResponseFactory.createHttpBadRequestCantParseErrorResponse());
     }
 
     public static Mono<ServerResponse> withQueryParam(ServerRequest request, String paramName, Function<String, Mono<ServerResponse>> function) {
