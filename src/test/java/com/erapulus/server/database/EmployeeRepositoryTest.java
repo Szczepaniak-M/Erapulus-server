@@ -153,8 +153,8 @@ class EmployeeRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(EmployeeEntity::id).toList().size() == 2)
-                    .expectRecordedMatches(posts -> posts.stream().map(EmployeeEntity::id).toList().containsAll(List.of(employee1.id(), employee3.id())))
+                    .expectRecordedMatches(employees -> employees.stream().map(EmployeeEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(employees -> employees.stream().map(EmployeeEntity::id).toList().containsAll(List.of(employee1.id(), employee3.id())))
                     .verifyComplete();
     }
 

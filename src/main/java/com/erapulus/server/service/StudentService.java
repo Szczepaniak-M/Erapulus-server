@@ -9,14 +9,13 @@ import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.mapper.StudentEntityToListDtoMapper;
 import com.erapulus.server.mapper.UniversityEntityToResponseDtoMapper;
-import com.erapulus.server.web.common.PageablePayload;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
@@ -46,6 +45,13 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
         this.universityEntityToResponseDtoMapper = universityEntityToResponseDtoMapper;
     }
 
+    public Mono<List<StudentListDto>> listEntities(String name) {
+        String parsedName = parseString(name);
+        return studentRepository.findAllByName(parsedName)
+                                .map(StudentEntityToListDtoMapper::from)
+                                .collectList();
+    }
+
     public Mono<StudentResponseDto> getEntityById(int studentId) {
         Supplier<Mono<StudentEntity>> supplier = () -> studentRepository.findByIdAndType(studentId);
         return getEntityById(supplier);
@@ -55,17 +61,6 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
         UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId).type(UserType.STUDENT);
         BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl());
         return updateEntity(requestDto, addParamFromPath, mergeEntity);
-    }
-
-    public Mono<PageablePayload<StudentListDto>> listFriends(int studentId, String name, PageRequest pageRequest) {
-        String nameParsed = parseString(name);
-        return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                .thenMany(studentRepository.findFriendsByIdAndFilters(studentId, nameParsed, pageRequest.getOffset(), pageRequest.getPageSize()))
-                                .map(StudentEntityToListDtoMapper::from)
-                                .collectList()
-                                .zipWith(studentRepository.countFriendsByIdAndFilters(studentId, nameParsed))
-                                .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
     }
 
     public Mono<UniversityResponseDto> updateUniversity(@Valid StudentUniversityUpdateDto universityDto, int studentId) {

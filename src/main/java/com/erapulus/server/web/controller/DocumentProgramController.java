@@ -162,12 +162,12 @@ public class DocumentProgramController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, DOCUMENT_PATH_PARAM,
                                         documentId -> request.bodyToMono(DocumentRequestDto.class)
-                                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, facultyId, programId, null)
-                                                                                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                                                                                 .doOnError(e -> log.error(e.getMessage(), e))
-                                                                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
-                                                                                                 .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()))))));
+                                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, facultyId, programId, null))
+                                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                             .doOnError(e -> log.error(e.getMessage(), e))
+                                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                                             .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())))));
     }
 
     @NonNull

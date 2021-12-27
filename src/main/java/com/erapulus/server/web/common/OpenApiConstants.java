@@ -25,7 +25,6 @@ public class OpenApiConstants {
     // Student
     public static final String STUDENT_BASE_URL_OPENAPI = "/api/student";
     public static final String STUDENT_DETAILS_URL_OPENAPI = "/api/student/{studentId}";
-    public static final String STUDENT_LIST_FRIENDS_URL_OPENAPI = "/api/student/{studentId}/friend";
     public static final String STUDENT_UPDATE_UNIVERSITY_URL_OPENAPI = "/api/student/{studentId}/university";
     public static final String STUDENT_UPDATE_PHOTO_URL_OPENAPI = "/api/student/{studentId}/photo";
 
@@ -71,4 +70,9 @@ public class OpenApiConstants {
     public static final String DOCUMENT_MODULE_BASE_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document";
     public static final String DOCUMENT_MODULE_DETAILS_URL_OPENAPI = "/api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document/{documentId}";
 
+    // Friend
+    public static final String FRIEND_BASE_URL_OPENAPI = "/api/student/{studentId}/friend";
+    public static final String FRIEND_DETAILS_URL_OPENAPI = "/api/student/{studentId}/friend/{friendId}";
+    public static final String FRIEND_SEARCH_URL_OPENAPI = "/api/student/{studentId}/friend/search";
+    public static final String FRIEND_REQUESTS_URL_OPENAPI = "/api/student/{studentId}/friend/request";
 }

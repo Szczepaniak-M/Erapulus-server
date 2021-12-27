@@ -1,7 +1,6 @@
 package com.erapulus.server.database;
 
 import com.erapulus.server.database.model.BuildingEntity;
-import com.erapulus.server.database.model.PostEntity;
 import com.erapulus.server.database.model.UniversityEntity;
 import com.erapulus.server.database.repository.BuildingRepository;
 import com.erapulus.server.database.repository.UniversityRepository;
@@ -55,28 +54,28 @@ class BuildingRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(BuildingEntity::id).toList().size() == 2)
-                    .expectRecordedMatches(posts -> posts.stream().map(BuildingEntity::id).toList().containsAll(List.of(building1.id(), building2.id())))
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().containsAll(List.of(building1.id(), building2.id())))
                     .verifyComplete();
     }
 
     @Test
-    void findByIdAndUniversityId_shouldReturnPostWhenUniversityAndIdExists() {
+    void findByIdAndUniversityId_shouldReturnBuildingWhenUniversityAndIdExists() {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
-        var post1 = createBuilding(BUILDING_1, university1);
-        var post2 = createBuilding(BUILDING_2, university1);
-        var post3 = createBuilding(BUILDING_1, university2);
-        var post4 = createBuilding(BUILDING_2, university2);
+        var building1 = createBuilding(BUILDING_1, university1);
+        var building2 = createBuilding(BUILDING_2, university1);
+        var building3 = createBuilding(BUILDING_1, university2);
+        var building4 = createBuilding(BUILDING_2, university2);
 
         // when
-        Mono<BuildingEntity> result = buildingRepository.findByIdAndUniversityId(post1.id(), university1.id());
+        Mono<BuildingEntity> result = buildingRepository.findByIdAndUniversityId(building1.id(), university1.id());
 
         // then
         StepVerifier.create(result)
                     .expectSubscription()
-                    .assertNext(facultyFromDatabase -> assertEquals(post1.id(), facultyFromDatabase.id()))
+                    .assertNext(facultyFromDatabase -> assertEquals(building1.id(), facultyFromDatabase.id()))
                     .verifyComplete();
     }
 
@@ -85,11 +84,11 @@ class BuildingRepositoryTest {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
-        var post1 = createBuilding(BUILDING_1, university1);
-        var post2 = createBuilding(BUILDING_2, university2);
+        var building1 = createBuilding(BUILDING_1, university1);
+        var building2 = createBuilding(BUILDING_2, university2);
 
         // when
-        Mono<BuildingEntity> result = buildingRepository.findByIdAndUniversityId(post1.id(), university2.id());
+        Mono<BuildingEntity> result = buildingRepository.findByIdAndUniversityId(building1.id(), university2.id());
 
         // then
         StepVerifier.create(result)

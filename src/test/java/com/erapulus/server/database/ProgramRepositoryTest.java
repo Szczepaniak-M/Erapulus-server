@@ -113,8 +113,8 @@ class ProgramRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(faculties -> faculties.stream().map(ProgramEntity::id).toList().size() == 1)
-                    .expectRecordedMatches(faculties -> faculties.stream().map(ProgramEntity::id).toList().contains(program3.id()))
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(programs -> programs.stream().map(ProgramEntity::id).toList().contains(program3.id()))
                     .verifyComplete();
     }
 
@@ -133,7 +133,7 @@ class ProgramRepositoryTest {
         // then
         StepVerifier.create(result)
                     .expectSubscription()
-                    .assertNext(moduleCount -> assertEquals(expectedResult, moduleCount))
+                    .assertNext(programCount -> assertEquals(expectedResult, programCount))
                     .verifyComplete();
     }
 
@@ -152,7 +152,7 @@ class ProgramRepositoryTest {
         // then
         StepVerifier.create(result)
                     .expectSubscription()
-                    .assertNext(moduleCount -> assertEquals(expectedResult, moduleCount))
+                    .assertNext(programCount -> assertEquals(expectedResult, programCount))
                     .verifyComplete();
     }
 

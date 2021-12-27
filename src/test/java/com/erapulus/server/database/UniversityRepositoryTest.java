@@ -39,8 +39,8 @@ class UniversityRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(UniversityEntity::id).toList().size() == 2)
-                    .expectRecordedMatches(posts -> posts.stream().map(UniversityEntity::id).toList().containsAll(List.of(university1.id(), university2.id())))
+                    .expectRecordedMatches(universities -> universities.stream().map(UniversityEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(universities -> universities.stream().map(UniversityEntity::id).toList().containsAll(List.of(university1.id(), university2.id())))
                     .verifyComplete();
     }
 

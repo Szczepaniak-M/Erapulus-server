@@ -581,268 +581,358 @@
             CREATE TRIGGER university_history_after_insert_trigger
                 ON university
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
                                                website_url, description, logo_url, primary_color, secondary_color,
                                                last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER university_history_after_update_trigger
                 ON university
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
                                                website_url, description, logo_url, primary_color, secondary_color,
                                                last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER university_history_after_delete_trigger
                 ON university
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
                                                website_url, description, logo_url, primary_color, secondary_color,
                                                last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- faculty_history
             CREATE TRIGGER faculty_history_after_insert_trigger
                 ON faculty
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO faculty_history(operation, id, name, address, email, university, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER faculty_history_after_update_trigger
                 ON faculty
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO faculty_history(operation, id, name, address, email, university, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER faculty_history_after_delete_trigger
                 ON faculty
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO faculty_history(operation, id, name, address, email, university, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- program_history
             CREATE TRIGGER program_history_after_insert_trigger
                 ON program
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO program_history(operation, id, name, abbrev, description, faculty, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER program_history_after_update_trigger
                 ON program
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO program_history(operation, id, name, abbrev, description, faculty, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER program_history_after_delete_trigger
                 ON program
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO program_history(operation, id, name, abbrev, description, faculty, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- module_history
             CREATE TRIGGER module_history_after_insert_trigger
                 ON module
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO module_history(operation, id, name, abbrev, description, program, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER module_history_after_update_trigger
                 ON module
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO module_history(operation, id, name, abbrev, description, program, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER module_history_after_delete_trigger
                 ON module
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO module_history(operation, id, name, abbrev, description, program, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- document_history
             CREATE TRIGGER document_history_after_insert_trigger
                 ON document
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO document_history(operation, id, name, description, path, university,
                                              program, module, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER document_history_after_update_trigger
                 ON document
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO document_history(operation, id, name, description, path, university,
                                              program, module, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER document_history_after_delete_trigger
                 ON document
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO document_history(operation, id, name, description, path, university,
                                              program, module, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- application_user_history
             CREATE TRIGGER application_user_history_after_insert_trigger
                 ON application_user
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO application_user_history(operation, id, type, first_name, last_name, email, phone_number,
                                                      password, facebook_url, whats_up_url, instagram_username,
                                                      picture_url, university, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER application_user_history_after_update_trigger
                 ON application_user
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO application_user_history(operation, id, type, first_name, last_name, email, phone_number,
                                                      password, facebook_url, whats_up_url, instagram_username,
                                                      picture_url, university, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER application_user_history_after_delete_trigger
                 ON application_user
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO application_user_history(operation, id, type, first_name, last_name, email, phone_number,
                                                      password, facebook_url, whats_up_url, instagram_username,
                                                      picture_url, university, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- device_history
             CREATE TRIGGER device_history_after_insert_trigger
                 ON device
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO device_history(operation, id, application_user, device_id, name, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER device_history_after_update_trigger
                 ON device
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO device_history(operation, id, application_user, device_id, name, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER device_history_after_delete_trigger
                 ON device
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO device_history(operation, id, application_user, device_id, name, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             --  friendship_history
             CREATE TRIGGER friendship_history_after_insert_trigger
                 ON friendship
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO friendship_history(operation, id, application_user, friend, status, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER friendship_history_after_update_trigger
                 ON friendship
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO friendship_history(operation, id, application_user, friend, status, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER friendship_history_after_delete_trigger
                 ON friendship
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO friendship_history(operation, id, application_user, friend, status, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- building_history
             CREATE TRIGGER building_history_after_insert_trigger
                 ON building
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO building_history(operation, id, name, abbrev, latitude,
-                                            longitude, university, last_modified_by)
+                                             longitude, university, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER building_history_after_update_trigger
                 ON building
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO building_history(operation, id, name, abbrev, latitude,
-                                            longitude, university, last_modified_by)
+                                             longitude, university, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER building_history_after_delete_trigger
                 ON building
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO building_history(operation, id, name, abbrev, latitude,
-                                            longitude, university, last_modified_by)
+                                             longitude, university, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
 
             -- post_history
             CREATE TRIGGER post_history_after_insert_trigger
                 ON post
                 AFTER INSERT AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO post_history(operation, id, title, date, content, university, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER post_history_after_update_trigger
                 ON post
                 AFTER UPDATE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO post_history(operation, id, title, date, content, university, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
+            END
             GO
 
             CREATE TRIGGER post_history_after_delete_trigger
                 ON post
                 AFTER DELETE AS
+            BEGIN
+                SET NOCOUNT ON;
                 INSERT INTO post_history(operation, id, title, date, content, university, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
+            END
             GO
         </sql>
         <rollback>

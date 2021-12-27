@@ -38,4 +38,12 @@ public class FriendshipEntity implements Entity {
     @LastModifiedBy
     @Column("last_modified_by")
     private Integer lastModifiedBy;
+
+    public FriendshipEntity reverse() {
+        return FriendshipEntity.builder()
+                               .status(this.status)
+                               .applicationUserId(friendId)
+                               .friendId(applicationUserId)
+                               .build();
+    }
 }

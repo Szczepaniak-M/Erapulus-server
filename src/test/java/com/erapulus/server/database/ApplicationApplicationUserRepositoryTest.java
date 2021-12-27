@@ -88,8 +88,8 @@ class ApplicationApplicationUserRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 1)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().contains(user1.id()))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().contains(user1.id()))
                     .verifyComplete();
     }
 
@@ -109,8 +109,8 @@ class ApplicationApplicationUserRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 1)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().contains(user2.id()))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().contains(user2.id()))
                     .verifyComplete();
     }
 
@@ -131,8 +131,8 @@ class ApplicationApplicationUserRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 2)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(user1.id(), user2.id())))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(user1.id(), user2.id())))
                     .verifyComplete();
     }
 
@@ -153,8 +153,8 @@ class ApplicationApplicationUserRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 1)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().contains(user3.id()))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().contains(user3.id()))
                     .verifyComplete();
     }
 
@@ -174,8 +174,8 @@ class ApplicationApplicationUserRepositoryTest {
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().size() == 1)
-                    .expectRecordedMatches(posts -> posts.stream().map(ApplicationUserEntity::id).toList().contains(user3.id()))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 1)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().contains(user3.id()))
                     .verifyComplete();
     }
 

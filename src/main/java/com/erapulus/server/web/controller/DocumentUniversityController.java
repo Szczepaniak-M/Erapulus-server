@@ -143,12 +143,12 @@ public class DocumentUniversityController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, DOCUMENT_PATH_PARAM,
                         documentId -> request.bodyToMono(DocumentRequestDto.class)
-                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, null, null, null)
-                                                                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                                                                 .doOnError(e -> log.error(e.getMessage(), e))
-                                                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
-                                                                                 .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()))));
+                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, null, null, null))
+                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                             .doOnError(e -> log.error(e.getMessage(), e))
+                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                             .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
 
     @NonNull

@@ -101,7 +101,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
 
     private Mono<DocumentRequestDto> validateRequest(Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         if (moduleId != null) {
-            return moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(programId, universityId, facultyId, moduleId)
+            return moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(moduleId, universityId, facultyId, programId)
                                    .flatMap(exists -> exists ? Mono.just(DocumentRequestDto.builder().programId(programId).build())
                                            : Mono.error(new NoSuchElementException("module")));
         } else if (programId != null) {
