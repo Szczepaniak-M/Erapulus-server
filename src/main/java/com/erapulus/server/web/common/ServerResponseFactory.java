@@ -41,6 +41,16 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
+    public static Mono<ServerResponse> createHttpForbiddenErrorResponse() {
+        String message = "forbidden";
+        return ServerResponse.status(HttpStatus.FORBIDDEN)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(BodyInserters.fromValue(ResponseTemplate.builder()
+                                                                           .status(HttpStatus.FORBIDDEN.value())
+                                                                           .message(message)
+                                                                           .build()));
+    }
+
     public static Mono<ServerResponse> createHttpBadRequestCantParseErrorResponse() {
         String message = "bad.request;cannot.parse.parameter";
         return ServerResponse.status(HttpStatus.BAD_REQUEST)

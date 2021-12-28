@@ -1,5 +1,7 @@
 package com.erapulus.server.web.controller;
 
+import com.erapulus.server.database.model.ApplicationUserEntity;
+import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.dto.EmployeeCreateRequestDto;
 import com.erapulus.server.dto.EmployeeResponseDto;
 import com.erapulus.server.service.RegisterService;
@@ -13,13 +15,16 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Objects;
 
+import static com.erapulus.server.security.SecurityContextUtils.withSecurityContext;
 import static com.erapulus.server.web.common.OpenApiConstants.*;
 
 @Slf4j
@@ -74,8 +79,10 @@ public class RegisterController {
     )
     public Mono<ServerResponse> createUniversityAdministrator(ServerRequest request) {
         return request.bodyToMono(EmployeeCreateRequestDto.class)
+                      .flatMap(this::validateBodyContent)
                       .flatMap(registerService::createUniversityAdministrator)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
+                      .onErrorResume(AccessDeniedException.class, e -> ServerResponseFactory.createHttpForbiddenErrorResponse())
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("universityAdministrator"))
                       .doOnError(e -> log.error(e.getMessage(), e))
@@ -101,12 +108,26 @@ public class RegisterController {
     )
     public Mono<ServerResponse> createUniversityEmployee(ServerRequest request) {
         return request.bodyToMono(EmployeeCreateRequestDto.class)
+                      .flatMap(this::validateBodyContent)
                       .flatMap(registerService::createUniversityEmployee)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
+                      .onErrorResume(AccessDeniedException.class, e -> ServerResponseFactory.createHttpForbiddenErrorResponse())
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
-                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))                                                                     .doOnError(e -> log.error(e.getMessage(), e))
+                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))
                       .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
+    }
+
+    private Mono<EmployeeCreateRequestDto> validateBodyContent(EmployeeCreateRequestDto employeeCreateRequestDto) {
+        return withSecurityContext(user -> validateBodyContent(employeeCreateRequestDto, user))
+                .switchIfEmpty(Mono.just(employeeCreateRequestDto));
+    }
+
+    private Mono<EmployeeCreateRequestDto> validateBodyContent(EmployeeCreateRequestDto employeeCreateRequestDto, ApplicationUserEntity user) {
+        if (user.type() == UserType.UNIVERSITY_ADMINISTRATOR && !Objects.equals(user.universityId(), employeeCreateRequestDto.universityId())) {
+            return Mono.error(new AccessDeniedException("access.denied"));
+        }
+        return Mono.just(employeeCreateRequestDto);
     }
 }
