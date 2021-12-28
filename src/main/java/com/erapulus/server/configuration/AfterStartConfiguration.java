@@ -19,7 +19,7 @@ public class AfterStartConfiguration {
     private final RegisterService registerService;
 
     @EventListener
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void createAdministratorAfterStartUp(ContextRefreshedEvent event) {
         ErapulusProperties.AdministratorProperties administrator = erapulusProperties.administrator();
         EmployeeCreateRequestDto administratorDto = EmployeeCreateRequestDto.builder()
                                                                             .firstName(administrator.firstName())

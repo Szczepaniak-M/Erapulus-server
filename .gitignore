@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /docker/app/erapulus-server.jar
+/src/main/resources/firebase.json

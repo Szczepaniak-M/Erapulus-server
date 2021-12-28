@@ -61,7 +61,7 @@ public class FriendshipService {
                                 .thenReturn(createFriendshipEntity(friendId.userId(), studentId, FriendshipStatus.REQUESTED))
                                 .flatMap(friendshipRepository::save)
                                 .map(friendshipEntityToResponseDtoMapper::from)
-                                .flatMap(response -> pushNotificationService.sendPushNotification()
+                                .flatMap(response -> pushNotificationService.sendPushNotification(response)
                                                                             .thenReturn(response));
     }
 
