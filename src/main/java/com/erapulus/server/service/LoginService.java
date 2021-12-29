@@ -7,6 +7,7 @@ import com.erapulus.server.database.repository.StudentRepository;
 import com.erapulus.server.dto.EmployeeLoginDTO;
 import com.erapulus.server.dto.LoginResponseDTO;
 import com.erapulus.server.dto.StudentLoginDTO;
+import com.erapulus.server.security.FacebookTokenValidator;
 import com.erapulus.server.security.GoogleTokenValidator;
 import com.erapulus.server.security.JwtGenerator;
 import com.erapulus.server.service.exception.InvalidPasswordException;
@@ -29,6 +30,7 @@ public class LoginService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtGenerator jwtGenerator;
     private final GoogleTokenValidator googleTokenValidator;
+    private final FacebookTokenValidator facebookTokenValidator;
 
     public Mono<LoginResponseDTO> validateEmployeeCredentials(@Valid EmployeeLoginDTO employeeLoginDTO) {
         return employeeRepository.findByEmailAndType(employeeLoginDTO.email())
@@ -41,11 +43,10 @@ public class LoginService {
                                    .flatMap(this::validateToken);
     }
 
-//    TODO add facebook login
-//    public Mono<LoginResponseDTO> validateFacebookStudentCredentials(@Valid StudentLoginDTO studentLoginDTO) {
-//        return facebookTokenValidator.validate(studentLoginDTO)
-//                                     .flatMap(this::validateToken);
-//    }
+    public Mono<LoginResponseDTO> validateFacebookStudentCredentials(@Valid StudentLoginDTO studentLoginDTO) {
+        return facebookTokenValidator.validate(studentLoginDTO)
+                                     .flatMap(this::validateToken);
+    }
 
     private Mono<LoginResponseDTO> validatePassword(EmployeeLoginDTO employeeLoginDTO, EmployeeEntity employeeEntity) {
         boolean isPasswordValid = bCryptPasswordEncoder.matches(employeeLoginDTO.password(), employeeEntity.password());

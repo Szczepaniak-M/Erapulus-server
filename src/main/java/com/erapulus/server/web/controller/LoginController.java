@@ -79,5 +79,28 @@ public class LoginController {
                       .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
     }
+
+    @NonNull
+    @Operation(
+            operationId = "login-student-facebook",
+            tags = "Login",
+            description = "Login student using Facebook",
+            summary = "Login student using Facebook",
+            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = StudentLoginDTO.class))),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = CREATED, content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
+                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
+            }
+    )
+    public Mono<ServerResponse> loginStudentFacebook(ServerRequest request) {
+        return request.bodyToMono(StudentLoginDTO.class)
+                      .flatMap(loginService::validateFacebookStudentCredentials)
+                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                      .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .onErrorResume(InvalidTokenException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidCredentialsErrorResponse())
+                      .doOnError(e -> log.error(e.getMessage(), e))
+                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse());
+    }
 }
 

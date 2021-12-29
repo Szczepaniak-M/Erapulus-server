@@ -60,6 +60,8 @@ import static com.erapulus.server.web.router.UniversityRouter.*;
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST = {"/v3/api-docs/**", "/documentation.html", "/documentation.yaml", "/webjars/**"};
+    private static final String FACEBOOK_GRAPH_API_BASE = "https://graph.facebook.com";
+
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
@@ -145,6 +147,10 @@ public class SecurityConfiguration {
         return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(erapulusProperties.login().googleClientId()))
                 .build();
+    }
+
+    @Bean FacebookTokenValidator facebookTokenValidator() {
+        return new FacebookTokenValidator(FACEBOOK_GRAPH_API_BASE);
     }
 
     @Bean

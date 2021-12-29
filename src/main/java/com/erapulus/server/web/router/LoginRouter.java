@@ -19,15 +19,18 @@ public class LoginRouter {
 
     public static final String LOGIN_EMPLOYEE = "/api/user/login/employee";
     public static final String LOGIN_GOOGLE = "/api/user/login/google";
+    public static final String LOGIN_FACEBOOK = "/api/user/login/facebook";
 
     @RouterOperations({
             @RouterOperation(path = LOGIN_EMPLOYEE, method = POST, beanClass = LoginController.class, beanMethod = "loginEmployee"),
-            @RouterOperation(path = LOGIN_GOOGLE, method = POST, beanClass = LoginController.class, beanMethod = "loginStudentGoogle")
+            @RouterOperation(path = LOGIN_GOOGLE, method = POST, beanClass = LoginController.class, beanMethod = "loginStudentGoogle"),
+            @RouterOperation(path = LOGIN_FACEBOOK, method = POST, beanClass = LoginController.class, beanMethod = "loginStudentFacebook")
     })
     @Bean
     RouterFunction<ServerResponse> loginRoute(LoginController loginController) {
         return route(POST(LOGIN_EMPLOYEE).and(contentType(APPLICATION_JSON)), loginController::loginEmployee)
-                .andRoute(POST(LOGIN_GOOGLE).and(contentType(APPLICATION_JSON)), loginController::loginStudentGoogle);
+                .andRoute(POST(LOGIN_GOOGLE).and(contentType(APPLICATION_JSON)), loginController::loginStudentGoogle)
+                .andRoute(POST(LOGIN_FACEBOOK).and(contentType(APPLICATION_JSON)), loginController::loginStudentFacebook);
     }
 }
 

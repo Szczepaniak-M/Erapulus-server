@@ -68,7 +68,7 @@ class GoogleTokenValidatorTest {
     }
 
     @Test
-    void verify_shouldReturnInvalidTokenWhenVerifyReturnNull() throws GeneralSecurityException, IOException {
+    void verify_shouldReturnInvalidTokenExceptionWhenVerifyReturnNull() throws GeneralSecurityException, IOException {
         // given
         when(googleIdTokenVerifier.verify(anyString())).thenReturn(null);
         StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
@@ -84,7 +84,7 @@ class GoogleTokenValidatorTest {
     }
 
     @Test
-    void verify_shouldReturnInvalidTokenWhenVerifyReturnException() throws GeneralSecurityException, IOException {
+    void verify_shouldReturnInvalidTokenExceptionWhenVerifyReturnException() throws GeneralSecurityException, IOException {
         // given
         when(googleIdTokenVerifier.verify(anyString())).thenThrow(new IllegalArgumentException());
         StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
