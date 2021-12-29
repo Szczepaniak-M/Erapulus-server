@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 public class JwtGenerator {
 
     private static final String ROLE = "ROLE";
+    private static final int DAY = 24 * 60 * 60 * 1000;
     private final ErapulusProperties erapulusProperties;
 
     public String generate(ApplicationUserEntity subject) {
@@ -26,6 +28,8 @@ public class JwtGenerator {
                    .setClaims(claims)
                    .setIssuer(erapulusProperties.jwt().issuer())
                    .setSubject(subject.email())
+                   .setIssuedAt(new Date(System.currentTimeMillis()))
+                   .setExpiration(new Date(System.currentTimeMillis() + DAY))
                    .signWith(Keys.hmacShaKeyFor(erapulusProperties.jwt().secret().getBytes(StandardCharsets.UTF_8)))
                    .compact();
     }

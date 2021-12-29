@@ -4,6 +4,7 @@ import com.erapulus.server.configuration.ErapulusProperties;
 import com.erapulus.server.database.model.ApplicationUserEntity;
 import com.erapulus.server.database.model.UserType;
 import com.erapulus.server.database.repository.ApplicationUserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @AllArgsConstructor
@@ -38,11 +40,22 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                                .build();
 
         return Mono.just(jwt)
-                   .map(token -> parser.parseClaimsJws(token).getBody().getSubject())
+                   .map(token -> parser.parseClaimsJws(token).getBody())
+                   .flatMap(this::validateToken)
                    .flatMap(applicationUserRepository::findByEmail)
                    .map(user -> new JwtAuthenticatedUser(user, grantRoles(user)))
                    .onErrorResume(e -> Mono.error(new BadCredentialsException("bad.token")))
                    .map(JwtAuthenticatedUser::asAuthentication);
+    }
+
+    private Mono<String> validateToken(Claims claims) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime < claims.getIssuedAt().getTime()
+                || currentTime > claims.getExpiration().getTime()
+                || !Objects.equals(claims.getIssuer(), erapulusProperties.jwt().issuer())) {
+            return Mono.error(new BadCredentialsException("bad.token"));
+        }
+        return Mono.just(claims.getSubject());
     }
 
     private boolean isSupported(Authentication authentication) {
