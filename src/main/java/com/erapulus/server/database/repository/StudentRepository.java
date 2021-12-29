@@ -11,14 +11,17 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface StudentRepository extends R2dbcRepository<StudentEntity, Integer> {
 
+
     @Query("""
             SELECT id, first_name, last_name, picture_url
             FROM application_user
             WHERE (:name IS NULL OR LOWER(CONCAT(first_name, last_name)) LIKE LOWER(CONCAT('%', :name, '%'))
                                  OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
             AND type = 'STUDENT'
+            AND university = :university
             """)
-    Flux<StudentEntity> findAllByName(@Param("name") String name);
+    Flux<StudentEntity> findAllByName(@Param("name") String name,
+                                      @Param("university") int universityId);
 
     @Query("SELECT * FROM application_user WHERE email = :email AND type = 'STUDENT'")
     Mono<StudentEntity> findByEmail(@Param("email") String email);

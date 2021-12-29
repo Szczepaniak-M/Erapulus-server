@@ -1,12 +1,10 @@
 package com.erapulus.server.database;
 
-import com.erapulus.server.database.model.ApplicationUserEntity;
-import com.erapulus.server.database.model.EmployeeEntity;
-import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.database.model.UserType;
+import com.erapulus.server.database.model.*;
 import com.erapulus.server.database.repository.EmployeeRepository;
 import com.erapulus.server.database.repository.FriendshipRepository;
 import com.erapulus.server.database.repository.StudentRepository;
+import com.erapulus.server.database.repository.UniversityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,9 @@ class StudentRepositoryTest {
     private static final String FIRST_NAME_2 = "Anne";
     private static final String LAST_NAME_1 = "JOHNSON";
     private static final String LAST_NAME_2 = "Smith";
+    private static final String UNIVERSITY_1 = "university1";
+    private static final String UNIVERSITY_2 = "university2";
+
 
     @Autowired
     private StudentRepository studentRepository;
@@ -42,31 +43,38 @@ class StudentRepositoryTest {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
+    @Autowired
+    private UniversityRepository universityRepository;
+
     @AfterEach
     void clean() {
         friendshipRepository.deleteAll().block();
         studentRepository.deleteAll().block();
+        universityRepository.deleteAll().block();
     }
 
     @Test
     void findAllByName_shouldReturnStudentsEntity() {
         // given
-        var student1 = createStudent(EMAIL_1, FIRST_NAME_1, LAST_NAME_1);
-        var student2 = createStudent(EMAIL_2, FIRST_NAME_1, LAST_NAME_2);
-        var student3 = createStudent(EMAIL_3, FIRST_NAME_2, LAST_NAME_1);
-        var student4 = createStudent(EMAIL_4, FIRST_NAME_2, LAST_NAME_2);
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+
+        var student1 = createStudent(EMAIL_1, FIRST_NAME_1, LAST_NAME_1, university1.id());
+        var student2 = createStudent(EMAIL_2, FIRST_NAME_1, LAST_NAME_2, university1.id());
+        var student3 = createStudent(EMAIL_3, FIRST_NAME_2, LAST_NAME_1, university2.id());
+        var student4 = createStudent(EMAIL_4, FIRST_NAME_2, LAST_NAME_2, null);
         var employee = createEmployee(EMAIL_5);
         String commonPart = "ohn";
 
         // when
-        Flux<StudentEntity> result = studentRepository.findAllByName(commonPart);
+        Flux<StudentEntity> result = studentRepository.findAllByName(commonPart, university1.id());
 
         // then
         StepVerifier.create(result)
                     .recordWith(ArrayList::new)
                     .thenConsumeWhile(x -> true)
-                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 3)
-                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(student1.id(), student2.id(), student3.id())))
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(users -> users.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(student1.id(), student2.id())))
                     .verifyComplete();
     }
 
@@ -142,11 +150,12 @@ class StudentRepositoryTest {
         return studentRepository.save(student).block();
     }
 
-    private StudentEntity createStudent(String email, String firstName, String lastName) {
+    private StudentEntity createStudent(String email, String firstName, String lastName, Integer university) {
         StudentEntity student = StudentEntity.builder()
                                              .firstName(firstName)
                                              .lastName(lastName)
                                              .email(email)
+                                             .universityId(university)
                                              .build();
         return studentRepository.save(student).block();
     }
@@ -159,5 +168,17 @@ class StudentRepositoryTest {
                                                 .email(email)
                                                 .build();
         return employeeRepository.save(employee).block();
+    }
+
+    private UniversityEntity createUniversity(String name) {
+        UniversityEntity universityEntity = UniversityEntity.builder()
+                                                            .name(name)
+                                                            .address("Some address")
+                                                            .zipcode("00000")
+                                                            .city("city")
+                                                            .country("country")
+                                                            .websiteUrl("url")
+                                                            .build();
+        return universityRepository.save(universityEntity).block();
     }
 }

@@ -21,6 +21,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static com.erapulus.server.security.SecurityContextUtils.withSecurityContext;
 import static com.erapulus.server.service.QueryParamParser.parseString;
 
 @Service
@@ -47,9 +48,9 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     public Mono<List<StudentListDto>> listStudents(String name) {
         String parsedName = parseString(name);
-        return studentRepository.findAllByName(parsedName)
-                                .map(StudentEntityToListDtoMapper::from)
-                                .collectList();
+        return withSecurityContext(user -> studentRepository.findAllByName(parsedName, user.universityId())
+                                                            .map(StudentEntityToListDtoMapper::from)
+                                                            .collectList());
     }
 
     public Mono<StudentResponseDto> getStudentById(int studentId) {
