@@ -19,4 +19,7 @@ public interface EmployeeRepository extends R2dbcRepository<EmployeeEntity, Inte
 
     @Query("SELECT * FROM application_user WHERE university = :university AND (type = 'UNIVERSITY_ADMINISTRATOR' OR type = 'EMPLOYEE')")
     Flux<EmployeeEntity> findAllByUniversityIdAndType(@Param("university") int universityId);
+
+    @Query("DELETE FROM application_user WHERE university = :university AND (type = 'UNIVERSITY_ADMINISTRATOR' OR type = 'EMPLOYEE')")
+    Mono<Void> deleteAllByUniversityId(int universityId);
 }

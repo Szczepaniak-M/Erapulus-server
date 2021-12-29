@@ -10,7 +10,9 @@ import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.web.common.PageablePayload;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.NoSuchElementException;
@@ -25,17 +27,20 @@ public class FacultyService extends CrudGenericService<FacultyEntity, FacultyReq
 
     private final FacultyRepository facultyRepository;
     private final UniversityRepository universityRepository;
+    private final ProgramService programService;
 
     public FacultyService(FacultyRepository facultyRepository,
                           RequestDtoToEntityMapper<FacultyRequestDto, FacultyEntity> requestDtoToEntityMapper,
                           EntityToResponseDtoMapper<FacultyEntity, FacultyResponseDto> entityToResponseDtoMapper,
-                          UniversityRepository universityRepository) {
+                          UniversityRepository universityRepository,
+                          ProgramService programService) {
         super(facultyRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "faculty");
         this.facultyRepository = facultyRepository;
         this.universityRepository = universityRepository;
+        this.programService = programService;
     }
 
-    public Mono<PageablePayload<FacultyResponseDto>> listEntities(int universityId, String name, PageRequest pageRequest) {
+    public Mono<PageablePayload<FacultyResponseDto>> listFaculties(int universityId, String name, PageRequest pageRequest) {
         String parsedName = parseString(name);
         return universityRepository.existsById(universityId)
                                    .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
@@ -47,19 +52,30 @@ public class FacultyService extends CrudGenericService<FacultyEntity, FacultyReq
     }
 
 
-    public Mono<FacultyResponseDto> createEntity(FacultyRequestDto requestDto, int universityId) {
+    public Mono<FacultyResponseDto> createFaculty(FacultyRequestDto requestDto, int universityId) {
         UnaryOperator<FacultyEntity> addParamFromPath = faculty -> faculty.universityId(universityId);
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<FacultyResponseDto> getEntityById(int facultyId, int universityId) {
+    public Mono<FacultyResponseDto> getFacultyById(int facultyId, int universityId) {
         Supplier<Mono<FacultyEntity>> supplier = () -> facultyRepository.findByIdAndUniversityId(facultyId, universityId);
         return getEntityById(supplier);
     }
 
 
-    public Mono<FacultyResponseDto> updateEntity(FacultyRequestDto requestDto, int facultyId, int universityId) {
+    public Mono<FacultyResponseDto> updateFaculty(FacultyRequestDto requestDto, int facultyId, int universityId) {
         UnaryOperator<FacultyEntity> addParamFromPath = faculty -> faculty.id(facultyId).universityId(universityId);
         return updateEntity(requestDto, addParamFromPath);
+    }
+
+    @Transactional
+    public Mono<Boolean> deleteFaculty(int facultyId) {
+        return programService.deleteAllProgramsByFacultyId(facultyId)
+                .then(super.deleteEntity(facultyId));
+    }
+
+    public Flux<Boolean> deleteAllFacultiesByUniversityId(int universityId) {
+        return facultyRepository.findAllByUniversityId(universityId)
+                                .flatMap(this::deleteFaculty);
     }
 }

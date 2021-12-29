@@ -1,5 +1,6 @@
 package com.erapulus.server.database;
 
+import com.erapulus.server.database.model.BuildingEntity;
 import com.erapulus.server.database.model.PostEntity;
 import com.erapulus.server.database.repository.PostRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -160,6 +161,39 @@ class PostRepositoryTest {
         // then
         StepVerifier.create(result)
                     .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void deleteAllByUniversityId_shouldDeleteBuildingFromGivenUniversity() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var post1 = createPost(TITLE_1, DATE_1, university1);
+        var post2 = createPost(TITLE_2, DATE_1, university1);
+        var post3 = createPost(TITLE_1, DATE_1, university2);
+        var post4 = createPost(TITLE_2, DATE_1, university2);
+
+        // when
+        Mono<Void> result = postRepository.deleteAllByUniversityId(university1.id());
+
+        // then
+        StepVerifier.create(postRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(posts -> posts.stream().map(PostEntity::id).toList().size() == 4)
+                    .expectRecordedMatches(posts -> posts.stream().map(PostEntity::id).toList().containsAll(List.of(post1.id(), post2.id(), post3.id(), post4.id())))
+                    .verifyComplete();
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+
+        StepVerifier.create(postRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(PostEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(PostEntity::id).toList().containsAll(List.of(post3.id(), post4.id())))
                     .verifyComplete();
     }
 

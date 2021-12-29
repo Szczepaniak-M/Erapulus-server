@@ -14,7 +14,7 @@ public class FriendshipDecisionDto {
 
     @NotNull
     @JsonProperty("accept")
-    private Boolean isAccepted;
+    private Boolean accept;
 
 }
 

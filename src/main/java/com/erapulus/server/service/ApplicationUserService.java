@@ -21,9 +21,11 @@ import static com.erapulus.server.service.QueryParamParser.*;
 public class ApplicationUserService {
 
     private final ApplicationUserRepository applicationUserRepository;
+    private final DeviceService deviceService;
+    private final FriendshipService friendshipService;
     private final ApplicationUserEntityToDtoMapper applicationUserEntityToDtoMapper;
 
-    public Mono<PageablePayload<ApplicationUserDto>> listEntities(String universityId, String userType, String name, String email, PageRequest pageRequest) {
+    public Mono<PageablePayload<ApplicationUserDto>> listApplicationUsers(String universityId, String userType, String name, String email, PageRequest pageRequest) {
         Integer universityParsed;
         UserType userTypeParsed;
         String nameParsed;
@@ -44,7 +46,7 @@ public class ApplicationUserService {
     }
 
     @Transactional
-    public Mono<Boolean> deleteEntity(int userId) {
+    public Mono<Boolean> deleteApplicationUser(int userId) {
         return applicationUserRepository.findById(userId)
                                         .switchIfEmpty(Mono.error(new NoSuchElementException("user")))
                                         .flatMap(this::deleteApplicationUser)
@@ -53,8 +55,9 @@ public class ApplicationUserService {
 
     private Mono<Void> deleteApplicationUser(ApplicationUserEntity applicationUserEntity) {
         if(applicationUserEntity.type() == UserType.STUDENT) {
-            // TODO Add deleting Friendship and Devices
-            return applicationUserRepository.delete(applicationUserEntity);
+            return deviceService.deleteAllDevicesByStudentId(applicationUserEntity.id())
+                    .then(friendshipService.deleteAllFriendsByStudentId(applicationUserEntity.id()))
+                    .then(applicationUserRepository.delete(applicationUserEntity));
         } else {
             return applicationUserRepository.delete(applicationUserEntity);
         }

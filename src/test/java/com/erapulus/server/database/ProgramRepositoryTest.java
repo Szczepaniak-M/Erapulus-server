@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -262,6 +263,29 @@ class ProgramRepositoryTest {
         StepVerifier.create(result)
                     .expectSubscription()
                     .assertNext(Assertions::assertFalse)
+                    .verifyComplete();
+    }
+
+    @Test
+    void findAllByProgramId_shouldReturnModulesWithGivenProgram() {
+        // given
+        var university = createUniversity(UNIVERSITY_1);
+        var faculty1 = createFaculty(FACULTY_1, university);
+        var faculty2 = createFaculty(FACULTY_2, university);
+        var program1 = createProgram(PROGRAM_1, faculty1);
+        var program2 = createProgram(PROGRAM_2, faculty1);
+        var program3 = createProgram(PROGRAM_1, faculty2);
+        var program4 = createProgram(PROGRAM_2, faculty2);
+
+        // when
+        Flux<Integer> result = programRepository.findAllByFacultyId(faculty1.id());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(programs -> programs.size() == 2)
+                    .expectRecordedMatches(programs -> programs.containsAll(List.of(program1.id(), program2.id())))
                     .verifyComplete();
     }
 

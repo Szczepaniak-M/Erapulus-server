@@ -45,25 +45,25 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
         this.universityEntityToResponseDtoMapper = universityEntityToResponseDtoMapper;
     }
 
-    public Mono<List<StudentListDto>> listEntities(String name) {
+    public Mono<List<StudentListDto>> listStudents(String name) {
         String parsedName = parseString(name);
         return studentRepository.findAllByName(parsedName)
                                 .map(StudentEntityToListDtoMapper::from)
                                 .collectList();
     }
 
-    public Mono<StudentResponseDto> getEntityById(int studentId) {
+    public Mono<StudentResponseDto> getStudentById(int studentId) {
         Supplier<Mono<StudentEntity>> supplier = () -> studentRepository.findByIdAndType(studentId);
         return getEntityById(supplier);
     }
 
-    public Mono<StudentResponseDto> updateEntity(@Valid StudentRequestDto requestDto, int studentId) {
+    public Mono<StudentResponseDto> updateStudent(@Valid StudentRequestDto requestDto, int studentId) {
         UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId).type(UserType.STUDENT);
         BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl());
         return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 
-    public Mono<UniversityResponseDto> updateUniversity(@Valid StudentUniversityUpdateDto universityDto, int studentId) {
+    public Mono<UniversityResponseDto> updateStudentUniversity(@Valid StudentUniversityUpdateDto universityDto, int studentId) {
         return studentRepository.findByIdAndType(studentId)
                                 .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
                                 .flatMap(student -> universityRepository.findById(universityDto.universityId())
@@ -75,7 +75,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     }
 
-    public Mono<StudentResponseDto> updatePhoto(int studentId, FilePart photo) {
+    public Mono<StudentResponseDto> updateStudentPhoto(int studentId, FilePart photo) {
         String filePath = "user/%d/photo/%s".formatted(studentId, photo.filename());
         return studentRepository.findByIdAndType(studentId)
                                 .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))

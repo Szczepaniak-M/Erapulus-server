@@ -60,7 +60,7 @@ public class ApplicationUserController {
                         userType -> withQueryParam(request, EMAIL_QUERY_PARAM,
                                 email -> withQueryParam(request, NAME_QUERY_PARAM,
                                         name -> withPageParams(request,
-                                                pageRequest -> applicationUserService.listEntities(universityId, userType, name, email, pageRequest)
+                                                pageRequest -> applicationUserService.listApplicationUsers(universityId, userType, name, email, pageRequest)
                                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                                      .doOnError(e -> log.error(e.getMessage(), e))
                                                                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
@@ -84,7 +84,7 @@ public class ApplicationUserController {
     )
     public Mono<ServerResponse> deleteApplicationUser(ServerRequest request) {
         return withPathParam(request, USER_PATH_PARAM,
-                userId -> applicationUserService.deleteEntity(userId)
+                userId -> applicationUserService.deleteApplicationUser(userId)
                                                 .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                 .doOnError(e -> log.error(e.getMessage(), e))

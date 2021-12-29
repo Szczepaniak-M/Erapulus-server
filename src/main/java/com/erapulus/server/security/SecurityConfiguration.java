@@ -76,7 +76,6 @@ public class SecurityConfiguration {
         JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, UNIVERSITY_ADMINISTRATOR), null);
         JwtReactiveAuthorizationManager onlyUniversityAdministratorManager = new JwtReactiveAuthorizationManager(List.of(UNIVERSITY_ADMINISTRATOR), null);
         JwtReactiveAuthorizationManager onlyUniversityAdministratorAndEmployeeWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(EMPLOYEE, UNIVERSITY_ADMINISTRATOR), UNIVERSITY_PATH_PARAM);
-        JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorAndEmployeeWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, EMPLOYEE, UNIVERSITY_ADMINISTRATOR), UNIVERSITY_PATH_PARAM);
         JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorAndEmployeeAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, EMPLOYEE, UNIVERSITY_ADMINISTRATOR), null);
         JwtReactiveAuthorizationManager onlyUniversityAdministratorAndEmployeeAndStudentWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(STUDENT, EMPLOYEE, UNIVERSITY_ADMINISTRATOR), UNIVERSITY_PATH_PARAM);
         JwtReactiveAuthorizationManager onlyStudentWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(STUDENT), STUDENT_PATH_PARAM);
@@ -109,9 +108,6 @@ public class SecurityConfiguration {
 
                    .matchers(onlyUniversityAdministratorAndEmployeeWithParamValidationPaths())
                    .access(onlyUniversityAdministratorAndEmployeeWithParamValidationAuthorizationManager)
-
-                   .matchers(onlyAdministratorAndUniversityAdministratorAndEmployeeWithParamValidationPaths())
-                   .access(onlyAdministratorAndUniversityAdministratorAndEmployeeWithParamValidationAuthorizationManager)
 
                    .matchers(onlyAdministratorAndUniversityAdministratorAndEmployeePaths())
                    .access(onlyAdministratorAndUniversityAdministratorAndEmployeeAuthorizationManager)
@@ -195,14 +191,6 @@ public class SecurityConfiguration {
         return ServerWebExchangeMatchers.matchers(get, put);
     }
 
-    private ServerWebExchangeMatcher onlyAdministratorAndUniversityAdministratorAndEmployeeWithParamValidationPaths() {
-        ServerWebExchangeMatcher put = ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT,
-                UNIVERSITY_DETAILS_URL);
-        ServerWebExchangeMatcher patch = ServerWebExchangeMatchers.pathMatchers(HttpMethod.PATCH,
-                UNIVERSITY_UPDATE_LOGO_URL);
-        return ServerWebExchangeMatchers.matchers(put, patch);
-    }
-
     private ServerWebExchangeMatcher onlyUniversityAdministratorAndEmployeeWithParamValidationPaths() {
         ServerWebExchangeMatcher get = ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET,
                 EMPLOYEE_LIST_URL);
@@ -223,7 +211,10 @@ public class SecurityConfiguration {
                 FACULTY_DETAILS_URL,
                 MODULE_DETAILS_URL,
                 POST_DETAILS_URL,
-                PROGRAM_DETAILS_URL);
+                PROGRAM_DETAILS_URL,
+                UNIVERSITY_DETAILS_URL);
+        ServerWebExchangeMatcher patch = ServerWebExchangeMatchers.pathMatchers(HttpMethod.PATCH,
+                UNIVERSITY_UPDATE_LOGO_URL);
         ServerWebExchangeMatcher delete = ServerWebExchangeMatchers.pathMatchers(HttpMethod.DELETE,
                 BUILDING_DETAILS_URL,
                 DOCUMENT_MODULE_DETAILS_URL,
@@ -233,7 +224,7 @@ public class SecurityConfiguration {
                 MODULE_DETAILS_URL,
                 POST_DETAILS_URL,
                 PROGRAM_DETAILS_URL);
-        return ServerWebExchangeMatchers.matchers(get, post, put, delete);
+        return ServerWebExchangeMatchers.matchers(get, post, put, patch, delete);
     }
 
     private ServerWebExchangeMatcher onlyUniversityAdministratorAndEmployeeAndStudentWithParamValidationPaths() {

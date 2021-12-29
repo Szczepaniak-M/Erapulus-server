@@ -66,7 +66,7 @@ public class ModuleController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withQueryParam(request, NAME_QUERY_PARAM,
                                         name -> withPageParams(request,
-                                                pageRequest -> moduleService.listEntities(universityId, facultyId, programId, name, pageRequest)
+                                                pageRequest -> moduleService.listModules(universityId, facultyId, programId, name, pageRequest)
                                                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                             .doOnError(e -> log.error(e.getMessage(), e))
@@ -99,7 +99,7 @@ public class ModuleController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> request.bodyToMono(ModuleRequestDto.class)
-                                                    .flatMap(module -> moduleService.createEntity(module, universityId, facultyId, programId))
+                                                    .flatMap(module -> moduleService.createModule(module, universityId, facultyId, programId))
                                                     .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -134,7 +134,7 @@ public class ModuleController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, MODULE_PATH_PARAM,
-                                        moduleId -> moduleService.getEntityById(moduleId, universityId, facultyId, programId)
+                                        moduleId -> moduleService.getModuleById(moduleId, universityId, facultyId, programId)
                                                                  .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                  .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                  .doOnError(e -> log.error(e.getMessage(), e))
@@ -169,7 +169,7 @@ public class ModuleController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, MODULE_PATH_PARAM,
                                         moduleId -> request.bodyToMono(ModuleRequestDto.class)
-                                                           .flatMap(module -> moduleService.updateEntity(module, moduleId, universityId, facultyId, programId))
+                                                           .flatMap(module -> moduleService.updateModule(module, moduleId, universityId, facultyId, programId))
                                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                            .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -200,11 +200,14 @@ public class ModuleController {
             }
     )
     public Mono<ServerResponse> deleteModule(ServerRequest request) {
-        return withPathParam(request, MODULE_PATH_PARAM,
-                moduleId -> moduleService.deleteEntity(moduleId)
-                                         .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                         .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                         .doOnError(e -> log.error(e.getMessage(), e))
-                                         .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, FACULTY_PATH_PARAM,
+                        facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
+                                programId -> withPathParam(request, MODULE_PATH_PARAM,
+                                        moduleId -> moduleService.deleteModule(moduleId, universityId, facultyId, programId)
+                                                                 .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                                 .doOnError(e -> log.error(e.getMessage(), e))
+                                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())))));
     }
 }

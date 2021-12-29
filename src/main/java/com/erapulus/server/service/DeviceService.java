@@ -26,23 +26,27 @@ public class DeviceService extends CrudGenericService<DeviceEntity, DeviceReques
         this.deviceRepository = deviceRepository;
     }
 
-    public Mono<List<DeviceEntity>> listEntities(Integer studentId) {
+    public Mono<List<DeviceEntity>> listDevices(Integer studentId) {
         return deviceRepository.findAllByStudentId(studentId)
                                .collectList();
     }
 
-    public Mono<DeviceResponseDto> createEntity(@Valid DeviceRequestDto requestDto, int studentId) {
+    public Mono<DeviceResponseDto> createDevice(@Valid DeviceRequestDto requestDto, int studentId) {
         UnaryOperator<DeviceEntity> addParamFromPath = device -> device.applicationUserId(studentId);
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<DeviceResponseDto> getEntityById(int deviceId, int studentId) {
+    public Mono<DeviceResponseDto> getDeviceById(int deviceId, int studentId) {
         Supplier<Mono<DeviceEntity>> supplier = () -> deviceRepository.findByIdAndStudentId(deviceId, studentId);
         return getEntityById(supplier);
     }
 
-    public Mono<DeviceResponseDto> updateEntity(@Valid DeviceRequestDto requestDto, int deviceId, int studentId) {
+    public Mono<DeviceResponseDto> updateDevice(@Valid DeviceRequestDto requestDto, int deviceId, int studentId) {
         UnaryOperator<DeviceEntity> addParamFromPath = device -> device.id(deviceId).applicationUserId(studentId);
         return updateEntity(requestDto, addParamFromPath);
+    }
+
+    public Mono<Void> deleteAllDevicesByStudentId(int studentId) {
+        return deviceRepository.deleteAllByStudentId(studentId);
     }
 }

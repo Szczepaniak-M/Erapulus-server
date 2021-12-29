@@ -34,4 +34,7 @@ public interface FacultyRepository extends R2dbcRepository<FacultyEntity, Intege
     @Query("SELECT * FROM faculty WHERE id = :faculty AND university = :university")
     Mono<FacultyEntity> findByIdAndUniversityId(@Param("faculty") int facultyId,
                                                 @Param("university") int universityId);
+
+    @Query("SELECT id FROM faculty WHERE university = :university")
+    Flux<Integer> findAllByUniversityId(@Param("university") int universityId);
 }

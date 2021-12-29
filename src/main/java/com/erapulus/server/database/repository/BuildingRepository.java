@@ -17,4 +17,7 @@ public interface BuildingRepository extends R2dbcRepository<BuildingEntity, Inte
     @Query("SELECT * FROM building WHERE id = :building AND university = :university")
     Mono<BuildingEntity> findByIdAndUniversityId(@Param("building") int buildingId,
                                                  @Param("university") int universityId);
+
+    @Query("DELETE FROM building WHERE university = :university")
+    Mono<Void> deleteAllByUniversityId(@Param("university") int universityId);
 }

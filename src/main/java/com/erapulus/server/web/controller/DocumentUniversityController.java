@@ -54,7 +54,7 @@ public class DocumentUniversityController {
     )
     public Mono<ServerResponse> listDocumentsForUniversity(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> documentService.listEntities(universityId, null, null, null)
+                universityId -> documentService.listDocuments(universityId, null, null, null)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                .doOnError(e -> log.error(e.getMessage(), e))
@@ -82,7 +82,7 @@ public class DocumentUniversityController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.body(BodyExtractors.toMultipartData())
                                        .map(MultiValueMap::toSingleValueMap)
-                                       .flatMap(body -> documentService.createEntity(universityId, null, null, null, body))
+                                       .flatMap(body -> documentService.createDocument(universityId, null, null, null, body))
                                        .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                        .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                        .doOnError(e -> log.error(e.getMessage(), e))
@@ -112,7 +112,7 @@ public class DocumentUniversityController {
     public Mono<ServerResponse> getDocumentForUniversityById(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, DOCUMENT_PATH_PARAM,
-                        documentId -> documentService.getEntityById(documentId, universityId, null, null, null)
+                        documentId -> documentService.getDocumentById(documentId, universityId, null, null, null)
                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                      .doOnError(e -> log.error(e.getMessage(), e))
@@ -143,7 +143,7 @@ public class DocumentUniversityController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, DOCUMENT_PATH_PARAM,
                         documentId -> request.bodyToMono(DocumentRequestDto.class)
-                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, null, null, null))
+                                             .flatMap(document -> documentService.updateDocument(document, documentId, universityId, null, null, null))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                              .doOnError(e -> log.error(e.getMessage(), e))
@@ -173,7 +173,7 @@ public class DocumentUniversityController {
     public Mono<ServerResponse> deleteDocumentForUniversity(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, DOCUMENT_PATH_PARAM,
-                        documentId -> documentService.deleteEntity(documentId, universityId, null, null, null)
+                        documentId -> documentService.deleteDocument(documentId, universityId, null, null, null)
                                                      .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                      .doOnError(e -> log.error(e.getMessage(), e))

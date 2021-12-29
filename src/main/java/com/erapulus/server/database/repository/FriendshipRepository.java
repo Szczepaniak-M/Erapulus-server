@@ -63,4 +63,7 @@ public interface FriendshipRepository extends R2dbcRepository<FriendshipEntity, 
             """)
     Mono<Integer> deleteByUserIdAndFriendId(@Param("student") int studentId,
                                             @Param("friend") int friendId);
+
+    @Query("DELETE FROM friendship WHERE application_user = :student OR friend = :student")
+    Mono<Void> deleteAllByStudentId(@Param("student") int studentId);
 }

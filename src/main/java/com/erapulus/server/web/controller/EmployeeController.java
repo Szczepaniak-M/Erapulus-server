@@ -50,7 +50,7 @@ public class EmployeeController {
     )
     public Mono<ServerResponse> listEmployeeFromUniversity(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> employeeService.listEntities(universityId)
+                universityId -> employeeService.listEmployees(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                .doOnError(e -> log.error(e.getMessage(), e))
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
@@ -73,7 +73,7 @@ public class EmployeeController {
     )
     public Mono<ServerResponse> getEmployeeById(ServerRequest request) {
         return withPathParam(request, EMPLOYEE_PATH_PARAM,
-                employeeId -> employeeService.getEntityById(employeeId)
+                employeeId -> employeeService.getEmployeeById(employeeId)
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                              .doOnError(e -> log.error(e.getMessage(), e))
@@ -100,7 +100,7 @@ public class EmployeeController {
     public Mono<ServerResponse> updateEmployee(ServerRequest request) {
         return withPathParam(request, EMPLOYEE_PATH_PARAM,
                 employeeId -> request.bodyToMono(EmployeeRequestDto.class)
-                                     .flatMap(employeeDto -> employeeService.updateEntity(employeeDto, employeeId))
+                                     .flatMap(employeeDto -> employeeService.updateEmployee(employeeDto, employeeId))
                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                      .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)

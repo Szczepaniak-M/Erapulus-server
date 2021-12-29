@@ -48,4 +48,7 @@ public interface ModuleRepository extends R2dbcRepository<ModuleEntity, Integer>
                                                                     @Param("university") int universityId,
                                                                     @Param("faculty") int facultyId,
                                                                     @Param("program") int programId);
+
+    @Query("SELECT id FROM module WHERE program = :program")
+    Flux<Integer> findAllByProgramId(@Param("program") int programId);
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -176,6 +177,28 @@ class FacultyRepositoryTest {
         // then
         StepVerifier.create(result)
                     .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void findAllByUniversityId_shouldReturnFacultyWithGivenUniversity() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var faculty1 = createFaculty(FACULTY_1, university1);
+        var faculty2 = createFaculty(FACULTY_2, university1);
+        var faculty3 = createFaculty(FACULTY_1, university2);
+        var faculty4 = createFaculty(FACULTY_2, university2);
+
+        // when
+        Flux<Integer> result = facultyRepository.findAllByUniversityId(university1.id());
+
+        // then
+        StepVerifier.create(result)
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(faculties -> faculties.size() == 2)
+                    .expectRecordedMatches(faculties -> faculties.containsAll(List.of(faculty1.id(), faculty2.id())))
                     .verifyComplete();
     }
 

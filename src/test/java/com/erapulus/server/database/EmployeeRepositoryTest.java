@@ -158,6 +158,41 @@ class EmployeeRepositoryTest {
                     .verifyComplete();
     }
 
+    @Test
+    void deleteAllByUniversityId_shouldDeleteEmployeeFromGivenUniversity() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var employee1 = createEmployee(EMAIL_1, UserType.EMPLOYEE, university1.id());
+        var employee2 = createEmployee(EMAIL_2, UserType.EMPLOYEE, university2.id());
+        var employee3 = createEmployee(EMAIL_3, UserType.UNIVERSITY_ADMINISTRATOR, university1.id());
+        var employee4 = createEmployee(EMAIL_4, UserType.UNIVERSITY_ADMINISTRATOR, university2.id());
+        var employee5 = createEmployee(EMAIL_5, UserType.ADMINISTRATOR, null);
+        var student = createStudent(EMAIL_6, university1.id());
+
+        // when
+        Mono<Void> result = employeeRepository.deleteAllByUniversityId(university1.id());
+
+        // then
+        StepVerifier.create(employeeRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(devices -> devices.stream().map(ApplicationUserEntity::id).toList().size() == 6)
+                    .expectRecordedMatches(devices -> devices.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(employee1.id(), employee2.id(), employee3.id(), employee4.id(), employee5.id(), student.id())))
+                    .verifyComplete();
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+
+        StepVerifier.create(employeeRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(devices -> devices.stream().map(ApplicationUserEntity::id).toList().size() == 4)
+                    .expectRecordedMatches(devices -> devices.stream().map(ApplicationUserEntity::id).toList().containsAll(List.of(employee2.id(), employee4.id(), employee5.id(), student.id())))
+                    .verifyComplete();
+    }
+
     private EmployeeEntity createEmployee(String email, UserType userType, Integer university) {
         EmployeeEntity employee = EmployeeEntity.builder()
                                                 .type(userType)

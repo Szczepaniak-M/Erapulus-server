@@ -52,7 +52,7 @@ public class DeviceController {
     )
     public Mono<ServerResponse> listDevices(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
-                studentId -> deviceService.listEntities(studentId)
+                studentId -> deviceService.listDevices(studentId)
                                           .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                           .doOnError(e -> log.error(e.getMessage(), e))
                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
@@ -77,7 +77,7 @@ public class DeviceController {
     public Mono<ServerResponse> createDevice(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> request.bodyToMono(DeviceRequestDto.class)
-                                    .flatMap(device -> deviceService.createEntity(device, studentId))
+                                    .flatMap(device -> deviceService.createDevice(device, studentId))
                                     .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                     .doOnError(e -> log.error(e.getMessage(), e))
@@ -106,7 +106,7 @@ public class DeviceController {
     public Mono<ServerResponse> getDeviceById(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> withPathParam(request, DEVICE_PATH_PARAM,
-                        deviceId -> deviceService.getEntityById(deviceId, studentId)
+                        deviceId -> deviceService.getDeviceById(deviceId, studentId)
                                                  .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                  .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                  .doOnError(e -> log.error(e.getMessage(), e))
@@ -137,7 +137,7 @@ public class DeviceController {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> withPathParam(request, DEVICE_PATH_PARAM,
                         deviceId -> request.bodyToMono(DeviceRequestDto.class)
-                                           .flatMap(device -> deviceService.updateEntity(device, deviceId, studentId))
+                                           .flatMap(device -> deviceService.updateDevice(device, deviceId, studentId))
                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                            .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)

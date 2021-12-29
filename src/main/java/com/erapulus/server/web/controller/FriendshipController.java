@@ -102,7 +102,7 @@ public class FriendshipController {
             parameters = @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = FriendshipRequestDto.class)), required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = FriendshipResponseDto.class)))),
+                    @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = FriendshipResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),

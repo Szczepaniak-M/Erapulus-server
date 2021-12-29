@@ -12,6 +12,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
         this.azureStorageService = azureStorageService;
     }
 
-    public Mono<List<DocumentResponseDto>> listEntities(Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+    public Mono<List<DocumentResponseDto>> listDocuments(Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .flatMapMany(requestDto -> documentRepository.findAllByFilters(requestDto.universityId(), requestDto.programId(), requestDto.moduleId()))
                 .map(entityToResponseDtoMapper::from)
@@ -53,7 +54,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
     }
 
     @Transactional
-    public Mono<DocumentResponseDto> createEntity(Integer universityId, Integer facultyId, Integer programId, Integer moduleId, Map<String, Part> body) {
+    public Mono<DocumentResponseDto> createDocument(Integer universityId, Integer facultyId, Integer programId, Integer moduleId, Map<String, Part> body) {
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .flatMap(requestDto -> extractFileName(requestDto, body))
                 .map(requestDtoToEntityMapper::from)
@@ -64,14 +65,14 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                 .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
-    public Mono<DocumentResponseDto> getEntityById(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+    public Mono<DocumentResponseDto> getDocumentById(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .then(getEntityById(supplier))
                 .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
-    public Mono<DocumentResponseDto> updateEntity(DocumentRequestDto documentDto, Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+    public Mono<DocumentResponseDto> updateDocument(DocumentRequestDto documentDto, Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         UnaryOperator<DocumentEntity> addParamFromBody = document -> document.id(documentId).name(documentDto.name()).description(documentDto.description());
         BinaryOperator<DocumentEntity> mergeEntity = (oldDocument, newDocument) -> newDocument.path(oldDocument.path());
         return validateRequest(universityId, facultyId, programId, moduleId)
@@ -79,11 +80,32 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
                 .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
-    public Mono<Boolean> deleteEntity(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+    public Mono<Boolean> deleteDocument(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .then(documentRepository.findById(documentId))
                 .flatMap(document -> deleteEntity(documentId)
                         .then(azureStorageService.deleteFile(document)));
+    }
+
+    public Flux<Boolean> deleteAllDocumentsByUniversityId(int universityId) {
+        return documentRepository.findAllByFilters(universityId, null, null)
+                                 .flatMap(document -> deleteEntity(document.id())
+                                         .then(azureStorageService.deleteFile(document)));
+
+    }
+
+    public Flux<Boolean> deleteAllDocumentsByProgramId(int programId) {
+        return documentRepository.findAllByFilters(null, programId, null)
+                                 .flatMap(document -> deleteEntity(document.id())
+                                         .then(azureStorageService.deleteFile(document)));
+
+    }
+
+    public Flux<Boolean> deleteAllDocumentsByModuleId(int moduleId) {
+        return documentRepository.findAllByFilters(null, null, moduleId)
+                                 .flatMap(document -> deleteEntity(document.id())
+                                         .then(azureStorageService.deleteFile(document)));
+
     }
 
     private Mono<DocumentRequestDto> extractFileName(DocumentRequestDto documentRequestDto, Map<String, Part> body) {

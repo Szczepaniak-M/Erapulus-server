@@ -2,7 +2,6 @@ package com.erapulus.server.web.controller;
 
 import com.erapulus.server.dto.BuildingRequestDto;
 import com.erapulus.server.dto.BuildingResponseDto;
-import com.erapulus.server.dto.PostResponseDto;
 import com.erapulus.server.service.BuildingService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +53,7 @@ public class BuildingController {
     )
     public Mono<ServerResponse> listBuildings(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
-                universityId -> buildingService.listEntities(universityId)
+                universityId -> buildingService.listBuildings(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                .doOnError(e -> log.error(e.getMessage(), e))
@@ -81,7 +80,7 @@ public class BuildingController {
     public Mono<ServerResponse> createBuilding(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(BuildingRequestDto.class)
-                                       .flatMap(building -> buildingService.createEntity(building, universityId))
+                                       .flatMap(building -> buildingService.createBuilding(building, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("building"))
@@ -111,7 +110,7 @@ public class BuildingController {
     public Mono<ServerResponse> getBuildingById(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, BUILDING_PATH_PARAM,
-                        buildingId -> buildingService.getEntityById(buildingId, universityId)
+                        buildingId -> buildingService.getBuildingById(buildingId, universityId)
                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                      .doOnError(e -> log.error(e.getMessage(), e))
@@ -142,7 +141,7 @@ public class BuildingController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, BUILDING_PATH_PARAM,
                         buildingId -> request.bodyToMono(BuildingRequestDto.class)
-                                             .flatMap(buildingDto -> buildingService.updateEntity(buildingDto, buildingId, universityId))
+                                             .flatMap(buildingDto -> buildingService.updateBuilding(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)

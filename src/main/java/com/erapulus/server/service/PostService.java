@@ -42,7 +42,7 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
         this.universityRepository = universityRepository;
     }
 
-    public Mono<PageablePayload<PostResponseDto>> listEntities(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
+    public Mono<PageablePayload<PostResponseDto>> listPosts(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
         return universityRepository.existsById(universityId)
                                    .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
                                    .then(convertDate(fromDate, MIN_DATE))
@@ -55,20 +55,24 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
 
     }
 
-    public Mono<PostResponseDto> createEntity(@Valid PostRequestDto requestDto, int universityId) {
+    public Mono<PostResponseDto> createPost(@Valid PostRequestDto requestDto, int universityId) {
         UnaryOperator<PostEntity> addParamFromPath = postEntity -> postEntity.universityId(universityId).date(LocalDate.now());
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<PostResponseDto> getEntityById(int postId, int universityId) {
+    public Mono<PostResponseDto> getPostById(int postId, int universityId) {
         Supplier<Mono<PostEntity>> supplier = () -> postRepository.findByIdAndUniversityId(postId, universityId);
         return getEntityById(supplier);
     }
 
-    public Mono<PostResponseDto> updateEntity(@Valid PostRequestDto requestDto, int postId, int universityId) {
+    public Mono<PostResponseDto> updatePost(@Valid PostRequestDto requestDto, int postId, int universityId) {
         UnaryOperator<PostEntity> addParamFromPath = post -> post.id(postId).universityId(universityId);
         BinaryOperator<PostEntity> mergeEntity = (oldPost, newPost) -> newPost.date(oldPost.date());
         return updateEntity(requestDto, addParamFromPath, mergeEntity);
+    }
+
+    public Mono<Void> deleteAllPostsByUniversityId(int universityId) {
+        return postRepository.deleteAllByUniversityId(universityId);
     }
 
     private Mono<LocalDate> convertDate(String date, LocalDate defaultValue) {

@@ -60,7 +60,7 @@ public class FacultyController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withQueryParam(request, NAME_QUERY_PARAM,
                         name -> withPageParams(request,
-                                pageRequest -> facultyService.listEntities(universityId, name, pageRequest)
+                                pageRequest -> facultyService.listFaculties(universityId, name, pageRequest)
                                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                              .doOnError(e -> log.error(e.getMessage(), e))
@@ -86,7 +86,7 @@ public class FacultyController {
     public Mono<ServerResponse> createFaculty(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(FacultyRequestDto.class)
-                                       .flatMap(faculty -> facultyService.createEntity(faculty, universityId))
+                                       .flatMap(faculty -> facultyService.createFaculty(faculty, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .doOnError(e -> log.error(e.getMessage(), e))
@@ -115,7 +115,7 @@ public class FacultyController {
     public Mono<ServerResponse> getFacultyById(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
-                        facultyId -> facultyService.getEntityById(facultyId, universityId)
+                        facultyId -> facultyService.getFacultyById(facultyId, universityId)
                                                    .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                    .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                    .doOnError(e -> log.error(e.getMessage(), e))
@@ -146,7 +146,7 @@ public class FacultyController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> request.bodyToMono(FacultyRequestDto.class)
-                                            .flatMap(facultyDto -> facultyService.updateEntity(facultyDto, facultyId, universityId))
+                                            .flatMap(facultyDto -> facultyService.updateFaculty(facultyDto, facultyId, universityId))
                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                             .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)

@@ -35,25 +35,29 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
         this.employeeRepository = employeeRepository;
     }
 
-    public Mono<List<EmployeeResponseDto>> listEntities(Integer universityId) {
+    public Mono<List<EmployeeResponseDto>> listEmployees(Integer universityId) {
         return employeeRepository.findAllByUniversityIdAndType(universityId)
                                  .map(entityToResponseDtoMapper::from)
                                  .collectList();
     }
 
-    public Mono<EmployeeResponseDto> getEntityById(int employeeId) {
+    public Mono<EmployeeResponseDto> getEmployeeById(int employeeId) {
         Supplier<Mono<EmployeeEntity>> supplier = () -> employeeRepository.findByIdAndType(employeeId);
         return getEntityById(supplier)
                 .flatMap(this::validateBodyContent);
     }
 
-    public Mono<EmployeeResponseDto> updateEntity(@Valid EmployeeRequestDto requestDto, int employeeId) {
+    public Mono<EmployeeResponseDto> updateEmployee(@Valid EmployeeRequestDto requestDto, int employeeId) {
         UnaryOperator<EmployeeEntity> addParamFromPath = employee -> employee.id(employeeId);
         BinaryOperator<EmployeeEntity> mergeEntity = (oldEmployee, newEmployee) -> newEmployee.type(oldEmployee.type())
                                                                                               .password(oldEmployee.password())
                                                                                               .universityId(oldEmployee.universityId());
         return updateEntity(requestDto, addParamFromPath, mergeEntity)
                 .flatMap(this::validateBodyContent);
+    }
+
+    public Mono<Void> deleteAllEmployeesByUniversityId(int universityId) {
+        return employeeRepository.deleteAllByUniversityId(universityId);
     }
 
     private Mono<EmployeeResponseDto> validateBodyContent(EmployeeResponseDto employeeResponseDto) {

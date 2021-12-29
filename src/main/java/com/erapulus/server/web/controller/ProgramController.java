@@ -62,7 +62,7 @@ public class ProgramController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withQueryParam(request, NAME_QUERY_PARAM,
                                 name -> withPageParams(request,
-                                        pageRequest -> programService.listEntities(universityId, facultyId, name, pageRequest)
+                                        pageRequest -> programService.listPrograms(universityId, facultyId, name, pageRequest)
                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                      .doOnError(e -> log.error(e.getMessage(), e))
@@ -93,7 +93,7 @@ public class ProgramController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> request.bodyToMono(ProgramRequestDto.class)
-                                            .flatMap(program -> programService.createEntity(program, universityId, facultyId))
+                                            .flatMap(program -> programService.createProgram(program, universityId, facultyId))
                                             .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                             .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -125,7 +125,7 @@ public class ProgramController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
-                                programId -> programService.getEntityById(programId, universityId, facultyId)
+                                programId -> programService.getProgramById(programId, universityId, facultyId)
                                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                            .doOnError(e -> log.error(e.getMessage(), e))
@@ -158,7 +158,7 @@ public class ProgramController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> request.bodyToMono(ProgramRequestDto.class)
-                                                    .flatMap(program -> programService.updateEntity(program, programId, universityId, facultyId))
+                                                    .flatMap(program -> programService.updateProgram(program, programId, universityId, facultyId))
                                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -188,12 +188,14 @@ public class ProgramController {
             }
     )
     public Mono<ServerResponse> deleteProgram(ServerRequest request) {
-        return withPathParam(request, PROGRAM_PATH_PARAM,
-                programId -> programService.deleteEntity(programId)
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, FACULTY_PATH_PARAM,
+                        facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
+                                programId -> programService.deleteProgram(programId, universityId, facultyId)
                                            .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                            .doOnError(e -> log.error(e.getMessage(), e))
-                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
     }
 }
 

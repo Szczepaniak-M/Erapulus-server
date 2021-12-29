@@ -16,4 +16,7 @@ public interface DeviceRepository extends R2dbcRepository<DeviceEntity, Integer>
     @Query("SELECT * FROM device WHERE id = :device AND application_user = :student")
     Mono<DeviceEntity> findByIdAndStudentId(@Param("device") int deviceId,
                                             @Param("student") int studentId);
+
+    @Query("DELETE FROM device WHERE application_user = :student")
+    Mono<Void> deleteAllByStudentId(@Param("student") int studentId);
 }

@@ -96,6 +96,39 @@ class BuildingRepositoryTest {
                     .verifyComplete();
     }
 
+    @Test
+    void deleteAllByUniversityId_shouldDeleteBuildingFromGivenUniversity() {
+        // given
+        var university1 = createUniversity(UNIVERSITY_1);
+        var university2 = createUniversity(UNIVERSITY_2);
+        var building1 = createBuilding(BUILDING_1, university1);
+        var building2 = createBuilding(BUILDING_2, university1);
+        var building3 = createBuilding(BUILDING_1, university2);
+        var building4 = createBuilding(BUILDING_2, university2);
+
+        // when
+        Mono<Void> result = buildingRepository.deleteAllByUniversityId(university1.id());
+
+        // then
+        StepVerifier.create(buildingRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().size() == 4)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().containsAll(List.of(building1.id(), building2.id(), building3.id(), building4.id())))
+                    .verifyComplete();
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+
+        StepVerifier.create(buildingRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(buildings -> buildings.stream().map(BuildingEntity::id).toList().containsAll(List.of(building3.id(), building4.id())))
+                    .verifyComplete();
+    }
+
     private BuildingEntity createBuilding(String name, UniversityEntity university) {
         BuildingEntity buildingEntity = BuildingEntity.builder()
                                                       .name(name)

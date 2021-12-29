@@ -36,7 +36,7 @@ public class UniversityRouter {
             @RouterOperation(path = UNIVERSITY_BASE_URL_OPENAPI, method = GET, beanClass = UniversityController.class, beanMethod = "listUniversities"),
             @RouterOperation(path = UNIVERSITY_BASE_URL_OPENAPI, method = POST, beanClass = UniversityController.class, beanMethod = "createUniversity"),
             @RouterOperation(path = UNIVERSITY_DETAILS_URL_OPENAPI, method = GET, beanClass = UniversityController.class, beanMethod = "getUniversityById"),
-            @RouterOperation(path = UNIVERSITY_DETAILS_URL_OPENAPI, method = PUT, beanClass = UniversityController.class, beanMethod = "updateUniversity"),
+            @RouterOperation(path = UNIVERSITY_DETAILS_URL_OPENAPI, method = PUT, beanClass = UniversityController.class, beanMethod = "updateStudentUniversity"),
             @RouterOperation(path = UNIVERSITY_DETAILS_URL_OPENAPI, method = DELETE, beanClass = UniversityController.class, beanMethod = "deleteUniversity"),
             @RouterOperation(path = UNIVERSITY_UPDATE_LOGO_URL_OPENAPI, method = PATCH, beanClass = UniversityController.class, beanMethod = "updateUniversityPhoto")
     })

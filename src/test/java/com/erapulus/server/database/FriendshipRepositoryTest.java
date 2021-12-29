@@ -277,6 +277,40 @@ class FriendshipRepositoryTest {
                     .verifyComplete();
     }
 
+    @Test
+    void deleteAllByStudentId_shouldDeleteFriendshipsWithGivenStudentId() {
+        // given
+        var student1 = createStudent(EMAIL_1);
+        var student2 = createStudent(EMAIL_2);
+        var student3 = createStudent(EMAIL_3);
+        var student4 = createStudent(EMAIL_4);
+        var student5 = createStudent(EMAIL_5);
+        createFriend(student1, student2, FriendshipStatus.ACCEPTED);
+        createFriend(student1, student3, FriendshipStatus.ACCEPTED);
+        createFriend(student1, student4, FriendshipStatus.REQUESTED);
+        createFriend(student2, student5, FriendshipStatus.ACCEPTED);
+
+        // when
+        Mono<Void> result = friendshipRepository.deleteAllByStudentId(student1.id());
+
+        // then
+        StepVerifier.create(friendshipRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(friendships -> friendships.stream().map(FriendshipEntity::id).toList().size() == 8)
+                    .verifyComplete();
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+
+        StepVerifier.create(friendshipRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(friendships -> friendships.stream().map(FriendshipEntity::id).toList().size() == 2)
+                    .verifyComplete();
+    }
+
     private StudentEntity createStudent(String email) {
         StudentEntity student = StudentEntity.builder()
                                              .firstName("firstName")

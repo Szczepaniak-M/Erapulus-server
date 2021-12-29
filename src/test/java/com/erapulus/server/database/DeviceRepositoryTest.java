@@ -1,5 +1,6 @@
 package com.erapulus.server.database;
 
+import com.erapulus.server.database.model.BuildingEntity;
 import com.erapulus.server.database.model.DeviceEntity;
 import com.erapulus.server.database.model.StudentEntity;
 import com.erapulus.server.database.repository.DeviceRepository;
@@ -93,6 +94,39 @@ class DeviceRepositoryTest {
         // then
         StepVerifier.create(result)
                     .expectSubscription()
+                    .verifyComplete();
+    }
+
+    @Test
+    void deleteAllByStudentId_shouldDeleteBuildingFromGivenStudent() {
+        // given
+        var student1 = createStudent(STUDENT_1);
+        var student2 = createStudent(STUDENT_2);
+        var device1 = createDevice(DEVICE_ID_1, student1);
+        var device2 = createDevice(DEVICE_ID_2, student1);
+        var device3 = createDevice(DEVICE_ID_3, student2);
+        var device4 = createDevice(DEVICE_ID_4, student2);
+
+        // when
+        Mono<Void> result = deviceRepository.deleteAllByStudentId(student1.id());
+
+        // then
+        StepVerifier.create(deviceRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(devices -> devices.stream().map(DeviceEntity::id).toList().size() == 4)
+                    .expectRecordedMatches(devices -> devices.stream().map(DeviceEntity::id).toList().containsAll(List.of(device1.id(), device2.id(), device3.id(), device4.id())))
+                    .verifyComplete();
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyComplete();
+
+        StepVerifier.create(deviceRepository.findAll())
+                    .recordWith(ArrayList::new)
+                    .thenConsumeWhile(x -> true)
+                    .expectRecordedMatches(devices -> devices.stream().map(DeviceEntity::id).toList().size() == 2)
+                    .expectRecordedMatches(devices -> devices.stream().map(DeviceEntity::id).toList().containsAll(List.of(device3.id(), device4.id())))
                     .verifyComplete();
     }
 

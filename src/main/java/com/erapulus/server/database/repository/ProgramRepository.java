@@ -52,4 +52,7 @@ public interface ProgramRepository extends R2dbcRepository<ProgramEntity, Intege
     Mono<Boolean> existsByIdAndUniversityIdAndFacultyId(@Param("program") int programId,
                                                         @Param("university") int universityId,
                                                         @Param("faculty") int facultyId);
+
+    @Query("SELECT id FROM program WHERE faculty = :faculty")
+    Flux<Integer> findAllByFacultyId(@Param("faculty") int facultyId);
 }

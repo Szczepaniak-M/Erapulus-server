@@ -58,7 +58,7 @@ public class StudentController {
     )
     public Mono<ServerResponse> listStudents(ServerRequest request) {
         return withQueryParam(request, NAME_QUERY_PARAM,
-                name -> studentService.listEntities(name)
+                name -> studentService.listStudents(name)
                                       .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                       .doOnError(e -> log.error(e.getMessage(), e))
                                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
@@ -81,7 +81,7 @@ public class StudentController {
     )
     public Mono<ServerResponse> getStudentById(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
-                studentId -> studentService.getEntityById(studentId)
+                studentId -> studentService.getStudentById(studentId)
                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                            .doOnError(e -> log.error(e.getMessage(), e))
@@ -108,7 +108,7 @@ public class StudentController {
     public Mono<ServerResponse> updateStudent(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> request.bodyToMono(StudentRequestDto.class)
-                                    .flatMap(studentDto -> studentService.updateEntity(studentDto, studentId))
+                                    .flatMap(studentDto -> studentService.updateStudent(studentDto, studentId))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -137,7 +137,7 @@ public class StudentController {
     public Mono<ServerResponse> updateStudentUniversity(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> request.bodyToMono(StudentUniversityUpdateDto.class)
-                                    .flatMap(universityDto -> studentService.updateUniversity(universityDto, studentId))
+                                    .flatMap(universityDto -> studentService.updateStudentUniversity(universityDto, studentId))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
@@ -167,7 +167,7 @@ public class StudentController {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> request.body(BodyExtractors.toMultipartData())
                                     .map(this::extractPhoto)
-                                    .flatMap(photo -> studentService.updatePhoto(studentId, photo))
+                                    .flatMap(photo -> studentService.updateStudentPhoto(studentId, photo))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                     .doOnError(e -> log.error(e.getMessage(), e))

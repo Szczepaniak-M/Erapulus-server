@@ -59,7 +59,7 @@ public class DocumentProgramController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
-                                programId -> documentService.listEntities(universityId, facultyId, programId, null)
+                                programId -> documentService.listDocuments(universityId, facultyId, programId, null)
                                                             .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                             .doOnError(e -> log.error(e.getMessage(), e))
@@ -93,7 +93,7 @@ public class DocumentProgramController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> request.body(BodyExtractors.toMultipartData())
                                                     .map(MultiValueMap::toSingleValueMap)
-                                                    .flatMap(body -> documentService.createEntity(universityId, facultyId, programId, null, body))
+                                                    .flatMap(body -> documentService.createDocument(universityId, facultyId, programId, null, body))
                                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                     .doOnError(e -> log.error(e.getMessage(), e))
@@ -127,7 +127,7 @@ public class DocumentProgramController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, DOCUMENT_PATH_PARAM,
-                                        documentId -> documentService.getEntityById(documentId, universityId, facultyId, programId, null)
+                                        documentId -> documentService.getDocumentById(documentId, universityId, facultyId, programId, null)
                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                      .doOnError(e -> log.error(e.getMessage(), e))
@@ -162,7 +162,7 @@ public class DocumentProgramController {
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, DOCUMENT_PATH_PARAM,
                                         documentId -> request.bodyToMono(DocumentRequestDto.class)
-                                                             .flatMap(document -> documentService.updateEntity(document, documentId, universityId, facultyId, programId, null))
+                                                             .flatMap(document -> documentService.updateDocument(document, documentId, universityId, facultyId, programId, null))
                                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                              .doOnError(e -> log.error(e.getMessage(), e))
@@ -196,7 +196,7 @@ public class DocumentProgramController {
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
                                 programId -> withPathParam(request, DOCUMENT_PATH_PARAM,
-                                        documentId -> documentService.deleteEntity(documentId, universityId, facultyId, programId, null)
+                                        documentId -> documentService.deleteDocument(documentId, universityId, facultyId, programId, null)
                                                                      .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
                                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                      .doOnError(e -> log.error(e.getMessage(), e))

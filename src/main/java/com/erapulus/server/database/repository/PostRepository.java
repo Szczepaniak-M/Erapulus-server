@@ -42,6 +42,8 @@ public interface PostRepository extends R2dbcRepository<PostEntity, Integer> {
 
     @Query("SELECT * FROM post WHERE id = :post AND university = :university")
     Mono<PostEntity> findByIdAndUniversityId(@Param("post") int postId,
-                                             @Param("university")int universityId);
+                                             @Param("university") int universityId);
 
+    @Query("DELETE FROM post WHERE university = :university")
+    Mono<Void> deleteAllByUniversityId(@Param("university") int universityId);
 }

@@ -67,7 +67,7 @@ public class FriendshipService {
 
     public Mono<FriendshipResponseDto> handleFriendshipRequest(@Valid FriendshipDecisionDto decisionDto, int studentId, int friendId) {
         Mono<FriendshipEntity> response;
-        if (decisionDto.isAccepted()) {
+        if (decisionDto.accept()) {
             response = friendshipRepository.findByUserIdAndFriendId(studentId, friendId)
                                            .switchIfEmpty(Mono.error(new NoSuchElementException(REQUEST)))
                                            .map(friendship -> friendship.status(FriendshipStatus.ACCEPTED))
@@ -88,6 +88,10 @@ public class FriendshipService {
                                    .flatMap(count -> count == 2 ? Mono.just(true) : Mono.error(new NoSuchElementException(FRIEND)));
     }
 
+    public Mono<Void> deleteAllFriendsByStudentId(int studentId) {
+        return friendshipRepository.deleteAllByStudentId(studentId);
+    }
+
     private FriendshipEntity createFriendshipEntity(int studentId, int friendId, FriendshipStatus status) {
         return FriendshipEntity.builder()
                                .status(status)
@@ -95,5 +99,4 @@ public class FriendshipService {
                                .friendId(friendId)
                                .build();
     }
-
 }

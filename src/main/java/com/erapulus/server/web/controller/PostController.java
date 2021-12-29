@@ -65,7 +65,7 @@ public class PostController {
                         title -> withQueryParam(request, FROM_QUERY_PARAM,
                                 fromDate -> withQueryParam(request, TO_QUERY_PARAM,
                                         toDate -> withPageParams(request,
-                                                pageRequest -> postService.listEntities(universityId, title, fromDate, toDate, pageRequest)
+                                                pageRequest -> postService.listPosts(universityId, title, fromDate, toDate, pageRequest)
                                                                           .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                           .doOnError(e -> log.error(e.getMessage(), e))
@@ -92,7 +92,7 @@ public class PostController {
     public Mono<ServerResponse> createPost(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.bodyToMono(PostRequestDto.class)
-                                       .flatMap(post -> postService.createEntity(post, universityId))
+                                       .flatMap(post -> postService.createPost(post, universityId))
                                        .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("post"))
@@ -122,7 +122,7 @@ public class PostController {
     public Mono<ServerResponse> getPostById(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, POST_PATH_PARAM,
-                        postId -> postService.getEntityById(postId, universityId)
+                        postId -> postService.getPostById(postId, universityId)
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                              .doOnError(e -> log.error(e.getMessage(), e))
@@ -154,7 +154,7 @@ public class PostController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, POST_PATH_PARAM,
                         postId -> request.bodyToMono(PostRequestDto.class)
-                                         .flatMap(postDto -> postService.updateEntity(postDto, postId, universityId))
+                                         .flatMap(postDto -> postService.updatePost(postDto, postId, universityId))
                                          .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                          .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                          .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
