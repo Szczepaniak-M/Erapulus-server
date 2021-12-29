@@ -53,7 +53,7 @@ public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationMan
                 String finalAdditionalRole = additionalRole;
                 return roles.stream()
                             .map(GrantedAuthority::getAuthority)
-                            .anyMatch(role -> Objects.equals(role, finalAdditionalRole) || Objects.equals(role, UserType.ADMINISTRATOR.toString()));
+                            .anyMatch(role -> Objects.equals(role, finalAdditionalRole));
             }
             return true;
         }
