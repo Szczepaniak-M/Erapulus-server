@@ -66,7 +66,7 @@ class UniversityControllerTest {
                 }""";
         var university1 = UniversityListDto.builder().name(UNIVERSITY_NAME_1).id(UNIVERSITY_ID_1).logoUrl(LOGO_URL_1).build();
         var university2 = UniversityListDto.builder().name(UNIVERSITY_NAME_2).id(UNIVERSITY_ID_2).logoUrl(LOGO_URL_2).build();
-        when(universityService.listEntities()).thenReturn(Mono.just(List.of(university1, university2)));
+        when(universityService.listUniversities()).thenReturn(Mono.just(List.of(university1, university2)));
 
         // when-then
         webTestClient.get()

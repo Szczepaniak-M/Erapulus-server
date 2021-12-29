@@ -55,31 +55,30 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
         this.buildingService = buildingService;
     }
 
-    public Mono<List<UniversityListDto>> listEntities() {
+    public Mono<List<UniversityListDto>> listUniversities() {
         return universityRepository.findAllUniversities()
                                    .map(universityEntityToUniversityListDtoMapper::from)
                                    .collectList();
     }
 
-    public Mono<UniversityResponseDto> createEntity(@Valid UniversityRequestDto requestDto) {
+    public Mono<UniversityResponseDto> createUniversity(@Valid UniversityRequestDto requestDto) {
         UnaryOperator<UniversityEntity> addParamFromPath = university -> university;
         return createEntity(requestDto, addParamFromPath);
     }
 
-    public Mono<UniversityResponseDto> getEntityById(int universityId) {
+    public Mono<UniversityResponseDto> getUniversityById(int universityId) {
         Supplier<Mono<UniversityEntity>> supplier = () -> universityRepository.findById(universityId);
         return getEntityById(supplier);
     }
 
-    public Mono<UniversityResponseDto> updateEntity(@Valid UniversityRequestDto requestDto, int universityId) {
+    public Mono<UniversityResponseDto> updateUniversity(@Valid UniversityRequestDto requestDto, int universityId) {
         UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
         BinaryOperator<UniversityEntity> mergeEntity = (oldUniversity, newUniversity) -> newUniversity.logoUrl(oldUniversity.logoUrl());
         return updateEntity(requestDto, addParamFromPath, mergeEntity);
     }
 
-    @Override
     @Transactional
-    public Mono<Boolean> deleteEntity(int universityId) {
+    public Mono<Boolean> deleteUniversity(int universityId) {
         return facultyService.deleteAllFacultiesByUniversityId(universityId)
                              .thenMany(documentService.deleteAllDocumentsByUniversityId(universityId))
                              .thenMany(buildingService.deleteAllBuildingsByUniversityId(universityId))
@@ -88,7 +87,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
                              .then(super.deleteEntity(universityId));
     }
 
-    public Mono<UniversityResponseDto> updateLogo(Integer universityId, FilePart photo) {
+    public Mono<UniversityResponseDto> updateUniversityLogo(Integer universityId, FilePart photo) {
         String filePath = "university/%d/logo/%s".formatted(universityId, photo.filename());
         return universityRepository.findById(universityId)
                                    .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))

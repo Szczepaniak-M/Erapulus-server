@@ -108,29 +108,4 @@ public class EmployeeController {
                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                      .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
-
-    @NonNull
-    @Operation(
-            operationId = "delete-employee",
-            tags = "Employee",
-            description = "Delete employee by ID",
-            summary = "Delete employee",
-            parameters = @Parameter(in = PATH, name = EMPLOYEE_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
-            responses = {
-                    @ApiResponse(responseCode = "204", description = NO_CONTENT),
-                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
-                    @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
-                    @ApiResponse(responseCode = "403", description = FORBIDDEN),
-                    @ApiResponse(responseCode = "404", description = NOT_FOUND),
-                    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
-            }
-    )
-    public Mono<ServerResponse> deleteEmployee(ServerRequest request) {
-        return withPathParam(request, EMPLOYEE_PATH_PARAM,
-                employeeId -> employeeService.deleteEntity(employeeId)
-                                             .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                             .doOnError(e -> log.error(e.getMessage(), e))
-                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
-    }
 }
