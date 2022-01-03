@@ -16,8 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.STUDENT_PATH_PARAM;
-import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -120,6 +119,56 @@ class JwtReactiveAuthorizationManagerTest {
 
         // when
         JwtReactiveAuthorizationManager jwtReactiveAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(UserType.STUDENT), UNIVERSITY_PATH_PARAM);
+        Mono<AuthorizationDecision> result = jwtReactiveAuthorizationManager.check(jwtAuthenticatedUser, authorizationContext);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(decision -> assertFalse(decision.isGranted()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void check_shouldGrantAccessWhenUniversityIdRoleIsRequiredBaseOnQueryParam() {
+        // given
+        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/endpoint?university=1")
+                                                                                         .header("Authorization", "Bearer myToken"));
+        ApplicationUserEntity user = ApplicationUserEntity.builder().id(USER_ID_1).type(UserType.STUDENT).universityId(UNIVERSITY_ID_1).build();
+        List<SimpleGrantedAuthority> authority = List.of(new SimpleGrantedAuthority("STUDENT"),
+                new SimpleGrantedAuthority("UNIVERSITY_1"),
+                new SimpleGrantedAuthority("STUDENT_3"));
+        Map<String, Object> variables = new HashMap<>();
+        Mono<Authentication> jwtAuthenticatedUser = Mono.just(new JwtAuthenticatedUser(user, authority));
+        AuthorizationContext authorizationContext = new AuthorizationContext(exchange, variables);
+
+
+        // when
+        JwtReactiveAuthorizationManager jwtReactiveAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(UserType.STUDENT), UNIVERSITY_QUERY_PARAM);
+        Mono<AuthorizationDecision> result = jwtReactiveAuthorizationManager.check(jwtAuthenticatedUser, authorizationContext);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(decision -> assertTrue(decision.isGranted()))
+                    .verifyComplete();
+    }
+
+    @Test
+    void check_shouldNotGrantAccessWhenOtherUniversityIdRoleIsRequiredBasedOnQueryParam() {
+        // given
+        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/endpoint?university=2")
+                                                                                         .header("Authorization", "Bearer myToken"));
+        ApplicationUserEntity user = ApplicationUserEntity.builder().id(USER_ID_1).type(UserType.STUDENT).universityId(UNIVERSITY_ID_1).build();
+        List<SimpleGrantedAuthority> authority = List.of(new SimpleGrantedAuthority("STUDENT"),
+                new SimpleGrantedAuthority("UNIVERSITY_1"),
+                new SimpleGrantedAuthority("STUDENT_3"));
+        Map<String, Object> variables = new HashMap<>();
+        Mono<Authentication> jwtAuthenticatedUser = Mono.just(new JwtAuthenticatedUser(user, authority));
+        AuthorizationContext authorizationContext = new AuthorizationContext(exchange, variables);
+
+
+        // when
+        JwtReactiveAuthorizationManager jwtReactiveAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(UserType.STUDENT), UNIVERSITY_QUERY_PARAM);
         Mono<AuthorizationDecision> result = jwtReactiveAuthorizationManager.check(jwtAuthenticatedUser, authorizationContext);
 
         // then

@@ -25,8 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.erapulus.server.database.model.UserType.*;
-import static com.erapulus.server.web.common.CommonRequestVariable.STUDENT_PATH_PARAM;
-import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.*;
 import static com.erapulus.server.web.router.ApplicationUserRouter.USER_BASE_URL;
 import static com.erapulus.server.web.router.ApplicationUserRouter.USER_DETAILS_URL;
 import static com.erapulus.server.web.router.BuildingRouter.BUILDING_BASE_URL;
@@ -75,7 +74,8 @@ public class SecurityConfiguration {
         authenticationWebFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 
         JwtReactiveAuthorizationManager onlyAdministratorAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR), null);
-        JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, UNIVERSITY_ADMINISTRATOR), null);
+        JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, UNIVERSITY_ADMINISTRATOR), null);
+        JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, UNIVERSITY_ADMINISTRATOR), UNIVERSITY_QUERY_PARAM);
         JwtReactiveAuthorizationManager onlyUniversityAdministratorManager = new JwtReactiveAuthorizationManager(List.of(UNIVERSITY_ADMINISTRATOR), null);
         JwtReactiveAuthorizationManager onlyUniversityAdministratorAndEmployeeWithParamValidationAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(EMPLOYEE, UNIVERSITY_ADMINISTRATOR), UNIVERSITY_PATH_PARAM);
         JwtReactiveAuthorizationManager onlyAdministratorAndUniversityAdministratorAndEmployeeAuthorizationManager = new JwtReactiveAuthorizationManager(List.of(ADMINISTRATOR, EMPLOYEE, UNIVERSITY_ADMINISTRATOR), null);
@@ -103,7 +103,10 @@ public class SecurityConfiguration {
                    .access(onlyAdministratorAuthorizationManager)
 
                    .matchers(onlyAdministratorAndUniversityAdministratorPaths())
-                   .access(onlyAdministratorAndUniversityAdministratorManager)
+                   .access(onlyAdministratorAndUniversityAdministratorAuthorizationManager)
+
+                   .matchers(onlyAdministratorAndUniversityAdministratorWithParamValidationPaths())
+                   .access(onlyAdministratorAndUniversityAdministratorWithParamValidationAuthorizationManager)
 
                    .matchers(onlyUniversityAdministratorPaths())
                    .access(onlyUniversityAdministratorManager)
@@ -168,20 +171,23 @@ public class SecurityConfiguration {
     }
 
     private ServerWebExchangeMatcher onlyAdministratorPaths() {
-        ServerWebExchangeMatcher get = ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET,
-                USER_BASE_URL);
         ServerWebExchangeMatcher post = ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST,
                 REGISTER_ADMINISTRATOR,
                 UNIVERSITY_BASE_URL);
         ServerWebExchangeMatcher delete = ServerWebExchangeMatchers.pathMatchers(HttpMethod.DELETE,
                 UNIVERSITY_DETAILS_URL,
                 USER_DETAILS_URL);
-        return ServerWebExchangeMatchers.matchers(get, post, delete);
+        return ServerWebExchangeMatchers.matchers(post, delete);
     }
 
     private ServerWebExchangeMatcher onlyAdministratorAndUniversityAdministratorPaths() {
         return ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST,
                 REGISTER_UNIVERSITY_ADMINISTRATOR);
+    }
+
+    private ServerWebExchangeMatcher onlyAdministratorAndUniversityAdministratorWithParamValidationPaths() {
+        return ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET,
+                USER_BASE_URL);
     }
 
     private ServerWebExchangeMatcher onlyUniversityAdministratorPaths() {

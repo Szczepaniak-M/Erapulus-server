@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.STUDENT_PATH_PARAM;
-import static com.erapulus.server.web.common.CommonRequestVariable.UNIVERSITY_PATH_PARAM;
+import static com.erapulus.server.web.common.CommonRequestVariable.*;
 
 
 public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
@@ -32,12 +31,15 @@ public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationMan
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext context) {
         Map<String, Object> pathVariables = context.getVariables();
+        Map<String, String> queryParams  = context.getExchange().getRequest().getQueryParams().toSingleValueMap();
         return authentication
-                .map(jwtAuthentication -> verifyRole(jwtAuthentication.getAuthorities(), pathVariables))
+                .map(jwtAuthentication -> verifyRole(jwtAuthentication.getAuthorities(), pathVariables, queryParams))
                 .map(AuthorizationDecision::new);
     }
 
-    private boolean verifyRole(Collection<? extends GrantedAuthority> roles, Map<String, Object> pathVariables) {
+    private boolean verifyRole(Collection<? extends GrantedAuthority> roles,
+                               Map<String, Object> pathVariables,
+                               Map<String, String> queryParams) {
         boolean isUserTypeProper = roles.stream()
                                         .map(GrantedAuthority::getAuthority)
                                         .anyMatch(allowedRoles::contains);
@@ -47,6 +49,8 @@ public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationMan
                 additionalRole = "STUDENT_" + pathVariables.get(STUDENT_PATH_PARAM);
             } else if (Objects.equals(validatePath, UNIVERSITY_PATH_PARAM)) {
                 additionalRole = "UNIVERSITY_" + pathVariables.get(UNIVERSITY_PATH_PARAM);
+            } else if (Objects.equals(validatePath, UNIVERSITY_QUERY_PARAM)) {
+                additionalRole = "UNIVERSITY_" + queryParams.get(UNIVERSITY_QUERY_PARAM);
             }
 
             if (additionalRole != null) {
