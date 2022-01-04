@@ -1,7 +1,7 @@
 package com.erapulus.server.service;
 
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.mapper.EmployeeEntityToResponseDtoMapper;
+import com.erapulus.server.mapper.employee.EmployeeEntityToResponseDtoMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import com.erapulus.server.database.repository.EmployeeRepository;
 import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
 import com.erapulus.server.dto.employee.EmployeeResponseDto;
-import com.erapulus.server.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
+import com.erapulus.server.mapper.employee.EmployeeCreateRequestToEmployeeEntityMapper;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;

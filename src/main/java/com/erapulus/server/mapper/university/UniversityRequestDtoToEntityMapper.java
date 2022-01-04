@@ -1,5 +1,6 @@
-package com.erapulus.server.mapper;
+package com.erapulus.server.mapper.university;
 
+import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import org.springframework.stereotype.Component;
 import com.erapulus.server.database.model.UniversityEntity;
 import com.erapulus.server.dto.university.UniversityRequestDto;

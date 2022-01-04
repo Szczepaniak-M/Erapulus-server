@@ -1,6 +1,6 @@
 package com.erapulus.server.service;
 
-import com.erapulus.server.mapper.EmployeeEntityToResponseDtoMapper;
+import com.erapulus.server.mapper.employee.EmployeeEntityToResponseDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

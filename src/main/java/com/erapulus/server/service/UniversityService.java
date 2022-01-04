@@ -7,7 +7,7 @@ import com.erapulus.server.dto.university.UniversityRequestDto;
 import com.erapulus.server.dto.university.UniversityResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
-import com.erapulus.server.mapper.UniversityEntityToUniversityListDtoMapper;
+import com.erapulus.server.mapper.university.UniversityEntityToUniversityListDtoMapper;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,6 +2,7 @@ package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.StudentEntity;
 import com.erapulus.server.dto.student.StudentResponseDto;
+import com.erapulus.server.mapper.student.StudentEntityToDtoMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

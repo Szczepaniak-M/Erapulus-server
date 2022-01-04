@@ -1,4 +1,4 @@
-package com.erapulus.server.mapper;
+package com.erapulus.server.mapper.employee;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.model.UserType;

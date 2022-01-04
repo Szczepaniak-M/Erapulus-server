@@ -1,7 +1,8 @@
-package com.erapulus.server.mapper;
+package com.erapulus.server.mapper.module;
 
 import com.erapulus.server.database.model.ModuleEntity;
 import com.erapulus.server.dto.module.ModuleResponseDto;
+import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package com.erapulus.server.mapper;
+package com.erapulus.server.mapper.student;
 
 import com.erapulus.server.database.model.StudentEntity;
 import com.erapulus.server.dto.student.StudentListDto;
