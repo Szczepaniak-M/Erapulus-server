@@ -4,7 +4,7 @@ import com.erapulus.server.database.model.ApplicationUserEntity;
 import com.erapulus.server.database.model.DeviceEntity;
 import com.erapulus.server.database.repository.ApplicationUserRepository;
 import com.erapulus.server.database.repository.DeviceRepository;
-import com.erapulus.server.dto.FriendshipResponseDto;
+import com.erapulus.server.dto.friendship.FriendshipResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

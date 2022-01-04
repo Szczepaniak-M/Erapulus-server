@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.ProgramRequestDto;
-import com.erapulus.server.dto.ProgramResponseDto;
+import com.erapulus.server.dto.program.ProgramRequestDto;
+import com.erapulus.server.dto.program.ProgramResponseDto;
 import com.erapulus.server.service.ProgramService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.ApplicationUserDto;
+import com.erapulus.server.dto.applicationuser.ApplicationUserDto;
 import com.erapulus.server.service.ApplicationUserService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

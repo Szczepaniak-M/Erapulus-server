@@ -2,8 +2,7 @@ package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import org.junit.jupiter.api.Assertions;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

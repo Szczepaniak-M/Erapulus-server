@@ -1,7 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.FriendshipEntity;
-import com.erapulus.server.dto.FriendshipResponseDto;
+import com.erapulus.server.dto.friendship.FriendshipResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,9 +1,9 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.StudentListDto;
-import com.erapulus.server.dto.StudentRequestDto;
-import com.erapulus.server.dto.StudentResponseDto;
-import com.erapulus.server.dto.StudentUniversityUpdateDto;
+import com.erapulus.server.dto.student.StudentListDto;
+import com.erapulus.server.dto.student.StudentRequestDto;
+import com.erapulus.server.dto.student.StudentResponseDto;
+import com.erapulus.server.dto.student.StudentUniversityUpdateDto;
 import com.erapulus.server.service.StudentService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

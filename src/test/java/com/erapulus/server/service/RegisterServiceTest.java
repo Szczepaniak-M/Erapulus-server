@@ -10,8 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.repository.EmployeeRepository;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeResponseDto;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.employee.EmployeeResponseDto;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

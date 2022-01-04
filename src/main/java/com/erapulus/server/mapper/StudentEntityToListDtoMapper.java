@@ -1,7 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.StudentListDto;
+import com.erapulus.server.dto.student.StudentListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -2,8 +2,8 @@ package com.erapulus.server.service;
 
 import com.erapulus.server.database.model.DeviceEntity;
 import com.erapulus.server.database.repository.DeviceRepository;
-import com.erapulus.server.dto.DeviceRequestDto;
-import com.erapulus.server.dto.DeviceResponseDto;
+import com.erapulus.server.dto.device.DeviceRequestDto;
+import com.erapulus.server.dto.device.DeviceResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import org.springframework.stereotype.Component;

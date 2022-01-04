@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.FacultyRequestDto;
-import com.erapulus.server.dto.FacultyResponseDto;
+import com.erapulus.server.dto.faculty.FacultyRequestDto;
+import com.erapulus.server.dto.faculty.FacultyResponseDto;
 import com.erapulus.server.service.FacultyService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

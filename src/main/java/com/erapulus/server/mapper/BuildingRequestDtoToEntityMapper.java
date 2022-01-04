@@ -1,6 +1,6 @@
 package com.erapulus.server.mapper;
 
-import com.erapulus.server.dto.BuildingRequestDto;
+import com.erapulus.server.dto.building.BuildingRequestDto;
 import org.springframework.stereotype.Component;
 import com.erapulus.server.database.model.BuildingEntity;
 

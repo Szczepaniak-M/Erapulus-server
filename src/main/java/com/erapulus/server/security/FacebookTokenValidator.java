@@ -1,8 +1,8 @@
 package com.erapulus.server.security;
 
 import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.FacebookRegisterDto;
-import com.erapulus.server.dto.StudentLoginDTO;
+import com.erapulus.server.dto.student.FacebookRegisterDto;
+import com.erapulus.server.dto.student.StudentLoginDTO;
 import com.erapulus.server.service.exception.InvalidTokenException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

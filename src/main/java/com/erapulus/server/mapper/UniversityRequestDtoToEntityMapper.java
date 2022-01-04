@@ -2,7 +2,7 @@ package com.erapulus.server.mapper;
 
 import org.springframework.stereotype.Component;
 import com.erapulus.server.database.model.UniversityEntity;
-import com.erapulus.server.dto.UniversityRequestDto;
+import com.erapulus.server.dto.university.UniversityRequestDto;
 
 @Component
 public class UniversityRequestDtoToEntityMapper implements RequestDtoToEntityMapper<UniversityRequestDto, UniversityEntity> {

@@ -1,7 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.ApplicationUserEntity;
-import com.erapulus.server.dto.ApplicationUserDto;
+import com.erapulus.server.dto.applicationuser.ApplicationUserDto;
 import org.springframework.stereotype.Component;
 
 @Component

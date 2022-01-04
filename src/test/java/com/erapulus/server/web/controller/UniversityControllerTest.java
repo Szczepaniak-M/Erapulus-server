@@ -1,6 +1,6 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.UniversityListDto;
+import com.erapulus.server.dto.university.UniversityListDto;
 import com.erapulus.server.web.router.UniversityRouter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

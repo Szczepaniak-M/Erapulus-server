@@ -2,7 +2,7 @@ package com.erapulus.server.mapper;
 
 import org.springframework.stereotype.Component;
 import com.erapulus.server.database.model.BuildingEntity;
-import com.erapulus.server.dto.BuildingResponseDto;
+import com.erapulus.server.dto.building.BuildingResponseDto;
 
 @Component
 public class BuildingEntityToResponseDtoMapper implements EntityToResponseDtoMapper<BuildingEntity, BuildingResponseDto> {

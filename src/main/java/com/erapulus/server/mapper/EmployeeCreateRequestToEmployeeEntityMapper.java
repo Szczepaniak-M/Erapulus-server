@@ -2,7 +2,7 @@ package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.EmployeeEntity;
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

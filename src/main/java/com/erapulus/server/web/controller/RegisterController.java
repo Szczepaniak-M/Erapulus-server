@@ -2,8 +2,8 @@ package com.erapulus.server.web.controller;
 
 import com.erapulus.server.database.model.ApplicationUserEntity;
 import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeResponseDto;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.employee.EmployeeResponseDto;
 import com.erapulus.server.service.RegisterService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

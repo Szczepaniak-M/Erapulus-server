@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.DocumentRequestDto;
-import com.erapulus.server.dto.DocumentResponseDto;
+import com.erapulus.server.dto.document.DocumentRequestDto;
+import com.erapulus.server.dto.document.DocumentResponseDto;
 import com.erapulus.server.service.DocumentService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

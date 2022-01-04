@@ -2,7 +2,7 @@ package com.erapulus.server.mapper;
 
 import org.springframework.context.annotation.Configuration;
 import com.erapulus.server.database.model.UniversityEntity;
-import com.erapulus.server.dto.UniversityResponseDto;
+import com.erapulus.server.dto.university.UniversityResponseDto;
 
 @Configuration
 public class UniversityEntityToResponseDtoMapper implements EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> {

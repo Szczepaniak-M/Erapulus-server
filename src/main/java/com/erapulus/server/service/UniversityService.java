@@ -2,9 +2,9 @@ package com.erapulus.server.service;
 
 import com.erapulus.server.database.model.UniversityEntity;
 import com.erapulus.server.database.repository.UniversityRepository;
-import com.erapulus.server.dto.UniversityListDto;
-import com.erapulus.server.dto.UniversityRequestDto;
-import com.erapulus.server.dto.UniversityResponseDto;
+import com.erapulus.server.dto.university.UniversityListDto;
+import com.erapulus.server.dto.university.UniversityRequestDto;
+import com.erapulus.server.dto.university.UniversityResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.mapper.UniversityEntityToUniversityListDtoMapper;

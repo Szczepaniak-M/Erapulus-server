@@ -1,9 +1,9 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.FriendshipDecisionDto;
-import com.erapulus.server.dto.FriendshipRequestDto;
-import com.erapulus.server.dto.FriendshipResponseDto;
-import com.erapulus.server.dto.StudentListDto;
+import com.erapulus.server.dto.friendship.FriendshipDecisionDto;
+import com.erapulus.server.dto.friendship.FriendshipRequestDto;
+import com.erapulus.server.dto.friendship.FriendshipResponseDto;
+import com.erapulus.server.dto.student.StudentListDto;
 import com.erapulus.server.service.FriendshipService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

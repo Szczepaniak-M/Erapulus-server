@@ -1,6 +1,6 @@
 package com.erapulus.server.configuration;
 
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
 import com.erapulus.server.service.RegisterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

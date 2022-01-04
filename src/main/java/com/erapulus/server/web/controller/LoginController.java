@@ -1,8 +1,8 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.EmployeeLoginDTO;
-import com.erapulus.server.dto.LoginResponseDTO;
-import com.erapulus.server.dto.StudentLoginDTO;
+import com.erapulus.server.dto.employee.EmployeeLoginDTO;
+import com.erapulus.server.dto.applicationuser.LoginResponseDTO;
+import com.erapulus.server.dto.student.StudentLoginDTO;
 import com.erapulus.server.service.LoginService;
 import com.erapulus.server.service.exception.InvalidPasswordException;
 import com.erapulus.server.service.exception.InvalidTokenException;

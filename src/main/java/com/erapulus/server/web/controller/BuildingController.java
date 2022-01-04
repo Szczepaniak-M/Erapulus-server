@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.BuildingRequestDto;
-import com.erapulus.server.dto.BuildingResponseDto;
+import com.erapulus.server.dto.building.BuildingRequestDto;
+import com.erapulus.server.dto.building.BuildingResponseDto;
 import com.erapulus.server.service.BuildingService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

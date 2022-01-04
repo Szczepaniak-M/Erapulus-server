@@ -1,7 +1,7 @@
 package com.erapulus.server.security;
 
 import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.StudentLoginDTO;
+import com.erapulus.server.dto.student.StudentLoginDTO;
 import com.erapulus.server.service.exception.InvalidTokenException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

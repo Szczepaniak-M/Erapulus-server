@@ -8,8 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import com.erapulus.server.database.repository.EmployeeRepository;
-import com.erapulus.server.dto.EmployeeCreateRequestDto;
-import com.erapulus.server.dto.EmployeeResponseDto;
+import com.erapulus.server.dto.employee.EmployeeCreateRequestDto;
+import com.erapulus.server.dto.employee.EmployeeResponseDto;
 import com.erapulus.server.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
 import reactor.core.publisher.Mono;
 

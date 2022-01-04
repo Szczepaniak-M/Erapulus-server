@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.PostRequestDto;
-import com.erapulus.server.dto.PostResponseDto;
+import com.erapulus.server.dto.post.PostRequestDto;
+import com.erapulus.server.dto.post.PostResponseDto;
 import com.erapulus.server.service.PostService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;

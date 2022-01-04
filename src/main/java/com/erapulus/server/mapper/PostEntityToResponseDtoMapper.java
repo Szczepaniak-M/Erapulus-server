@@ -1,7 +1,7 @@
 package com.erapulus.server.mapper;
 
 import com.erapulus.server.database.model.PostEntity;
-import com.erapulus.server.dto.PostResponseDto;
+import com.erapulus.server.dto.post.PostResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component

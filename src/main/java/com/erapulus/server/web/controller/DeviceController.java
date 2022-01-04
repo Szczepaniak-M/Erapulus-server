@@ -1,7 +1,7 @@
 package com.erapulus.server.web.controller;
 
-import com.erapulus.server.dto.DeviceRequestDto;
-import com.erapulus.server.dto.DeviceResponseDto;
+import com.erapulus.server.dto.device.DeviceRequestDto;
+import com.erapulus.server.dto.device.DeviceResponseDto;
 import com.erapulus.server.service.DeviceService;
 import com.erapulus.server.web.common.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
