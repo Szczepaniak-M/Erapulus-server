@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 @Data
 @Builder
@@ -35,7 +34,6 @@ public class BuildingResponseDto {
     @JsonProperty("longitude")
     private Double longitude;
 
-    @Null
     @JsonProperty("universityId")
     private Integer universityId;
 }

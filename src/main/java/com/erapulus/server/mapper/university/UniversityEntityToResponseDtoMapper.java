@@ -19,8 +19,6 @@ public class UniversityEntityToResponseDtoMapper implements EntityToResponseDtoM
                                     .description(universityEntity.description())
                                     .websiteUrl(universityEntity.websiteUrl())
                                     .logoUrl(universityEntity.logoUrl())
-                                    .primaryColor(universityEntity.primaryColor())
-                                    .secondaryColor(universityEntity.secondaryColor())
                                     .build();
     }
 }

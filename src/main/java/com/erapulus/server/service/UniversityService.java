@@ -7,7 +7,7 @@ import com.erapulus.server.dto.university.UniversityRequestDto;
 import com.erapulus.server.dto.university.UniversityResponseDto;
 import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.mapper.RequestDtoToEntityMapper;
-import com.erapulus.server.mapper.university.UniversityEntityToUniversityListDtoMapper;
+import com.erapulus.server.mapper.university.UniversityEntityToListDtoMapper;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
 public class UniversityService extends CrudGenericService<UniversityEntity, UniversityRequestDto, UniversityResponseDto> {
 
     private final UniversityRepository universityRepository;
-    private final UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper;
+    private final UniversityEntityToListDtoMapper universityEntityToListDtoMapper;
     private final AzureStorageService azureStorageService;
     private final FacultyService facultyService;
     private final DocumentService documentService;
@@ -38,7 +38,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
     public UniversityService(UniversityRepository universityRepository,
                              RequestDtoToEntityMapper<UniversityRequestDto, UniversityEntity> requestDtoToEntityMapper,
                              EntityToResponseDtoMapper<UniversityEntity, UniversityResponseDto> entityToResponseDtoMapper,
-                             UniversityEntityToUniversityListDtoMapper universityEntityToUniversityListDtoMapper,
+                             UniversityEntityToListDtoMapper universityEntityToListDtoMapper,
                              AzureStorageService azureStorageService,
                              FacultyService facultyService, DocumentService documentService,
                              PostService postService,
@@ -46,7 +46,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
                              BuildingService buildingService) {
         super(universityRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "university");
         this.universityRepository = universityRepository;
-        this.universityEntityToUniversityListDtoMapper = universityEntityToUniversityListDtoMapper;
+        this.universityEntityToListDtoMapper = universityEntityToListDtoMapper;
         this.azureStorageService = azureStorageService;
         this.facultyService = facultyService;
         this.documentService = documentService;
@@ -57,7 +57,7 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
 
     public Mono<List<UniversityListDto>> listUniversities() {
         return universityRepository.findAllUniversities()
-                                   .map(universityEntityToUniversityListDtoMapper::from)
+                                   .map(universityEntityToListDtoMapper::from)
                                    .collectList();
     }
 

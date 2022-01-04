@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Table("document")
 public class DocumentEntity implements Entity {
     @Id
+    @NotNull
     @Column("id")
     private Integer id;
 

@@ -6,7 +6,7 @@ import com.erapulus.server.mapper.EntityToResponseDtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UniversityEntityToUniversityListDtoMapper implements EntityToResponseDtoMapper<UniversityEntity, UniversityListDto> {
+public class UniversityEntityToListDtoMapper implements EntityToResponseDtoMapper<UniversityEntity, UniversityListDto> {
 
     public UniversityListDto from(UniversityEntity universityEntity) {
         return UniversityListDto.builder()

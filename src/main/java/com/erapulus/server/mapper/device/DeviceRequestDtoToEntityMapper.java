@@ -12,7 +12,6 @@ public class DeviceRequestDtoToEntityMapper implements RequestDtoToEntityMapper<
         return DeviceEntity.builder()
                            .deviceId(deviceRequestDto.deviceId())
                            .name(deviceRequestDto.name())
-                           .applicationUserId(deviceRequestDto.applicationUserId())
                            .build();
     }
 }

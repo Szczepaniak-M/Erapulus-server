@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.MatchesPattern;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -43,13 +42,5 @@ public class UniversityRequestDto {
 
     @JsonProperty("websiteUrl")
     private String websiteUrl;
-
-    @MatchesPattern("#[A-F0-9]{6}")
-    @JsonProperty("primaryColor")
-    private String primaryColor;
-
-    @MatchesPattern("#[A-F0-9]{6}")
-    @JsonProperty("secondaryColor")
-    private String secondaryColor;
 
 }
