@@ -1,9 +1,9 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.student.FacebookRegisterDto;
-import com.erapulus.server.dto.student.StudentLoginDTO;
-import com.erapulus.server.service.exception.InvalidTokenException;
+import com.erapulus.server.common.exception.InvalidTokenException;
+import com.erapulus.server.student.database.StudentEntity;
+import com.erapulus.server.student.dto.FacebookRegisterDto;
+import com.erapulus.server.student.dto.StudentLoginDTO;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -23,11 +23,11 @@ public class FacebookTokenValidator {
         return getUserDataFromFacebook(studentLoginDTO)
                 .onErrorMap(WebClientResponseException.BadRequest.class, e -> new InvalidTokenException())
                 .map(payload -> StudentEntity.builder()
-                                          .email(payload.email())
-                                          .firstName(payload.firstName())
-                                          .lastName(payload.lastName())
-                                          .pictureUrl(payload.picture())
-                                          .build());
+                                             .email(payload.email())
+                                             .firstName(payload.firstName())
+                                             .lastName(payload.lastName())
+                                             .pictureUrl(payload.picture())
+                                             .build());
     }
 
     private Mono<FacebookRegisterDto> getUserDataFromFacebook(StudentLoginDTO studentLoginDTO) {

@@ -1,8 +1,8 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.database.model.StudentEntity;
-import com.erapulus.server.dto.student.StudentLoginDTO;
-import com.erapulus.server.service.exception.InvalidTokenException;
+import com.erapulus.server.common.exception.InvalidTokenException;
+import com.erapulus.server.student.database.StudentEntity;
+import com.erapulus.server.student.dto.StudentLoginDTO;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import lombok.AllArgsConstructor;

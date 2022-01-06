@@ -1,9 +1,9 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ErapulusProperties;
-import com.erapulus.server.database.model.ApplicationUserEntity;
-import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.database.repository.ApplicationUserRepository;
+import com.erapulus.server.applicationuser.database.ApplicationUserEntity;
+import com.erapulus.server.applicationuser.database.ApplicationUserRepository;
+import com.erapulus.server.common.configuration.ErapulusProperties;
+import com.erapulus.server.common.database.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

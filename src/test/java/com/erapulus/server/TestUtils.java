@@ -9,6 +9,11 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -35,6 +40,19 @@ public class TestUtils {
 
     public static String getBodyAsString(EntityExchangeResult<byte[]> body) {
         return new String(Optional.ofNullable(body.getResponseBody()).orElse("".getBytes()));
+    }
+
+    public static List<String> getValidationResult(Object result) {
+        return createValidator()
+                .validate(result)
+                .stream()
+                .map(ConstraintViolation::getPropertyPath)
+                .map(Path::toString)
+                .toList();
+    }
+
+    public static Validator createValidator() {
+        return Validation.buildDefaultValidatorFactory().getValidator();
     }
 
 }

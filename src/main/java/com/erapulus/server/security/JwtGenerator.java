@@ -1,8 +1,8 @@
 package com.erapulus.server.security;
 
 
-import com.erapulus.server.configuration.ErapulusProperties;
-import com.erapulus.server.database.model.ApplicationUserEntity;
+import com.erapulus.server.common.configuration.ErapulusProperties;
+import com.erapulus.server.applicationuser.database.ApplicationUserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;

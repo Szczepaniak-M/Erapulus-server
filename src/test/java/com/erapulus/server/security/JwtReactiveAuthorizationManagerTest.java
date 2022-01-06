@@ -1,7 +1,7 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.database.model.ApplicationUserEntity;
-import com.erapulus.server.database.model.UserType;
+import com.erapulus.server.applicationuser.database.ApplicationUserEntity;
+import com.erapulus.server.common.database.UserType;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.*;
+import static com.erapulus.server.common.web.CommonRequestVariable.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,7 +26,6 @@ class JwtReactiveAuthorizationManagerTest {
     private static final int UNIVERSITY_ID_2 = 2;
     private static final int USER_ID_1 = 3;
     private static final int USER_ID_2 = 4;
-
 
     @Test
     void check_shouldGrantAccessWhenOnlyUserTypeRoleIsRequired() {

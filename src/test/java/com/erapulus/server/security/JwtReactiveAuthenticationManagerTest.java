@@ -1,9 +1,9 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ErapulusProperties;
-import com.erapulus.server.database.model.ApplicationUserEntity;
-import com.erapulus.server.database.model.UserType;
-import com.erapulus.server.database.repository.ApplicationUserRepository;
+import com.erapulus.server.applicationuser.database.ApplicationUserEntity;
+import com.erapulus.server.applicationuser.database.ApplicationUserRepository;
+import com.erapulus.server.common.configuration.ErapulusProperties;
+import com.erapulus.server.common.database.UserType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,6 @@ class JwtReactiveAuthenticationManagerTest {
     private static final String SECRET = "my-incredibly-strong-and-secure-secret";
     private static final int USER_ID = 1;
     private static final int UNIVERSITY_ID = 2;
-
 
     @Mock
     ApplicationUserRepository applicationUserRepository;
@@ -92,7 +91,7 @@ class JwtReactiveAuthenticationManagerTest {
         JwtGenerator jwtGenerator = new JwtGenerator(erapulusProperties);
         String jwt = jwtGenerator.generate(user);
         Authentication authentication = new JwtAuthenticationToken(jwt);
-        List<GrantedAuthority> resultRoles= List.of(new SimpleGrantedAuthority("STUDENT"),
+        List<GrantedAuthority> resultRoles = List.of(new SimpleGrantedAuthority("STUDENT"),
                 new SimpleGrantedAuthority("UNIVERSITY_2"),
                 new SimpleGrantedAuthority("STUDENT_1"));
 

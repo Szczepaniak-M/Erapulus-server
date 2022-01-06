@@ -1,5 +1,6 @@
 package com.erapulus.server.security;
 
+import com.erapulus.server.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationFailureHandlerTest {
 
-    private static final String BODY = "{\"status\":401," +
-                                        "\"payload\":null," +
-                                        "\"message\":\"bad.credentials\"}";
+    private static final String BODY = """
+            {
+                "status":401,
+                "payload":null,
+                "message":"bad.credentials"
+            }
+            """;
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -35,7 +40,7 @@ class AuthenticationFailureHandlerTest {
     void onAuthenticationFailure_shouldGenerateResponse() {
         // given
         MockServerWebExchange webExchange = MockServerWebExchange.from(MockServerHttpRequest.get("/login")
-                                                                                         .header("Authorization", "Bearer myToken"));
+                                                                                            .header("Authorization", "Bearer myToken"));
         WebFilterExchange webFilterExchange = new WebFilterExchange(webExchange, e -> Mono.empty());
 
         // when
@@ -45,7 +50,7 @@ class AuthenticationFailureHandlerTest {
         StepVerifier.create(result)
                     .verifyComplete();
         assertEquals(MediaType.APPLICATION_JSON_VALUE, webExchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
-        assertEquals(BODY, webExchange.getResponse().getBodyAsString().block());
+        TestUtils.assertJsonEquals(BODY, webExchange.getResponse().getBodyAsString().block());
     }
 
     @Test
@@ -60,6 +65,6 @@ class AuthenticationFailureHandlerTest {
         StepVerifier.create(result)
                     .verifyComplete();
         assertEquals(MediaType.APPLICATION_JSON_VALUE, webExchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
-        assertEquals(BODY, webExchange.getResponse().getBodyAsString().block());
+        TestUtils.assertJsonEquals(BODY, webExchange.getResponse().getBodyAsString().block());
     }
 }

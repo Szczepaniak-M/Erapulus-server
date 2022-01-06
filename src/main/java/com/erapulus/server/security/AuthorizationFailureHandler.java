@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.web.common.ServerResponseFactory;
+import com.erapulus.server.common.web.ServerResponseFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;

@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.database.model.UserType;
+import com.erapulus.server.common.database.UserType;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.erapulus.server.web.common.CommonRequestVariable.*;
+import static com.erapulus.server.common.web.CommonRequestVariable.*;
 
 
 public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
@@ -31,7 +31,7 @@ public class JwtReactiveAuthorizationManager implements ReactiveAuthorizationMan
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext context) {
         Map<String, Object> pathVariables = context.getVariables();
-        Map<String, String> queryParams  = context.getExchange().getRequest().getQueryParams().toSingleValueMap();
+        Map<String, String> queryParams = context.getExchange().getRequest().getQueryParams().toSingleValueMap();
         return authentication
                 .map(jwtAuthentication -> verifyRole(jwtAuthentication.getAuthorities(), pathVariables, queryParams))
                 .map(AuthorizationDecision::new);

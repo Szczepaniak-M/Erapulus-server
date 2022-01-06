@@ -1,5 +1,6 @@
 package com.erapulus.server.security;
 
+import com.erapulus.server.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class AuthorizationFailureHandlerTest {
 
-    private static final String BODY = "{\"status\":403," +
-            "\"payload\":null," +
-            "\"message\":\"forbidden\"}";
+    private static final String BODY = """
+            {
+                "status":403,
+                "payload":null,
+                "message":"forbidden"
+            }
+            """;
 
     private AuthorizationFailureHandler authorizationFailureHandler;
 
@@ -42,6 +47,6 @@ class AuthorizationFailureHandlerTest {
         StepVerifier.create(result)
                     .verifyComplete();
         assertEquals(MediaType.APPLICATION_JSON_VALUE, exchange.getResponse().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
-        assertEquals(BODY, exchange.getResponse().getBodyAsString().block());
+        TestUtils.assertJsonEquals(BODY, exchange.getResponse().getBodyAsString().block());
     }
 }

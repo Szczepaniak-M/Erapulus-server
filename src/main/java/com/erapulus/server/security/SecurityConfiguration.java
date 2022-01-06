@@ -1,6 +1,6 @@
 package com.erapulus.server.security;
 
-import com.erapulus.server.configuration.ErapulusProperties;
+import com.erapulus.server.common.configuration.ErapulusProperties;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -24,34 +24,34 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import java.util.Collections;
 import java.util.List;
 
-import static com.erapulus.server.database.model.UserType.*;
-import static com.erapulus.server.web.common.CommonRequestVariable.*;
-import static com.erapulus.server.web.router.ApplicationUserRouter.USER_BASE_URL;
-import static com.erapulus.server.web.router.ApplicationUserRouter.USER_DETAILS_URL;
-import static com.erapulus.server.web.router.BuildingRouter.BUILDING_BASE_URL;
-import static com.erapulus.server.web.router.BuildingRouter.BUILDING_DETAILS_URL;
-import static com.erapulus.server.web.router.DeviceRouter.DEVICE_BASE_URL;
-import static com.erapulus.server.web.router.DeviceRouter.DEVICE_DETAILS_URL;
-import static com.erapulus.server.web.router.DocumentModuleRouter.DOCUMENT_MODULE_BASE_URL;
-import static com.erapulus.server.web.router.DocumentModuleRouter.DOCUMENT_MODULE_DETAILS_URL;
-import static com.erapulus.server.web.router.DocumentProgramRouter.DOCUMENT_PROGRAM_BASE_URL;
-import static com.erapulus.server.web.router.DocumentProgramRouter.DOCUMENT_PROGRAM_DETAILS_URL;
-import static com.erapulus.server.web.router.DocumentUniversityRouter.DOCUMENT_UNIVERSITY_BASE_URL;
-import static com.erapulus.server.web.router.DocumentUniversityRouter.DOCUMENT_UNIVERSITY_DETAILS_URL;
-import static com.erapulus.server.web.router.EmployeeRouter.EMPLOYEE_DETAILS_URL;
-import static com.erapulus.server.web.router.EmployeeRouter.EMPLOYEE_LIST_URL;
-import static com.erapulus.server.web.router.FacultyRouter.FACULTY_BASE_URL;
-import static com.erapulus.server.web.router.FacultyRouter.FACULTY_DETAILS_URL;
-import static com.erapulus.server.web.router.FriendshipRouter.*;
-import static com.erapulus.server.web.router.ModuleRouter.MODULE_BASE_URL;
-import static com.erapulus.server.web.router.ModuleRouter.MODULE_DETAILS_URL;
-import static com.erapulus.server.web.router.PostRouter.POST_BASE_URL;
-import static com.erapulus.server.web.router.PostRouter.POST_DETAILS_URL;
-import static com.erapulus.server.web.router.ProgramRouter.PROGRAM_BASE_URL;
-import static com.erapulus.server.web.router.ProgramRouter.PROGRAM_DETAILS_URL;
-import static com.erapulus.server.web.router.RegisterRouter.*;
-import static com.erapulus.server.web.router.StudentRouter.*;
-import static com.erapulus.server.web.router.UniversityRouter.*;
+import static com.erapulus.server.applicationuser.web.ApplicationUserRouter.USER_BASE_URL;
+import static com.erapulus.server.applicationuser.web.ApplicationUserRouter.USER_DETAILS_URL;
+import static com.erapulus.server.applicationuser.web.RegisterRouter.*;
+import static com.erapulus.server.building.web.BuildingRouter.BUILDING_BASE_URL;
+import static com.erapulus.server.building.web.BuildingRouter.BUILDING_DETAILS_URL;
+import static com.erapulus.server.common.database.UserType.*;
+import static com.erapulus.server.common.web.CommonRequestVariable.*;
+import static com.erapulus.server.device.web.DeviceRouter.DEVICE_BASE_URL;
+import static com.erapulus.server.device.web.DeviceRouter.DEVICE_DETAILS_URL;
+import static com.erapulus.server.document.web.DocumentModuleRouter.DOCUMENT_MODULE_BASE_URL;
+import static com.erapulus.server.document.web.DocumentModuleRouter.DOCUMENT_MODULE_DETAILS_URL;
+import static com.erapulus.server.document.web.DocumentProgramRouter.DOCUMENT_PROGRAM_BASE_URL;
+import static com.erapulus.server.document.web.DocumentProgramRouter.DOCUMENT_PROGRAM_DETAILS_URL;
+import static com.erapulus.server.document.web.DocumentUniversityRouter.DOCUMENT_UNIVERSITY_BASE_URL;
+import static com.erapulus.server.document.web.DocumentUniversityRouter.DOCUMENT_UNIVERSITY_DETAILS_URL;
+import static com.erapulus.server.employee.web.EmployeeRouter.EMPLOYEE_DETAILS_URL;
+import static com.erapulus.server.employee.web.EmployeeRouter.EMPLOYEE_LIST_URL;
+import static com.erapulus.server.faculty.web.FacultyRouter.FACULTY_BASE_URL;
+import static com.erapulus.server.faculty.web.FacultyRouter.FACULTY_DETAILS_URL;
+import static com.erapulus.server.friendship.web.FriendshipRouter.*;
+import static com.erapulus.server.module.web.ModuleRouter.MODULE_BASE_URL;
+import static com.erapulus.server.module.web.ModuleRouter.MODULE_DETAILS_URL;
+import static com.erapulus.server.post.web.PostRouter.POST_BASE_URL;
+import static com.erapulus.server.post.web.PostRouter.POST_DETAILS_URL;
+import static com.erapulus.server.program.web.ProgramRouter.PROGRAM_BASE_URL;
+import static com.erapulus.server.program.web.ProgramRouter.PROGRAM_DETAILS_URL;
+import static com.erapulus.server.student.web.StudentRouter.*;
+import static com.erapulus.server.university.web.UniversityRouter.*;
 
 @AllArgsConstructor
 @EnableWebFluxSecurity
@@ -152,7 +152,8 @@ public class SecurityConfiguration {
                 .build();
     }
 
-    @Bean FacebookTokenValidator facebookTokenValidator() {
+    @Bean
+    FacebookTokenValidator facebookTokenValidator() {
         return new FacebookTokenValidator(FACEBOOK_GRAPH_API_BASE);
     }
 
