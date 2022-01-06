@@ -26,7 +26,7 @@ public class FacebookTokenValidator {
                                           .email(payload.email())
                                           .firstName(payload.firstName())
                                           .lastName(payload.lastName())
-                                          .pictureUrl(payload.pictureUrl())
+                                          .pictureUrl(payload.picture())
                                           .build());
     }
 

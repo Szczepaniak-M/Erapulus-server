@@ -24,6 +24,25 @@ public class FacebookRegisterDto {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("picture.width(720).height(720)")
-    private String pictureUrl;
+    @JsonProperty("picture")
+    private Picture picture;
+
+    public String picture() {
+        return picture.data.url;
+    }
+
+    @Data
+    @NoArgsConstructor
+    static class Picture {
+
+        @JsonProperty("data")
+        private PictureData data;
+
+        @Data
+        @NoArgsConstructor
+        static class PictureData {
+            @JsonProperty("url")
+            private String url;
+        }
+    }
 }

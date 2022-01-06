@@ -42,27 +42,20 @@ class FacebookTokenValidatorTest {
     @Test
     void validate_shouldReturnStudentEntityWhenTokenCorrect() {
         StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
-        mockBackEnd.enqueue(new MockResponse()
-                .setResponseCode(400)
-                .addHeader("Content-Type", "application/json"));
-
-        Mono<StudentEntity> result = facebookTokenValidator.validate(loginDTO);
-
-        StepVerifier.create(result)
-                    .expectSubscription()
-                    .expectError(InvalidTokenException.class)
-                    .verify();
-    }
-
-    @Test
-    void validate_shouldReturnInvalidTokenExceptionWhenVerifyReturnNull() {
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
         String responseBody = """
                 {
                   "first_name":"firstName",
                   "last_name":"lastName",
                   "email":"example@gmail.com",
-                  "picture.width(720).height(720)":"https://example.com"
+                  "picture": {
+                    "data": {
+                        "height": 720,
+                        "is_silhouette": false,
+                        "url": "https://example.com",
+                        "width": 720
+                    }
+                  },
+                  "id": "12345"
                 }""";
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(responseBody)
@@ -79,6 +72,21 @@ class FacebookTokenValidatorTest {
                         assertEquals("https://example.com", studentFromToken.pictureUrl());
                     })
                     .verifyComplete();
+    }
+
+    @Test
+    void validate_shouldReturnInvalidTokenExceptionWhenVerifyReturnNull() {
+        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        mockBackEnd.enqueue(new MockResponse()
+                .setResponseCode(400)
+                .addHeader("Content-Type", "application/json"));
+
+        Mono<StudentEntity> result = facebookTokenValidator.validate(loginDTO);
+
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .expectError(InvalidTokenException.class)
+                    .verify();
     }
 
 }
