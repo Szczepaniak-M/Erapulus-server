@@ -58,7 +58,7 @@ import static com.erapulus.server.web.router.UniversityRouter.*;
 @EnableReactiveMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST = {"/v3/api-docs/**", "/documentation.html", "/documentation.yaml", "/webjars/**"};
+    private static final String[] WHITE_LIST = {"/v3/api-docs/**", "/v3/api-docs.yaml", "/documentation.html", "/webjars/**"};
     private static final String FACEBOOK_GRAPH_API_BASE = "https://graph.facebook.com";
 
 

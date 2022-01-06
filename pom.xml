@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.erapulus</groupId>
     <artifactId>erapulus-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>erapulus-server</name>
     <description>Server application for Erapulus</description>
     <properties>

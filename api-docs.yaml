@@ -1,0 +1,4530 @@
+openapi: 3.0.1
+info:
+  title: Erapulus API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+security:
+  - bearerAuth: []
+paths:
+  /api/user:
+    get:
+      tags:
+        - User
+      summary: List users
+      description: "List users by with filtering by university, type, and name"
+      operationId: list-application-user
+      parameters:
+        - name: university
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationUserDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/{userId}:
+    delete:
+      tags:
+        - User
+      summary: Delete user
+      description: Delete user by ID
+      operationId: delete-user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/building:
+    get:
+      tags:
+        - Building
+      summary: List building by university ID
+      description: List buildings
+      operationId: list-buildings
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildingResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Building
+      summary: Create building
+      description: Create building
+      operationId: create-building
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuildingResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/building/{buildingId}:
+    get:
+      tags:
+        - Building
+      summary: Get building by ID
+      description: Get building by ID
+      operationId: get-building
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Building
+      summary: Update building
+      description: Update building
+      operationId: update-building
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuildingResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Building
+      summary: Delete building by ID
+      description: Delete building
+      operationId: delete-building
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/device:
+    get:
+      tags:
+        - Device
+      summary: List device by user ID
+      description: List device
+      operationId: list-device
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Device
+      summary: Create device
+      description: Create device
+      operationId: create-device
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/device/{deviceId}:
+    get:
+      tags:
+        - Device
+      summary: Get device by ID
+      description: Get device by ID
+      operationId: get-device
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Device
+      summary: Update device
+      description: Update device
+      operationId: update-device
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Device
+      summary: Delete device by ID
+      description: Delete device
+      operationId: delete-device
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document:
+    get:
+      tags:
+        - Document
+      summary: List documents for module
+      description: List documents for module
+      operationId: list-documents-for-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Document
+      summary: Upload document for module
+      description: Upload document for module
+      operationId: upload-document-for-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}/document/{documentId}:
+    get:
+      tags:
+        - Document
+      summary: Get document by ID for module
+      description: Get document by ID for module
+      operationId: get-document-by-id-for-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Document
+      summary: Update document for module
+      description: Update document for module
+      operationId: update-document-for-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Document
+      summary: Delete document for module
+      description: Delete document for module
+      operationId: delete-document-for-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/document:
+    get:
+      tags:
+        - Document
+      summary: List documents for program
+      description: List documents for program
+      operationId: list-documents-for-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Document
+      summary: Upload document for program
+      description: Upload document for program
+      operationId: upload-document-for-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/document/{documentId}:
+    get:
+      tags:
+        - Document
+      summary: Get document by ID for program
+      description: Get document by ID for program
+      operationId: get-document-by-id-for-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Document
+      summary: Update document for program
+      description: Update document for program
+      operationId: update-document-for-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Document
+      summary: Delete document for program
+      description: Delete document for program
+      operationId: delete-document-for-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/document:
+    get:
+      tags:
+        - Document
+      summary: List documents for university
+      description: List documents for university
+      operationId: list-documents-for-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Document
+      summary: Upload document for university
+      description: Upload document for university
+      operationId: upload-document-for-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/document/{documentId}:
+    get:
+      tags:
+        - Document
+      summary: Get document by ID for university
+      description: Get document by ID for university
+      operationId: get-document-by-id-for-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Document
+      summary: Update document for university
+      description: Update document for university
+      operationId: update-document-for-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DocumentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Document
+      summary: Delete document for university
+      description: Delete document for university
+      operationId: delete-document-for-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/employee/{employeeId}:
+    get:
+      tags:
+        - Employee
+      summary: Get employee by ID
+      description: Get employee by ID
+      operationId: get-employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Employee
+      summary: Update employee
+      description: Update employee
+      operationId: update-employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/employee:
+    get:
+      tags:
+        - Employee
+        - University
+      summary: List employees
+      description: List employees from university
+      operationId: list-employee
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty:
+    get:
+      tags:
+        - Faculty
+      summary: List Faculties by university ID and name
+      description: List faculties
+      operationId: list-faculties
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Faculty
+      summary: Create faculty
+      description: Create faculty
+      operationId: create-faculty
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FacultyResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}:
+    get:
+      tags:
+        - Faculty
+      summary: Get faculty by ID
+      description: Get faculty by ID
+      operationId: get-faculty
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Faculty
+      summary: Update faculty
+      description: Update faculty
+      operationId: update-faculty
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FacultyResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Faculty
+      summary: Delete faculty by ID
+      description: Delete faculty
+      operationId: delete-faculty
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/friend:
+    get:
+      tags:
+        - Friendship
+      summary: List friends
+      description: List friends by student ID with filtering by name
+      operationId: list-student-friends
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentListDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Friendship
+      summary: Send friend request
+      description: Send friend request
+      operationId: add-friend
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FriendshipRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FriendshipResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/friend/request:
+    get:
+      tags:
+        - Friendship
+      summary: List friend requests
+      description: List friend requests by student ID
+      operationId: list-friend-requests
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentListDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/friend/{friendId}:
+    post:
+      tags:
+        - Friendship
+      summary: Accept or decline friend request
+      description: Accept or decline  friend request
+      operationId: handle-friend-request
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: friendId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FriendshipDecisionDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FriendshipResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Friendship
+      summary: Delete user from friends
+      description: Delete user from friends
+      operationId: delete-friend
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: friendId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/employee:
+    post:
+      tags:
+        - Login
+      summary: Login employee
+      description: Login employee
+      operationId: login-employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeLoginDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/facebook:
+    post:
+      tags:
+        - Login
+      summary: Login student using Facebook
+      description: Login student using Facebook
+      operationId: login-student-facebook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLoginDTO'
+      responses:
+        "201":
+          description: CREATED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/google:
+    post:
+      tags:
+        - Login
+      summary: Login student using Google
+      description: Login student using Google
+      operationId: login-student-google
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLoginDTO'
+      responses:
+        "201":
+          description: CREATED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/module:
+    get:
+      tags:
+        - Module
+      summary: "List modules by university ID, faculty ID and program ID"
+      description: List modules
+      operationId: list-modules
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Module
+      summary: Create module
+      description: Create module
+      operationId: create-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuleRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModuleResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}/module/{moduleId}:
+    get:
+      tags:
+        - Module
+      summary: Get module by ID
+      description: Get module by ID
+      operationId: get-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Module
+      summary: Update module
+      description: Update module
+      operationId: update-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuleRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModuleResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Module
+      summary: Delete module by ID
+      description: Delete module
+      operationId: delete-module
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/post:
+    get:
+      tags:
+        - Post
+      summary: List post
+      description: List post by university ID with filtering by date and title
+      operationId: list-post
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: title
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: date
+        - name: to
+          in: query
+          schema:
+            type: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Post
+      summary: Create post
+      description: Create post
+      operationId: create-post
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PostResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/post/{postId}:
+    get:
+      tags:
+        - Post
+      summary: Get post by ID
+      description: Get post by ID
+      operationId: get-post
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Post
+      summary: Update post
+      description: Update post
+      operationId: update-post
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PostResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Post
+      summary: Delete post by ID
+      description: Delete post
+      operationId: delete-post
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program:
+    get:
+      tags:
+        - Program
+      summary: List programs by university ID and faculty ID
+      description: List programs
+      operationId: list-programs
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProgramResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - Program
+      summary: Create program
+      description: Create program
+      operationId: create-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProgramResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/faculty/{facultyId}/program/{programId}:
+    get:
+      tags:
+        - Program
+      summary: Get program by ID
+      description: Get program by ID
+      operationId: get-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Program
+      summary: Update program
+      description: Update program
+      operationId: update-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProgramResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - Program
+      summary: Delete program by ID
+      description: Delete program
+      operationId: delete-program
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: facultyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/administrator:
+    post:
+      tags:
+        - Employee
+      summary: Create administrator
+      description: Create administrator
+      operationId: create-administrator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/employee:
+    post:
+      tags:
+        - Employee
+      summary: Create university employee
+      description: Create university employee
+      operationId: create-employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/university-administrator:
+    post:
+      tags:
+        - Employee
+      summary: Create university administrator
+      description: Create university administrator
+      operationId: create-university-administrator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student:
+    get:
+      tags:
+        - Student
+      summary: List students
+      description: List students
+      operationId: list-students
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentListDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}:
+    get:
+      tags:
+        - Student
+      summary: Get student by ID
+      description: Get student by ID
+      operationId: get-student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - Student
+      summary: Update student
+      description: Update student
+      operationId: update-student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/StudentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/photo:
+    patch:
+      tags:
+        - Student
+      summary: Update student's photo
+      description: Update student's photo
+      operationId: update-student-photo
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/student/{studentId}/university:
+    patch:
+      tags:
+        - Student
+      summary: Update student's universityId
+      description: Update student's universityId
+      operationId: update-student-university
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentUniversityUpdateDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/StudentUniversityUpdateDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university:
+    get:
+      tags:
+        - University
+      summary: List universities
+      description: List universities
+      operationId: list-universities
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UniversityListDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    post:
+      tags:
+        - University
+      summary: Create university
+      description: Create university
+      operationId: create-university
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversityRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UniversityResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}:
+    get:
+      tags:
+        - University
+      summary: Get university by ID
+      description: Get university by ID
+      operationId: get-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversityResponseDto'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - University
+      summary: Delete university by ID
+      description: Delete university
+      operationId: delete-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: NO CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/university/{universityId}/logo:
+    patch:
+      tags:
+        - University
+      summary: Update university's photo
+      description: Update university's photo
+      operationId: update-university-logo
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UniversityResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+components:
+  schemas:
+    ApplicationUserDto:
+      required:
+        - email
+        - firstName
+        - id
+        - lastName
+        - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        type:
+          type: string
+          enum:
+            - ADMINISTRATOR
+            - UNIVERSITY_ADMINISTRATOR
+            - EMPLOYEE
+            - STUDENT
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+    ServerResponse:
+      type: object
+    BuildingResponseDto:
+      required:
+        - abbrev
+        - id
+        - latitude
+        - longitude
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        abbrev:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        universityId:
+          type: integer
+          format: int32
+    BuildingRequestDto:
+      required:
+        - abbrev
+        - latitude
+        - longitude
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        abbrev:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    DeviceResponseDto:
+      required:
+        - applicationUserId
+        - deviceId
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        applicationUserId:
+          type: integer
+          format: int32
+        deviceId:
+          type: string
+        name:
+          type: string
+    DeviceRequestDto:
+      required:
+        - deviceId
+        - name
+      type: object
+      properties:
+        deviceId:
+          type: string
+        name:
+          type: string
+    DocumentResponseDto:
+      required:
+        - id
+        - name
+        - path
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        path:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        facultyId:
+          type: integer
+          format: int32
+        programId:
+          type: integer
+          format: int32
+        moduleId:
+          type: integer
+          format: int32
+    DocumentRequestDto:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    EmployeeResponseDto:
+      required:
+        - email
+        - firstName
+        - id
+        - lastName
+        - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        type:
+          type: string
+          enum:
+            - ADMINISTRATOR
+            - UNIVERSITY_ADMINISTRATOR
+            - EMPLOYEE
+            - STUDENT
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
+    EmployeeRequestDto:
+      required:
+        - email
+        - firstName
+        - lastName
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+    FacultyResponseDto:
+      required:
+        - address
+        - email
+        - id
+        - name
+        - universityId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+    FacultyRequestDto:
+      required:
+        - address
+        - email
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+    StudentListDto:
+      required:
+        - firstName
+        - id
+        - lastName
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        firstName:
+          type: string
+        lastName:
+          type: string
+        pictureUrl:
+          type: string
+    FriendshipRequestDto:
+      required:
+        - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+    FriendshipResponseDto:
+      required:
+        - applicationUserId
+        - friendId
+        - id
+        - status
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        applicationUserId:
+          type: integer
+          format: int32
+        friendId:
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+            - ACCEPTED
+            - DECLINED
+            - REQUESTED
+    FriendshipDecisionDto:
+      required:
+        - accept
+      type: object
+      properties:
+        accept:
+          type: boolean
+    EmployeeLoginDTO:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: object
+          properties:
+            empty:
+              type: boolean
+    LoginResponseDTO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+        universityId:
+          type: integer
+          format: int32
+        token:
+          type: string
+    StudentLoginDTO:
+      type: object
+      properties:
+        token:
+          type: string
+    ModuleRequestDto:
+      required:
+        - abbrev
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        abbrev:
+          type: string
+        description:
+          type: string
+    ModuleResponseDto:
+      required:
+        - abbrev
+        - id
+        - name
+        - programId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        abbrev:
+          type: string
+        description:
+          type: string
+        programId:
+          type: integer
+          format: int32
+    PostResponseDto:
+      required:
+        - content
+        - date
+        - id
+        - title
+        - universityId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        content:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+    PostRequestDto:
+      required:
+        - content
+        - title
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+    ProgramResponseDto:
+      required:
+        - abbrev
+        - facultyId
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        abbrev:
+          type: string
+        description:
+          type: string
+        facultyId:
+          type: integer
+          format: int32
+    ProgramRequestDto:
+      required:
+        - abbrev
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        abbrev:
+          type: string
+        description:
+          type: string
+    EmployeeCreateRequestDto:
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: object
+          properties:
+            empty:
+              type: boolean
+    StudentResponseDto:
+      required:
+        - email
+        - firstName
+        - id
+        - lastName
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        pictureUrl:
+          type: string
+        facebookUrl:
+          type: string
+        whatsUpUrl:
+          type: string
+        instagramUsername:
+          type: string
+    StudentRequestDto:
+      required:
+        - email
+        - firstName
+        - lastName
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        facebookUrl:
+          type: string
+        whatsUpUrl:
+          type: string
+        instagramUsername:
+          type: string
+    StudentUniversityUpdateDto:
+      required:
+        - universityId
+      type: object
+      properties:
+        universityId:
+          type: integer
+          format: int32
+    UniversityListDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        logoUrl:
+          type: string
+    UniversityRequestDto:
+      required:
+        - address
+        - city
+        - country
+        - name
+        - zipcode
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        address2:
+          type: string
+        zipcode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        description:
+          type: string
+        websiteUrl:
+          type: string
+    UniversityResponseDto:
+      required:
+        - address
+        - city
+        - country
+        - id
+        - name
+        - zipcode
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        address:
+          type: string
+        address2:
+          type: string
+        zipcode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        description:
+          type: string
+        websiteUrl:
+          type: string
+        logoUrl:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      scheme: bearer
+      bearerFormat: JWT
