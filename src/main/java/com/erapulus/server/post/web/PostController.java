@@ -1,9 +1,9 @@
 package com.erapulus.server.post.web;
 
+import com.erapulus.server.common.web.ServerResponseFactory;
 import com.erapulus.server.post.dto.PostRequestDto;
 import com.erapulus.server.post.dto.PostResponseDto;
 import com.erapulus.server.post.service.PostService;
-import com.erapulus.server.common.web.ServerResponseFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,8 +24,8 @@ import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 import static com.erapulus.server.common.web.CommonRequestVariable.*;
-import static com.erapulus.server.common.web.OpenApiConstants.*;
 import static com.erapulus.server.common.web.ControllerUtils.*;
+import static com.erapulus.server.common.web.OpenApiConstants.*;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -67,7 +67,6 @@ public class PostController {
                                         toDate -> withPageParams(request,
                                                 pageRequest -> postService.listPosts(universityId, title, fromDate, toDate, pageRequest)
                                                                           .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                          .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                           .doOnError(e -> log.error(e.getMessage(), e))
                                                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))))));
     }
@@ -184,11 +183,12 @@ public class PostController {
             }
     )
     public Mono<ServerResponse> deletePost(ServerRequest request) {
-        return withPathParam(request, POST_PATH_PARAM,
-                postId -> postService.deleteEntity(postId)
-                                     .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                     .doOnError(e -> log.error(e.getMessage(), e))
-                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, POST_PATH_PARAM,
+                        postId -> postService.deletePost(postId, universityId)
+                                             .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                             .doOnError(e -> log.error(e.getMessage(), e))
+                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 }

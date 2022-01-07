@@ -169,11 +169,12 @@ public class DeviceController {
             }
     )
     public Mono<ServerResponse> deleteDevice(ServerRequest request) {
-        return withPathParam(request, DEVICE_PATH_PARAM,
-                facultyId -> deviceService.deleteEntity(facultyId)
-                                          .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                          .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                          .doOnError(e -> log.error(e.getMessage(), e))
-                                          .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, STUDENT_PATH_PARAM,
+                studentId -> withPathParam(request, DEVICE_PATH_PARAM,
+                        deviceId -> deviceService.deleteDevice(deviceId, studentId)
+                                                 .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                                 .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                 .doOnError(e -> log.error(e.getMessage(), e))
+                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 }

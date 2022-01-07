@@ -64,20 +64,25 @@ public class FacultyService extends CrudGenericService<FacultyEntity, FacultyReq
         return getEntityById(supplier);
     }
 
-
     public Mono<FacultyResponseDto> updateFaculty(FacultyRequestDto requestDto, int facultyId, int universityId) {
         UnaryOperator<FacultyEntity> addParamFromPath = faculty -> faculty.id(facultyId).universityId(universityId);
-        return updateEntity(requestDto, addParamFromPath);
+        Supplier<Mono<FacultyEntity>> supplier = () -> facultyRepository.findByIdAndUniversityId(facultyId, universityId);
+        return updateEntity(requestDto, addParamFromPath, supplier);
     }
 
     @Transactional
-    public Mono<Boolean> deleteFaculty(int facultyId) {
-        return programService.deleteAllProgramsByFacultyId(facultyId)
-                             .then(super.deleteEntity(facultyId));
+    public Mono<Boolean> deleteFaculty(int facultyId, int universityId) {
+        return deleteFacultyNoTransactional(facultyId, universityId);
     }
 
     public Flux<Boolean> deleteAllFacultiesByUniversityId(int universityId) {
         return facultyRepository.findAllByUniversityId(universityId)
-                                .flatMap(this::deleteFaculty);
+                                .flatMap(facultyId -> deleteFacultyNoTransactional(facultyId, universityId));
+    }
+
+    private Mono<Boolean> deleteFacultyNoTransactional(int facultyId, int universityId) {
+        Supplier<Mono<FacultyEntity>> supplier = () -> facultyRepository.findByIdAndUniversityId(facultyId, universityId);
+        return programService.deleteAllProgramsByFacultyIdAndUniversityId(facultyId, universityId)
+                             .then(deleteEntity(supplier));
     }
 }

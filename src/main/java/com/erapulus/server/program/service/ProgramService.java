@@ -70,23 +70,25 @@ public class ProgramService extends CrudGenericService<ProgramEntity, ProgramReq
 
     public Mono<ProgramResponseDto> updateProgram(@Valid ProgramRequestDto requestDto, int programId, int universityId, int facultyId) {
         UnaryOperator<ProgramEntity> addParamFromPath = program -> program.id(programId).facultyId(facultyId);
-        return checkIfFacultyExists(universityId, facultyId)
-                .then(updateEntity(requestDto, addParamFromPath));
+        Supplier<Mono<ProgramEntity>> supplier = () -> programRepository.findByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId);
+        return updateEntity(requestDto, addParamFromPath, supplier);
     }
 
     @Transactional
     public Mono<Boolean> deleteProgram(int programId, int universityId, int facultyId) {
-        return checkIfFacultyExists(universityId, facultyId)
-                .thenMany(moduleService.deleteAllModuleByProgramId(programId))
-                .thenMany(documentService.deleteAllDocumentsByProgramId(programId))
-                .then(super.deleteEntity(programId));
+        return deleteProgramNoTransactional(programId, universityId, facultyId);
     }
 
-    public Flux<Boolean> deleteAllProgramsByFacultyId(int facultyId) {
+    public Flux<Boolean> deleteAllProgramsByFacultyIdAndUniversityId(int facultyId, int universityId) {
         return programRepository.findAllByFacultyId(facultyId)
-                                .flatMap(programId -> documentService.deleteAllDocumentsByProgramId(programId)
-                                                                     .thenMany(moduleService.deleteAllModuleByProgramId(programId))
-                                                                     .then(super.deleteEntity(programId)));
+                                .flatMap(programId -> deleteProgramNoTransactional(programId, universityId, facultyId));
+    }
+
+    private Mono<Boolean> deleteProgramNoTransactional(int programId, int universityId, int facultyId) {
+        Supplier<Mono<ProgramEntity>> supplier = () -> programRepository.findByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId);
+        return moduleService.deleteAllModuleByProgramId(programId)
+                            .thenMany(documentService.deleteAllDocumentsByProgramId(programId))
+                            .then(deleteEntity(supplier));
     }
 
     private Mono<FacultyEntity> checkIfFacultyExists(int universityId, int facultyId) {

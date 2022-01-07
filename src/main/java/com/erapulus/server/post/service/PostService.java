@@ -1,14 +1,13 @@
 package com.erapulus.server.post.service;
 
-import com.erapulus.server.common.service.CrudGenericService;
-import com.erapulus.server.post.database.PostEntity;
-import com.erapulus.server.post.database.PostRepository;
-import com.erapulus.server.university.database.UniversityRepository;
-import com.erapulus.server.post.dto.PostRequestDto;
-import com.erapulus.server.post.dto.PostResponseDto;
 import com.erapulus.server.common.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.common.mapper.RequestDtoToEntityMapper;
+import com.erapulus.server.common.service.CrudGenericService;
 import com.erapulus.server.common.web.PageablePayload;
+import com.erapulus.server.post.database.PostEntity;
+import com.erapulus.server.post.database.PostRepository;
+import com.erapulus.server.post.dto.PostRequestDto;
+import com.erapulus.server.post.dto.PostResponseDto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,6 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -32,27 +30,22 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
     private static final LocalDate MAX_DATE = LocalDate.of(9999, 12, 31);
     private static final Pattern PATTERN = Pattern.compile("^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$");
     private final PostRepository postRepository;
-    private final UniversityRepository universityRepository;
 
     public PostService(PostRepository repository,
                        RequestDtoToEntityMapper<PostRequestDto, PostEntity> requestDtoToEntityMapper,
-                       EntityToResponseDtoMapper<PostEntity, PostResponseDto> entityToResponseDtoMapper,
-                       UniversityRepository universityRepository) {
+                       EntityToResponseDtoMapper<PostEntity, PostResponseDto> entityToResponseDtoMapper) {
         super(repository, requestDtoToEntityMapper, entityToResponseDtoMapper, "post");
         this.postRepository = repository;
-        this.universityRepository = universityRepository;
     }
 
     public Mono<PageablePayload<PostResponseDto>> listPosts(Integer universityId, String title, String fromDate, String toDate, PageRequest pageRequest) {
-        return universityRepository.existsById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
-                                   .then(convertDate(fromDate, MIN_DATE))
-                                   .zipWith(convertDate(toDate, MAX_DATE))
-                                   .flatMap(fromAndToDate -> postRepository.findPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2(), pageRequest.getOffset(), pageRequest.getPageSize())
-                                                                           .map(entityToResponseDtoMapper::from)
-                                                                           .collectList()
-                                                                           .zipWith(postRepository.countPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2()))
-                                                                           .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
+        return convertDate(fromDate, MIN_DATE)
+                .zipWith(convertDate(toDate, MAX_DATE))
+                .flatMap(fromAndToDate -> postRepository.findPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2(), pageRequest.getOffset(), pageRequest.getPageSize())
+                                                        .map(entityToResponseDtoMapper::from)
+                                                        .collectList()
+                                                        .zipWith(postRepository.countPostByFilters(universityId, title, fromAndToDate.getT1(), fromAndToDate.getT2()))
+                                                        .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2())));
 
     }
 
@@ -68,8 +61,14 @@ public class PostService extends CrudGenericService<PostEntity, PostRequestDto, 
 
     public Mono<PostResponseDto> updatePost(@Valid PostRequestDto requestDto, int postId, int universityId) {
         UnaryOperator<PostEntity> addParamFromPath = post -> post.id(postId).universityId(universityId);
+        Supplier<Mono<PostEntity>> supplier = () -> postRepository.findByIdAndUniversityId(postId, universityId);
         BinaryOperator<PostEntity> mergeEntity = (oldPost, newPost) -> newPost.date(oldPost.date());
-        return updateEntity(requestDto, addParamFromPath, mergeEntity);
+        return updateEntity(requestDto, addParamFromPath, supplier, mergeEntity);
+    }
+
+    public Mono<Boolean> deletePost(int postId, int universityId) {
+        Supplier<Mono<PostEntity>> supplier = () -> postRepository.findByIdAndUniversityId(postId, universityId);
+        return deleteEntity(supplier);
     }
 
     public Mono<Void> deleteAllPostsByUniversityId(int universityId) {

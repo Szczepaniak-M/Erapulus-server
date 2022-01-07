@@ -175,11 +175,12 @@ public class FacultyController {
             }
     )
     public Mono<ServerResponse> deleteFaculty(ServerRequest request) {
-        return withPathParam(request, FACULTY_PATH_PARAM,
-                facultyId -> facultyService.deleteFaculty(facultyId)
-                                           .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                           .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                           .doOnError(e -> log.error(e.getMessage(), e))
-                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, FACULTY_PATH_PARAM,
+                        facultyId -> facultyService.deleteFaculty(facultyId, universityId)
+                                                   .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                                   .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                   .doOnError(e -> log.error(e.getMessage(), e))
+                                                   .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 }

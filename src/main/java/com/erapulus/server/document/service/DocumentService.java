@@ -76,36 +76,38 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
 
     public Mono<DocumentResponseDto> updateDocument(DocumentRequestDto documentDto, Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         UnaryOperator<DocumentEntity> addParamFromBody = document -> document.id(documentId).name(documentDto.name()).description(documentDto.description());
+        Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
         BinaryOperator<DocumentEntity> mergeEntity = (oldDocument, newDocument) -> newDocument.path(oldDocument.path());
         return validateRequest(universityId, facultyId, programId, moduleId)
-                .flatMap(document -> updateEntity(document, addParamFromBody, mergeEntity))
+                .flatMap(document -> updateEntity(document, addParamFromBody, supplier, mergeEntity))
                 .map(response -> addParamFromPath(response, universityId, facultyId, programId, moduleId));
     }
 
     public Mono<Boolean> deleteDocument(Integer documentId, Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
+        Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .then(documentRepository.findById(documentId))
-                .flatMap(document -> deleteEntity(documentId)
+                .flatMap(document -> deleteEntity(supplier)
                         .then(azureStorageService.deleteFile(document)));
     }
 
     public Flux<Boolean> deleteAllDocumentsByUniversityId(int universityId) {
         return documentRepository.findAllByFilters(universityId, null, null)
-                                 .flatMap(document -> deleteEntity(document.id())
+                                 .flatMap(document -> deleteEntity(() -> documentRepository.findById(document.id()))
                                          .then(azureStorageService.deleteFile(document)));
 
     }
 
     public Flux<Boolean> deleteAllDocumentsByProgramId(int programId) {
         return documentRepository.findAllByFilters(null, programId, null)
-                                 .flatMap(document -> deleteEntity(document.id())
+                                 .flatMap(document -> deleteEntity(() -> documentRepository.findById(document.id()))
                                          .then(azureStorageService.deleteFile(document)));
 
     }
 
     public Flux<Boolean> deleteAllDocumentsByModuleId(int moduleId) {
         return documentRepository.findAllByFilters(null, null, moduleId)
-                                 .flatMap(document -> deleteEntity(document.id())
+                                 .flatMap(document -> deleteEntity(() -> documentRepository.findById(document.id()))
                                          .then(azureStorageService.deleteFile(document)));
 
     }

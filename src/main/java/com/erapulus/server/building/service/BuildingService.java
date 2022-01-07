@@ -7,14 +7,12 @@ import com.erapulus.server.building.dto.BuildingResponseDto;
 import com.erapulus.server.common.mapper.EntityToResponseDtoMapper;
 import com.erapulus.server.common.mapper.RequestDtoToEntityMapper;
 import com.erapulus.server.common.service.CrudGenericService;
-import com.erapulus.server.university.database.UniversityRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -23,23 +21,18 @@ import java.util.function.UnaryOperator;
 public class BuildingService extends CrudGenericService<BuildingEntity, BuildingRequestDto, BuildingResponseDto> {
 
     private final BuildingRepository buildingRepository;
-    private final UniversityRepository universityRepository;
 
     public BuildingService(BuildingRepository buildingRepository,
                            RequestDtoToEntityMapper<BuildingRequestDto, BuildingEntity> requestDtoToEntityMapper,
-                           EntityToResponseDtoMapper<BuildingEntity, BuildingResponseDto> entityToResponseDtoMapper,
-                           UniversityRepository universityRepository) {
+                           EntityToResponseDtoMapper<BuildingEntity, BuildingResponseDto> entityToResponseDtoMapper) {
         super(buildingRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "building");
         this.buildingRepository = buildingRepository;
-        this.universityRepository = universityRepository;
     }
 
     public Mono<List<BuildingResponseDto>> listBuildings(int universityId) {
-        return universityRepository.existsById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
-                                   .thenMany(buildingRepository.findAllByUniversityId(universityId))
-                                   .map(entityToResponseDtoMapper::from)
-                                   .collectList();
+        return buildingRepository.findAllByUniversityId(universityId)
+                                 .map(entityToResponseDtoMapper::from)
+                                 .collectList();
     }
 
     public Mono<BuildingResponseDto> createBuilding(@Valid BuildingRequestDto requestDto, int universityId) {
@@ -54,7 +47,13 @@ public class BuildingService extends CrudGenericService<BuildingEntity, Building
 
     public Mono<BuildingResponseDto> updateBuilding(@Valid BuildingRequestDto requestDto, int buildingId, int universityId) {
         UnaryOperator<BuildingEntity> addParamFromPath = building -> building.id(buildingId).universityId(universityId);
-        return updateEntity(requestDto, addParamFromPath);
+        Supplier<Mono<BuildingEntity>> supplier = () -> buildingRepository.findByIdAndUniversityId(buildingId, universityId);
+        return updateEntity(requestDto, addParamFromPath, supplier);
+    }
+
+    public Mono<Boolean> deleteBuilding(int buildingId, int universityId) {
+        Supplier<Mono<BuildingEntity>> supplier = () -> buildingRepository.findByIdAndUniversityId(buildingId, universityId);
+        return deleteEntity(supplier);
     }
 
     public Mono<Void> deleteAllBuildingsByUniversityId(int universityId) {

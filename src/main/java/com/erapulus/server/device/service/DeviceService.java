@@ -45,7 +45,13 @@ public class DeviceService extends CrudGenericService<DeviceEntity, DeviceReques
 
     public Mono<DeviceResponseDto> updateDevice(@Valid DeviceRequestDto requestDto, int deviceId, int studentId) {
         UnaryOperator<DeviceEntity> addParamFromPath = device -> device.id(deviceId).applicationUserId(studentId);
-        return updateEntity(requestDto, addParamFromPath);
+        Supplier<Mono<DeviceEntity>> supplier = () -> deviceRepository.findByIdAndStudentId(deviceId, studentId);
+        return updateEntity(requestDto, addParamFromPath, supplier);
+    }
+
+    public Mono<Boolean> deleteDevice(Integer deviceId, Integer studentId) {
+        Supplier<Mono<DeviceEntity>> supplier = () -> deviceRepository.findByIdAndStudentId(deviceId, studentId);
+        return deleteEntity(supplier);
     }
 
     public Mono<Void> deleteAllDevicesByStudentId(int studentId) {

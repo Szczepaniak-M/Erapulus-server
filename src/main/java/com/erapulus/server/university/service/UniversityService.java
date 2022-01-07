@@ -80,18 +80,20 @@ public class UniversityService extends CrudGenericService<UniversityEntity, Univ
 
     public Mono<UniversityResponseDto> updateUniversity(@Valid UniversityRequestDto requestDto, int universityId) {
         UnaryOperator<UniversityEntity> addParamFromPath = university -> university.id(universityId);
+        Supplier<Mono<UniversityEntity>> supplier = () -> universityRepository.findById(universityId);
         BinaryOperator<UniversityEntity> mergeEntity = (oldUniversity, newUniversity) -> newUniversity.logoUrl(oldUniversity.logoUrl());
-        return updateEntity(requestDto, addParamFromPath, mergeEntity);
+        return updateEntity(requestDto, addParamFromPath, supplier, mergeEntity);
     }
 
     @Transactional
     public Mono<Boolean> deleteUniversity(int universityId) {
+        Supplier<Mono<UniversityEntity>> supplier = () -> universityRepository.findById(universityId);
         return facultyService.deleteAllFacultiesByUniversityId(universityId)
                              .thenMany(documentService.deleteAllDocumentsByUniversityId(universityId))
                              .thenMany(buildingService.deleteAllBuildingsByUniversityId(universityId))
                              .thenMany(postService.deleteAllPostsByUniversityId(universityId))
                              .thenMany(employeeService.deleteAllEmployeesByUniversityId(universityId))
-                             .then(super.deleteEntity(universityId));
+                             .then(deleteEntity(supplier));
     }
 
     public Mono<UniversityResponseDto> updateUniversityLogo(Integer universityId, FilePart photo) {

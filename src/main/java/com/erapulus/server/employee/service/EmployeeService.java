@@ -50,10 +50,11 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
 
     public Mono<EmployeeResponseDto> updateEmployee(@Valid EmployeeRequestDto requestDto, int employeeId) {
         UnaryOperator<EmployeeEntity> addParamFromPath = employee -> employee.id(employeeId);
+        Supplier<Mono<EmployeeEntity>> supplier = () -> employeeRepository.findByIdAndType(employeeId);
         BinaryOperator<EmployeeEntity> mergeEntity = (oldEmployee, newEmployee) -> newEmployee.type(oldEmployee.type())
                                                                                               .password(oldEmployee.password())
                                                                                               .universityId(oldEmployee.universityId());
-        return updateEntity(requestDto, addParamFromPath, mergeEntity)
+        return updateEntity(requestDto, addParamFromPath, supplier, mergeEntity)
                 .flatMap(this::validateBodyContent);
     }
 

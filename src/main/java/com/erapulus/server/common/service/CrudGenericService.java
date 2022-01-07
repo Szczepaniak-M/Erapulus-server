@@ -39,30 +39,30 @@ public abstract class CrudGenericService<T extends Entity, R, S> {
                        .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)));
     }
 
-    protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform) {
+    protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform, Supplier<Mono<T>> supplier) {
         return Mono.just(requestDto)
                    .map(requestDtoToEntityMapper::from)
                    .map(transform)
-                   .flatMap(updatedT -> repository.findById(updatedT.id())
-                                                  .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                  .flatMap(b -> repository.save(updatedT)))
+                   .flatMap(updatedT -> supplier.get()
+                                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
+                                                .flatMap(b -> repository.save(updatedT)))
                    .map(entityToResponseDtoMapper::from);
     }
 
-    protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform, BinaryOperator<T> mergeEntity) {
+    protected Mono<S> updateEntity(@Valid R requestDto, UnaryOperator<T> transform, Supplier<Mono<T>> supplier, BinaryOperator<T> mergeEntity) {
         return Mono.just(requestDto)
                    .map(requestDtoToEntityMapper::from)
                    .map(transform)
-                   .flatMap(updatedT -> repository.findById(updatedT.id())
-                                                  .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                                                  .flatMap(oldEntity -> repository.save(mergeEntity.apply(oldEntity, updatedT))))
+                   .flatMap(updatedT -> supplier.get()
+                                                .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
+                                                .flatMap(oldEntity -> repository.save(mergeEntity.apply(oldEntity, updatedT))))
                    .map(entityToResponseDtoMapper::from);
     }
 
-    public Mono<Boolean> deleteEntity(int entityId) {
-        return repository.findById(entityId)
-                         .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
-                         .flatMap(b -> repository.deleteById(entityId))
-                         .thenReturn(true);
+    public Mono<Boolean> deleteEntity(Supplier<Mono<T>> supplier) {
+        return supplier.get()
+                       .switchIfEmpty(Mono.error(new NoSuchElementException(entityName)))
+                       .flatMap(entity -> repository.deleteById(entity.id()))
+                       .thenReturn(true);
     }
 }

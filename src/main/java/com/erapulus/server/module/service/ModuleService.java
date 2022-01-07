@@ -68,21 +68,23 @@ public class ModuleService extends CrudGenericService<ModuleEntity, ModuleReques
 
     public Mono<ModuleResponseDto> updateModule(@Valid ModuleRequestDto requestDto, int moduleId, int universityId, int facultyId, int programId) {
         UnaryOperator<ModuleEntity> addParamFromPath = module -> module.id(moduleId).programId(programId);
+        Supplier<Mono<ModuleEntity>> supplier = () -> moduleRepository.findByIdAndProgramId(moduleId, programId);
         return checkIfProgramExists(universityId, facultyId, programId)
-                .then(updateEntity(requestDto, addParamFromPath));
+                .then(updateEntity(requestDto, addParamFromPath, supplier));
     }
 
     @Transactional
     public Mono<Boolean> deleteModule(int moduleId, int universityId, int facultyId, int programId) {
+        Supplier<Mono<ModuleEntity>> supplier = () -> moduleRepository.findByIdAndProgramId(moduleId, programId);
         return checkIfProgramExists(universityId, facultyId, programId)
                 .thenMany(documentService.deleteAllDocumentsByModuleId(moduleId))
-                .then(super.deleteEntity(moduleId));
+                .then(deleteEntity(supplier));
     }
 
     public Flux<Boolean> deleteAllModuleByProgramId(int programId) {
         return moduleRepository.findAllByProgramId(programId)
                                .flatMap(moduleId -> documentService.deleteAllDocumentsByModuleId(moduleId)
-                                                                   .then(super.deleteEntity(moduleId)));
+                                                                   .then(super.deleteEntity(() -> moduleRepository.findByIdAndProgramId(moduleId, programId))));
     }
 
     private Mono<Boolean> checkIfProgramExists(int universityId, int facultyId, int programId) {

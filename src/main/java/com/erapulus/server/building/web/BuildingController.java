@@ -56,7 +56,6 @@ public class BuildingController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> buildingService.listBuildings(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                               .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                .doOnError(e -> log.error(e.getMessage(), e))
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
@@ -171,11 +170,12 @@ public class BuildingController {
             }
     )
     public Mono<ServerResponse> deleteBuilding(ServerRequest request) {
-        return withPathParam(request, BUILDING_PATH_PARAM,
-                buildingId -> buildingService.deleteEntity(buildingId)
-                                             .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
-                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
-                                             .doOnError(e -> log.error(e.getMessage(), e))
-                                             .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+        return withPathParam(request, UNIVERSITY_PATH_PARAM,
+                universityId -> withPathParam(request, BUILDING_PATH_PARAM,
+                        buildingId -> buildingService.deleteBuilding(buildingId, universityId)
+                                                     .flatMap(r -> ServerResponseFactory.createHttpNoContentResponse())
+                                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                                     .doOnError(e -> log.error(e.getMessage(), e))
+                                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
     }
 }
