@@ -74,7 +74,7 @@ class StudentServiceTest {
         var student1 = createStudent(ID_1);
         var student2 = createStudent(ID_2);
         String name = "John";
-        when(studentRepository.findAllByNameAndUniversityId(name, UNIVERSITY_ID)).thenReturn(Flux.just(student1, student2));
+        when(studentRepository.findAllByNameAndUniversityId(ID_1, name, UNIVERSITY_ID)).thenReturn(Flux.just(student1, student2));
         try (MockedStatic<ReactiveSecurityContextHolder> utilities = mockStatic(ReactiveSecurityContextHolder.class)) {
             utilities.when(ReactiveSecurityContextHolder::getContext).thenReturn(createSecurityContext());
 

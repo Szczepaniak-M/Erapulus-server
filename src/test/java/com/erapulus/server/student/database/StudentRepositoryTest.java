@@ -28,6 +28,7 @@ class StudentRepositoryTest {
     private static final String EMAIL_3 = "example3@gmail.com";
     private static final String EMAIL_4 = "example4@gmail.com";
     private static final String EMAIL_5 = "example5@gmail.com";
+    private static final String EMAIL_6 = "example6@gmail.com";
     private static final String FIRST_NAME_1 = "John";
     private static final String FIRST_NAME_2 = "Anne";
     private static final String LAST_NAME_1 = "JOHNSON";
@@ -56,7 +57,7 @@ class StudentRepositoryTest {
     }
 
     @Test
-    void findAllByName_shouldReturnStudentsEntity() {
+    void findAllByNameAndUniversityId_shouldReturnStudentsEntity() {
         // given
         var university1 = createUniversity(UNIVERSITY_1);
         var university2 = createUniversity(UNIVERSITY_2);
@@ -66,10 +67,11 @@ class StudentRepositoryTest {
         var student3 = createStudent(EMAIL_3, FIRST_NAME_2, LAST_NAME_1, university2.id());
         var student4 = createStudent(EMAIL_4, FIRST_NAME_2, LAST_NAME_2, null);
         var employee = createEmployee(EMAIL_5);
+        var student5 = createStudent(EMAIL_6, FIRST_NAME_2, LAST_NAME_2, university1.id());
         String commonPart = "ohn";
 
         // when
-        Flux<StudentEntity> result = studentRepository.findAllByNameAndUniversityId(commonPart, university1.id());
+        Flux<StudentEntity> result = studentRepository.findAllByNameAndUniversityId(student5.id(), commonPart, student5.universityId());
 
         // then
         StepVerifier.create(result)

@@ -59,7 +59,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
         if (parsedName == null) {
             return Mono.just(Collections.emptyList());
         }
-        return withSecurityContext(user -> studentRepository.findAllByNameAndUniversityId(parsedName, user.universityId())
+        return withSecurityContext(user -> studentRepository.findAllByNameAndUniversityId(user.id(), parsedName, user.universityId())
                                                             .map(StudentEntityToListDtoMapper::from)
                                                             .collectList());
     }

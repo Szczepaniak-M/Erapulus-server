@@ -17,8 +17,10 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
                                  OR LOWER(CONCAT(last_name, first_name)) LIKE LOWER(CONCAT('%', :name, '%')))
             AND type = 'STUDENT'
             AND university = :university
+            AND id != :studentId
             """)
-    Flux<StudentEntity> findAllByNameAndUniversityId(@Param("name") String name,
+    Flux<StudentEntity> findAllByNameAndUniversityId(@Param("studentId") int studentId,
+                                                     @Param("name") String name,
                                                      @Param("university") int universityId);
 
     @Query("SELECT * FROM application_user WHERE email = :email AND type = 'STUDENT'")
