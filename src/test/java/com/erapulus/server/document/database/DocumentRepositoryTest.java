@@ -151,6 +151,7 @@ class DocumentRepositoryTest {
                                                    .universityId(universityEntity.id())
                                                    .name("faculty")
                                                    .address("address")
+                                                   .email("example@gmail.com")
                                                    .build();
         return facultyRepository.save(facultyEntity).block();
     }

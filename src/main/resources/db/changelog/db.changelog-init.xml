@@ -36,12 +36,6 @@
             <column name="logo_url" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="primary_color" type="VARCHAR(7)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="secondary_color" type="VARCHAR(7)">
-                <constraints nullable="true"/>
-            </column>
             <column name="last_modified_by" type="INT">
                 <constraints nullable="true"/>
             </column>
@@ -56,8 +50,8 @@
             <column name="address" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
-            <column name="email" type="NVARCHAR(63)">
-                <constraints nullable="true"/>
+            <column name="email" type="VARCHAR(63)">
+                <constraints nullable="false"/>
             </column>
             <column name="university" type="INT">
                 <constraints nullable="false"/>
@@ -243,7 +237,7 @@
             <column name="device_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
             <column name="last_modified_by" type="INT">
@@ -396,8 +390,6 @@
             <column name="website_url" type="VARCHAR(255)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
             <column name="logo_url" type="VARCHAR(255)"/>
-            <column name="primary_color" type="VARCHAR(7)"/>
-            <column name="secondary_color" type="VARCHAR(7)"/>
             <column name="last_modified_by" type="INT"/>
         </createTable>
         <createTable tableName="document_history">
@@ -472,7 +464,7 @@
             <column name="id" type="INT"/>
             <column name="application_user" type="INT"/>
             <column name="device_id" type="VARCHAR(255)"/>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="NVARCHAR(63)"/>
             <column name="last_modified_by" type="INT"/>
         </createTable>
         <createTable tableName="faculty_history">
@@ -584,8 +576,7 @@
             BEGIN
                 SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
-                                               website_url, description, logo_url, primary_color, secondary_color,
-                                               last_modified_by)
+                                               website_url, description, logo_url, last_modified_by)
                 SELECT 'insert', i.*
                 FROM inserted i;
             END
@@ -597,8 +588,7 @@
             BEGIN
                 SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
-                                               website_url, description, logo_url, primary_color, secondary_color,
-                                               last_modified_by)
+                                               website_url, description, logo_url, last_modified_by)
                 SELECT 'update', i.*
                 FROM inserted i;
             END
@@ -610,8 +600,7 @@
             BEGIN
                 SET NOCOUNT ON;
                 INSERT INTO university_history(operation, id, name, address, address2, zipcode, city, country,
-                                               website_url, description, logo_url, primary_color, secondary_color,
-                                               last_modified_by)
+                                               website_url, description, logo_url, last_modified_by)
                 SELECT 'delete', d.*
                 FROM deleted d;
             END

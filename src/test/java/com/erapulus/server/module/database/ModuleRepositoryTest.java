@@ -339,6 +339,7 @@ class ModuleRepositoryTest {
                                                    .universityId(universityEntity.id())
                                                    .name(name)
                                                    .address("address")
+                                                   .email("example@gmail.com")
                                                    .build();
         return facultyRepository.save(facultyEntity).block();
     }
