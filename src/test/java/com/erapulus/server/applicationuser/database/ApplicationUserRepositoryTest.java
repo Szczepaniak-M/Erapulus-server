@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class ApplicationApplicationUserRepositoryTest {
+class ApplicationUserRepositoryTest {
 
     private static final String FIRST_NAME_1 = "Johnson";
     private static final String FIRST_NAME_2 = "Anne";

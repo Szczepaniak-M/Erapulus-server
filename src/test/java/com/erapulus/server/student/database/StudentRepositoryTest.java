@@ -69,7 +69,7 @@ class StudentRepositoryTest {
         String commonPart = "ohn";
 
         // when
-        Flux<StudentEntity> result = studentRepository.findAllByName(commonPart, university1.id());
+        Flux<StudentEntity> result = studentRepository.findAllByNameAndUniversityId(commonPart, university1.id());
 
         // then
         StepVerifier.create(result)

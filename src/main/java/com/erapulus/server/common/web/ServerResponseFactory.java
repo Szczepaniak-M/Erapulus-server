@@ -89,6 +89,15 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
+    public static Mono<ServerResponse> createHttpBadRequestInvalidUserErrorResponse() {
+        return ServerResponse.status(HttpStatus.BAD_REQUEST)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(BodyInserters.fromValue(ResponseTemplate.builder()
+                                                                           .status(HttpStatus.BAD_REQUEST.value())
+                                                                           .message("bad.request;cant.invite.yourself")
+                                                                           .build()));
+    }
+
     public static Mono<ServerResponse> createHttpUnauthorizedResponse() {
         return ServerResponse.status(HttpStatus.UNAUTHORIZED)
                              .contentType(MediaType.APPLICATION_JSON)

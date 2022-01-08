@@ -87,6 +87,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
         Supplier<Mono<DocumentEntity>> supplier = () -> documentRepository.findById(documentId);
         return validateRequest(universityId, facultyId, programId, moduleId)
                 .then(documentRepository.findById(documentId))
+                .switchIfEmpty(Mono.error(new NoSuchElementException("document")))
                 .flatMap(document -> deleteEntity(supplier)
                         .then(azureStorageService.deleteFile(document)));
     }
@@ -128,7 +129,7 @@ public class DocumentService extends CrudGenericService<DocumentEntity, Document
     private Mono<DocumentRequestDto> validateRequest(Integer universityId, Integer facultyId, Integer programId, Integer moduleId) {
         if (moduleId != null) {
             return moduleRepository.existsByIdAndUniversityIdAndFacultyIdAndProgramId(moduleId, universityId, facultyId, programId)
-                                   .flatMap(exists -> exists ? Mono.just(DocumentRequestDto.builder().programId(programId).build())
+                                   .flatMap(exists -> exists ? Mono.just(DocumentRequestDto.builder().moduleId(moduleId).build())
                                            : Mono.error(new NoSuchElementException("module")));
         } else if (programId != null) {
             return programRepository.existsByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId)

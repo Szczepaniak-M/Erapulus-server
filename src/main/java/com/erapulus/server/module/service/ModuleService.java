@@ -89,6 +89,6 @@ public class ModuleService extends CrudGenericService<ModuleEntity, ModuleReques
 
     private Mono<Boolean> checkIfProgramExists(int universityId, int facultyId, int programId) {
         return programRepository.existsByIdAndUniversityIdAndFacultyId(programId, universityId, facultyId)
-                                .switchIfEmpty(Mono.error(new NoSuchElementException("program")));
+                                .flatMap(exists -> exists ? Mono.just(true) : Mono.error(new NoSuchElementException("program")));
     }
 }

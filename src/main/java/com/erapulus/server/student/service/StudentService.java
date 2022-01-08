@@ -17,10 +17,12 @@ import com.erapulus.server.university.dto.UniversityResponseDto;
 import com.erapulus.server.university.mapper.UniversityEntityToResponseDtoMapper;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
@@ -54,7 +56,10 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     public Mono<List<StudentListDto>> listStudents(String name) {
         String parsedName = parseString(name);
-        return withSecurityContext(user -> studentRepository.findAllByName(parsedName, user.universityId())
+        if (parsedName == null) {
+            return Mono.just(Collections.emptyList());
+        }
+        return withSecurityContext(user -> studentRepository.findAllByNameAndUniversityId(parsedName, user.universityId())
                                                             .map(StudentEntityToListDtoMapper::from)
                                                             .collectList());
     }
@@ -67,7 +72,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     public Mono<StudentResponseDto> updateStudent(@Valid StudentRequestDto requestDto, int studentId) {
         UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId).type(UserType.STUDENT);
         Supplier<Mono<StudentEntity>> supplier = () -> studentRepository.findByIdAndType(studentId);
-        BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl());
+        BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl()).universityId(oldStudent.universityId());
         return updateEntity(requestDto, addParamFromPath, supplier, mergeEntity);
     }
 
@@ -83,6 +88,7 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
 
     }
 
+    @Transactional
     public Mono<StudentResponseDto> updateStudentPhoto(int studentId, FilePart photo) {
         String filePath = "user/%d/photo/%s".formatted(studentId, photo.filename());
         return studentRepository.findByIdAndType(studentId)

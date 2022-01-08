@@ -38,13 +38,11 @@ public class FriendshipService {
 
     public Mono<PageablePayload<StudentListDto>> listFriends(int studentId, String name, PageRequest pageRequest) {
         String nameParsed = parseString(name);
-        return studentRepository.findByIdAndType(studentId)
-                                .switchIfEmpty(Mono.error(new NoSuchElementException("student")))
-                                .thenMany(friendshipRepository.findFriendsByIdAndFilters(studentId, nameParsed, pageRequest.getOffset(), pageRequest.getPageSize()))
-                                .map(StudentEntityToListDtoMapper::from)
-                                .collectList()
-                                .zipWith(friendshipRepository.countFriendsByIdAndFilters(studentId, nameParsed))
-                                .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
+        return friendshipRepository.findFriendsByIdAndFilters(studentId, nameParsed, pageRequest.getOffset(), pageRequest.getPageSize())
+                                   .map(StudentEntityToListDtoMapper::from)
+                                   .collectList()
+                                   .zipWith(friendshipRepository.countFriendsByIdAndFilters(studentId, nameParsed))
+                                   .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
     }
 
     public Mono<List<StudentListDto>> listFriendRequests(int studentId) {
@@ -54,10 +52,13 @@ public class FriendshipService {
     }
 
     public Mono<FriendshipResponseDto> addFriendRequest(@Valid FriendshipRequestDto friendId, int studentId) {
-        return studentRepository.findByIdAndType(studentId)
+        if (friendId.userId() == studentId) {
+            return Mono.error(new IllegalArgumentException());
+        }
+        return studentRepository.findByIdAndType(friendId.userId())
                                 .switchIfEmpty(Mono.error(new NoSuchElementException(FRIEND)))
                                 .then(friendshipRepository.findByUserIdAndFriendId(studentId, friendId.userId()))
-                                .flatMap(f -> Mono.error(new IllegalArgumentException(REQUEST)))
+                                .flatMap(f -> Mono.error(new IllegalStateException(REQUEST)))
                                 .thenReturn(createFriendshipEntity(friendId.userId(), studentId, FriendshipStatus.REQUESTED))
                                 .flatMap(friendshipRepository::save)
                                 .map(friendshipEntityToResponseDtoMapper::from)

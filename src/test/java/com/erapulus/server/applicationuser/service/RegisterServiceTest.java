@@ -1,5 +1,6 @@
 package com.erapulus.server.applicationuser.service;
 
+import com.erapulus.server.common.database.UserType;
 import com.erapulus.server.employee.database.EmployeeEntity;
 import com.erapulus.server.employee.database.EmployeeRepository;
 import com.erapulus.server.employee.dto.EmployeeCreateRequestDto;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +47,112 @@ class RegisterServiceTest {
     }
 
     @Test
+    void createAdministrator_shouldReturnEmployeeCreatedDtoWhenSuccess() {
+        // given
+        EmployeeCreateRequestDto employeeCreateRequestDto = EmployeeCreateRequestDto.builder()
+                                                                                    .email(EMAIL)
+                                                                                    .password(PASSWORD)
+                                                                                    .firstName(FIRST_NAME)
+                                                                                    .lastName(LAST_NAME)
+                                                                                    .build();
+        when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
+        when(employeeRepository.save(any(EmployeeEntity.class)))
+                .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
+
+        // when
+        Mono<EmployeeResponseDto> result = registerService.createAdministrator(employeeCreateRequestDto);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(employeeCreatedDto -> {
+                        assertEquals(ID, employeeCreatedDto.id());
+                        assertEquals(EMAIL, employeeCreatedDto.email());
+                        assertEquals(FIRST_NAME, employeeCreatedDto.firstName());
+                        assertEquals(LAST_NAME, employeeCreatedDto.lastName());
+                        assertNull(employeeCreatedDto.universityId());
+                        assertEquals(UserType.ADMINISTRATOR, employeeCreatedDto.type());
+                    })
+                    .verifyComplete();
+    }
+
+    @Test
+    void createAdministrator_shouldDataIntegrityViolationWhenEmailDuplicated() {
+        // given
+        EmployeeCreateRequestDto employeeCreateRequestDto = EmployeeCreateRequestDto.builder()
+                                                                                    .email(EMAIL)
+                                                                                    .password(PASSWORD)
+                                                                                    .firstName(FIRST_NAME)
+                                                                                    .lastName(LAST_NAME)
+                                                                                    .universityId(UNIVERSITY)
+                                                                                    .build();
+        when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
+        when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
+
+        // when
+        Mono<EmployeeResponseDto> result = registerService.createAdministrator(employeeCreateRequestDto);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyError(DataIntegrityViolationException.class);
+    }
+
+
+    @Test
+    void createUniversityAdministrator_shouldReturnEmployeeCreatedDtoWhenSuccess() {
+        // given
+        EmployeeCreateRequestDto employeeCreateRequestDto = EmployeeCreateRequestDto.builder()
+                                                                                    .email(EMAIL)
+                                                                                    .password(PASSWORD)
+                                                                                    .firstName(FIRST_NAME)
+                                                                                    .lastName(LAST_NAME)
+                                                                                    .universityId(UNIVERSITY)
+                                                                                    .build();
+        when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
+        when(employeeRepository.save(any(EmployeeEntity.class)))
+                .then(invocationOnMock -> Mono.just(invocationOnMock.getArgument(0, EmployeeEntity.class).id(ID)));
+
+        // when
+        Mono<EmployeeResponseDto> result = registerService.createUniversityAdministrator(employeeCreateRequestDto);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .assertNext(employeeCreatedDto -> {
+                        assertEquals(ID, employeeCreatedDto.id());
+                        assertEquals(EMAIL, employeeCreatedDto.email());
+                        assertEquals(FIRST_NAME, employeeCreatedDto.firstName());
+                        assertEquals(LAST_NAME, employeeCreatedDto.lastName());
+                        assertEquals(UNIVERSITY, employeeCreatedDto.universityId());
+                        assertEquals(UserType.UNIVERSITY_ADMINISTRATOR, employeeCreatedDto.type());
+                    })
+                    .verifyComplete();
+    }
+
+    @Test
+    void createUniversityAdministrator_shouldDataIntegrityViolationWhenEmailDuplicated() {
+        // given
+        EmployeeCreateRequestDto employeeCreateRequestDto = EmployeeCreateRequestDto.builder()
+                                                                                    .email(EMAIL)
+                                                                                    .password(PASSWORD)
+                                                                                    .firstName(FIRST_NAME)
+                                                                                    .lastName(LAST_NAME)
+                                                                                    .universityId(UNIVERSITY)
+                                                                                    .build();
+        when(bCryptPasswordEncoder.encode(PASSWORD)).thenReturn(ENCRYPTED_PASSWORD);
+        when(employeeRepository.save(any(EmployeeEntity.class))).thenThrow(new DataIntegrityViolationException("Duplicated"));
+
+        // when
+        Mono<EmployeeResponseDto> result = registerService.createUniversityEmployee(employeeCreateRequestDto);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .verifyError(DataIntegrityViolationException.class);
+    }
+
+    @Test
     void createEmployee_shouldReturnEmployeeCreatedDtoWhenSuccess() {
         // given
         EmployeeCreateRequestDto employeeCreateRequestDto = EmployeeCreateRequestDto.builder()
@@ -70,6 +178,7 @@ class RegisterServiceTest {
                         assertEquals(FIRST_NAME, employeeCreatedDto.firstName());
                         assertEquals(LAST_NAME, employeeCreatedDto.lastName());
                         assertEquals(UNIVERSITY, employeeCreatedDto.universityId());
+                        assertEquals(UserType.EMPLOYEE, employeeCreatedDto.type());
                     })
                     .verifyComplete();
     }

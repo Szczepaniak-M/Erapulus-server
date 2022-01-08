@@ -9,7 +9,6 @@ import com.erapulus.server.faculty.database.FacultyRepository;
 import com.erapulus.server.faculty.dto.FacultyRequestDto;
 import com.erapulus.server.faculty.dto.FacultyResponseDto;
 import com.erapulus.server.program.service.ProgramService;
-import com.erapulus.server.university.database.UniversityRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -28,29 +26,24 @@ import static com.erapulus.server.common.service.QueryParamParser.parseString;
 public class FacultyService extends CrudGenericService<FacultyEntity, FacultyRequestDto, FacultyResponseDto> {
 
     private final FacultyRepository facultyRepository;
-    private final UniversityRepository universityRepository;
     private final ProgramService programService;
 
     public FacultyService(FacultyRepository facultyRepository,
                           RequestDtoToEntityMapper<FacultyRequestDto, FacultyEntity> requestDtoToEntityMapper,
                           EntityToResponseDtoMapper<FacultyEntity, FacultyResponseDto> entityToResponseDtoMapper,
-                          UniversityRepository universityRepository,
                           ProgramService programService) {
         super(facultyRepository, requestDtoToEntityMapper, entityToResponseDtoMapper, "faculty");
         this.facultyRepository = facultyRepository;
-        this.universityRepository = universityRepository;
         this.programService = programService;
     }
 
     public Mono<PageablePayload<FacultyResponseDto>> listFaculties(int universityId, String name, PageRequest pageRequest) {
         String parsedName = parseString(name);
-        return universityRepository.existsById(universityId)
-                                   .switchIfEmpty(Mono.error(new NoSuchElementException("university")))
-                                   .thenMany(facultyRepository.findByUniversityIdAndName(universityId, parsedName, pageRequest.getOffset(), pageRequest.getPageSize()))
-                                   .map(entityToResponseDtoMapper::from)
-                                   .collectList()
-                                   .zipWith(facultyRepository.countByUniversityIdAndName(universityId, parsedName))
-                                   .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
+        return facultyRepository.findByUniversityIdAndName(universityId, parsedName, pageRequest.getOffset(), pageRequest.getPageSize())
+                                .map(entityToResponseDtoMapper::from)
+                                .collectList()
+                                .zipWith(facultyRepository.countByUniversityIdAndName(universityId, parsedName))
+                                .map(dtoListAndTotalCount -> new PageablePayload<>(dtoListAndTotalCount.getT1(), pageRequest, dtoListAndTotalCount.getT2()));
     }
 
 

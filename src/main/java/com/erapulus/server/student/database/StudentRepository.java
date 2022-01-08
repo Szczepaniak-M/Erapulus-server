@@ -18,8 +18,8 @@ public interface StudentRepository extends R2dbcRepository<StudentEntity, Intege
             AND type = 'STUDENT'
             AND university = :university
             """)
-    Flux<StudentEntity> findAllByName(@Param("name") String name,
-                                      @Param("university") int universityId);
+    Flux<StudentEntity> findAllByNameAndUniversityId(@Param("name") String name,
+                                                     @Param("university") int universityId);
 
     @Query("SELECT * FROM application_user WHERE email = :email AND type = 'STUDENT'")
     Mono<StudentEntity> findByEmail(@Param("email") String email);

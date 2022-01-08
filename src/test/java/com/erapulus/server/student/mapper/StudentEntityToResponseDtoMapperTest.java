@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class StudentEntityToDtoMapperTest {
+class StudentEntityToResponseDtoMapperTest {
     private static final String EMAIL = "example@gmail.com";
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "firstName";
@@ -37,7 +37,7 @@ class StudentEntityToDtoMapperTest {
                                             .build();
 
         // when
-        StudentResponseDto result = new StudentEntityToDtoMapper().from(entity);
+        StudentResponseDto result = new StudentEntityToResponseDtoMapper().from(entity);
 
         //then
         assertEquals(ID, result.id());

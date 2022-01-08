@@ -65,7 +65,6 @@ public class FriendshipController {
                         name -> withPageParams(request,
                                 pageRequest -> friendshipService.listFriends(studentId, name, pageRequest)
                                                                 .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                                .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                 .doOnError(e -> log.error(e.getMessage(), e))
                                                                 .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
     }
@@ -117,9 +116,10 @@ public class FriendshipController {
                                     .flatMap(friendRequest -> friendshipService.addFriendRequest(friendRequest, studentId))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                    .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestInvalidUserErrorResponse())
                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                     .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("duplicated.request"))
-                                    .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpConflictResponse("other.request"))
+                                    .onErrorResume(IllegalStateException.class, e -> ServerResponseFactory.createHttpConflictResponse("other.request"))
                                     .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }

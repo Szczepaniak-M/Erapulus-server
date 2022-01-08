@@ -62,7 +62,6 @@ public class FacultyController {
                         name -> withPageParams(request,
                                 pageRequest -> facultyService.listFaculties(universityId, name, pageRequest)
                                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
-                                                             .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                              .doOnError(e -> log.error(e.getMessage(), e))
                                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()))));
     }
