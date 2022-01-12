@@ -2,8 +2,8 @@ package com.erapulus.server.security;
 
 import com.erapulus.server.common.exception.InvalidTokenException;
 import com.erapulus.server.student.database.StudentEntity;
-import com.erapulus.server.student.dto.FacebookRegisterDto;
-import com.erapulus.server.student.dto.StudentLoginDTO;
+import com.erapulus.server.applicationuser.dto.FacebookRegisterDto;
+import com.erapulus.server.applicationuser.dto.StudentLoginDto;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -19,7 +19,7 @@ public class FacebookTokenValidator {
         this.webClient = WebClient.builder().baseUrl(facebookGraphApiBase).build();
     }
 
-    public Mono<StudentEntity> validate(StudentLoginDTO studentLoginDTO) {
+    public Mono<StudentEntity> validate(StudentLoginDto studentLoginDTO) {
         return getUserDataFromFacebook(studentLoginDTO)
                 .onErrorMap(WebClientResponseException.BadRequest.class, e -> new InvalidTokenException())
                 .map(payload -> StudentEntity.builder()
@@ -30,7 +30,7 @@ public class FacebookTokenValidator {
                                              .build());
     }
 
-    private Mono<FacebookRegisterDto> getUserDataFromFacebook(StudentLoginDTO studentLoginDTO) {
+    private Mono<FacebookRegisterDto> getUserDataFromFacebook(StudentLoginDto studentLoginDTO) {
         String path = "/me?fields={fields}&redirect={redirect}&access_token={access_token}";
         String fields = "email,first_name,last_name,picture.width(720).height(720)";
         Map<String, String> variables = new HashMap<>();

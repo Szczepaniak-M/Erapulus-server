@@ -1,4 +1,4 @@
-package com.erapulus.server.student.dto;
+package com.erapulus.server.applicationuser.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

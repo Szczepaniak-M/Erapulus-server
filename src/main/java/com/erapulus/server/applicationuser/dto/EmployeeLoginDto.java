@@ -1,4 +1,4 @@
-package com.erapulus.server.employee.dto;
+package com.erapulus.server.applicationuser.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeLoginDTO {
+public class EmployeeLoginDto {
     @NotNull
     @JsonProperty("email")
     private String email;

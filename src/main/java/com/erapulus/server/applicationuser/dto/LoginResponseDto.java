@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponseDTO {
+public class LoginResponseDto {
     @JsonProperty("userId")
     private Integer userId;
 

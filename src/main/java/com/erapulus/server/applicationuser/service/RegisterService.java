@@ -4,7 +4,7 @@ import com.erapulus.server.common.database.UserType;
 import com.erapulus.server.employee.database.EmployeeRepository;
 import com.erapulus.server.employee.dto.EmployeeCreateRequestDto;
 import com.erapulus.server.employee.dto.EmployeeResponseDto;
-import com.erapulus.server.employee.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
+import com.erapulus.server.applicationuser.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
 import com.erapulus.server.employee.mapper.EmployeeEntityToResponseDtoMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,24 +1,23 @@
 package com.erapulus.server.applicationuser.service;
 
-import com.erapulus.server.applicationuser.dto.LoginResponseDTO;
+import com.erapulus.server.applicationuser.dto.LoginResponseDto;
 import com.erapulus.server.common.database.UserType;
-import com.erapulus.server.common.exception.InvalidPasswordException;
 import com.erapulus.server.common.exception.InvalidTokenException;
-import com.erapulus.server.common.exception.NoSuchUserException;
 import com.erapulus.server.employee.database.EmployeeEntity;
 import com.erapulus.server.employee.database.EmployeeRepository;
-import com.erapulus.server.employee.dto.EmployeeLoginDTO;
+import com.erapulus.server.applicationuser.dto.EmployeeLoginDto;
 import com.erapulus.server.security.FacebookTokenValidator;
 import com.erapulus.server.security.GoogleTokenValidator;
 import com.erapulus.server.security.JwtGenerator;
 import com.erapulus.server.student.database.StudentEntity;
 import com.erapulus.server.student.database.StudentRepository;
-import com.erapulus.server.student.dto.StudentLoginDTO;
+import com.erapulus.server.applicationuser.dto.StudentLoginDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -66,14 +65,14 @@ class LoginServiceTest {
     @Test
     void validateEmployeeCredentials_shouldReturnTokenOnSuccessAuthentication() {
         // when
-        var employeeLoginDto = new EmployeeLoginDTO(EMAIL, PASSWORD);
+        var employeeLoginDto = new EmployeeLoginDto(EMAIL, PASSWORD);
         var employee = createEmployee();
         when(employeeRepository.findByEmailAndType(EMAIL)).thenReturn(Mono.just(employee));
         when(bCryptPasswordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
         when(jwtGenerator.generate(employee)).thenReturn(TOKEN);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateEmployeeCredentials(employeeLoginDto);
+        Mono<LoginResponseDto> result = loginService.validateEmployeeCredentials(employeeLoginDto);
 
         // then
         StepVerifier.create(result)
@@ -89,16 +88,16 @@ class LoginServiceTest {
     @Test
     void validateEmployeeCredentials_shouldThrowExceptionWhenEmployeeNotFound() {
         // when
-        var employeeLoginDto = new EmployeeLoginDTO(EMAIL, PASSWORD);
+        var employeeLoginDto = new EmployeeLoginDto(EMAIL, PASSWORD);
         when(employeeRepository.findByEmailAndType(EMAIL)).thenReturn(Mono.empty());
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateEmployeeCredentials(employeeLoginDto);
+        Mono<LoginResponseDto> result = loginService.validateEmployeeCredentials(employeeLoginDto);
 
         // then
         StepVerifier.create(result)
                     .expectSubscription()
-                    .expectError(NoSuchUserException.class)
+                    .expectError(BadCredentialsException.class)
                     .verify();
     }
 
@@ -106,25 +105,25 @@ class LoginServiceTest {
     void validateEmployeeCredentials_shouldThrowExceptionWhenWrongPassword() {
         // when
         String wrongPassword = PASSWORD + "a";
-        var employeeLoginDto = new EmployeeLoginDTO(EMAIL, wrongPassword);
+        var employeeLoginDto = new EmployeeLoginDto(EMAIL, wrongPassword);
         var employee = createEmployee();
         when(employeeRepository.findByEmailAndType(EMAIL)).thenReturn(Mono.just(employee));
         when(bCryptPasswordEncoder.matches(wrongPassword, PASSWORD)).thenReturn(false);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateEmployeeCredentials(employeeLoginDto);
+        Mono<LoginResponseDto> result = loginService.validateEmployeeCredentials(employeeLoginDto);
 
         // then
         StepVerifier.create(result)
                     .expectSubscription()
-                    .expectError(InvalidPasswordException.class)
+                    .expectError(BadCredentialsException.class)
                     .verify();
     }
 
     @Test
     void validateGoogleStudentCredentials_shouldReturnTokenOnSuccessAuthentication() {
         // when
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         var studentEntity = createStudent();
         when(googleTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.just(studentEntity));
         when(studentRepository.findByEmail(EMAIL)).thenReturn(Mono.just(studentEntity));
@@ -132,7 +131,7 @@ class LoginServiceTest {
         when(jwtGenerator.generate(studentEntity)).thenReturn(TOKEN);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)
@@ -147,7 +146,7 @@ class LoginServiceTest {
 
     @Test
     void validateGoogleStudentCredentials_shouldSaveUserIfLoginFirstTime() {
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         var studentEntity = createStudent();
         when(googleTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.just(studentEntity));
         when(studentRepository.findByEmail(EMAIL)).thenReturn(Mono.empty());
@@ -155,7 +154,7 @@ class LoginServiceTest {
         when(jwtGenerator.generate(studentEntity)).thenReturn(TOKEN);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)
@@ -170,11 +169,11 @@ class LoginServiceTest {
 
     @Test
     void validateGoogleStudentCredentials_shouldThrowExceptionIfTokenNotValid() {
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         when(googleTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.error(new InvalidTokenException()));
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateGoogleStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)
@@ -186,7 +185,7 @@ class LoginServiceTest {
     @Test
     void validateFacebookStudentCredentials_shouldReturnTokenOnSuccessAuthentication() {
         // when
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         var studentEntity = createStudent();
         when(facebookTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.just(studentEntity));
         when(studentRepository.findByEmail(EMAIL)).thenReturn(Mono.just(studentEntity));
@@ -194,7 +193,7 @@ class LoginServiceTest {
         when(jwtGenerator.generate(studentEntity)).thenReturn(TOKEN);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)
@@ -209,7 +208,7 @@ class LoginServiceTest {
 
     @Test
     void validateFacebookStudentCredentials_shouldSaveUserIfLoginFirstTime() {
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         var studentEntity = createStudent();
         when(facebookTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.just(studentEntity));
         when(studentRepository.findByEmail(EMAIL)).thenReturn(Mono.empty());
@@ -217,7 +216,7 @@ class LoginServiceTest {
         when(jwtGenerator.generate(studentEntity)).thenReturn(TOKEN);
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)
@@ -232,11 +231,11 @@ class LoginServiceTest {
 
     @Test
     void validateFacebookStudentCredentials_shouldThrowExceptionIfTokenNotValid() {
-        var studentLoginDTO = new StudentLoginDTO(ACCESS_TOKEN);
+        var studentLoginDTO = new StudentLoginDto(ACCESS_TOKEN);
         when(facebookTokenValidator.validate(studentLoginDTO)).thenReturn(Mono.error(new InvalidTokenException()));
 
         // given
-        Mono<LoginResponseDTO> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
+        Mono<LoginResponseDto> result = loginService.validateFacebookStudentCredentials(studentLoginDTO);
 
         // then
         StepVerifier.create(result)

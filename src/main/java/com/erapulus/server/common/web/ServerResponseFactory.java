@@ -98,12 +98,6 @@ public class ServerResponseFactory {
                                                                            .build()));
     }
 
-    public static Mono<ServerResponse> createHttpUnauthorizedResponse() {
-        return ServerResponse.status(HttpStatus.UNAUTHORIZED)
-                             .contentType(MediaType.APPLICATION_JSON)
-                             .body(BodyInserters.fromValue(createHttpUnauthorizedResponseBody()));
-    }
-
     public static ResponseTemplate<Object> createHttpUnauthorizedResponseBody() {
         return ResponseTemplate.builder()
                                .status(HttpStatus.UNAUTHORIZED.value())

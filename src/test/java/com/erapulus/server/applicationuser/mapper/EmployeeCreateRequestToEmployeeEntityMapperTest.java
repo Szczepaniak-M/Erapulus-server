@@ -1,6 +1,7 @@
-package com.erapulus.server.employee.mapper;
+package com.erapulus.server.applicationuser.mapper;
 
 import com.erapulus.server.TestUtils;
+import com.erapulus.server.applicationuser.mapper.EmployeeCreateRequestToEmployeeEntityMapper;
 import com.erapulus.server.common.database.UserType;
 import com.erapulus.server.employee.database.EmployeeEntity;
 import com.erapulus.server.employee.dto.EmployeeCreateRequestDto;

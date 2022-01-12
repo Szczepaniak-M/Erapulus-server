@@ -2,7 +2,7 @@ package com.erapulus.server.security;
 
 import com.erapulus.server.common.exception.InvalidTokenException;
 import com.erapulus.server.student.database.StudentEntity;
-import com.erapulus.server.student.dto.StudentLoginDTO;
+import com.erapulus.server.applicationuser.dto.StudentLoginDto;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ public class GoogleTokenValidator {
 
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
-    public Mono<StudentEntity> validate(StudentLoginDTO studentLoginDTO) {
+    public Mono<StudentEntity> validate(StudentLoginDto studentLoginDTO) {
         return Mono.fromCallable(() -> googleIdTokenVerifier.verify(studentLoginDTO.token()))
                    .switchIfEmpty(Mono.error(new InvalidTokenException()))
                    .onErrorMap(IllegalArgumentException.class, e -> new InvalidTokenException())

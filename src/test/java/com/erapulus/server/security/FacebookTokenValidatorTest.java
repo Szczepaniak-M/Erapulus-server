@@ -2,7 +2,7 @@ package com.erapulus.server.security;
 
 import com.erapulus.server.common.exception.InvalidTokenException;
 import com.erapulus.server.student.database.StudentEntity;
-import com.erapulus.server.student.dto.StudentLoginDTO;
+import com.erapulus.server.applicationuser.dto.StudentLoginDto;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -41,7 +41,7 @@ class FacebookTokenValidatorTest {
 
     @Test
     void validate_shouldReturnStudentEntityWhenTokenCorrect() {
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        StudentLoginDto loginDTO = new StudentLoginDto(TOKEN);
         String responseBody = """
                 {
                   "first_name":"firstName",
@@ -76,7 +76,7 @@ class FacebookTokenValidatorTest {
 
     @Test
     void validate_shouldReturnInvalidTokenExceptionWhenVerifyReturnNull() {
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        StudentLoginDto loginDTO = new StudentLoginDto(TOKEN);
         mockBackEnd.enqueue(new MockResponse()
                 .setResponseCode(400)
                 .addHeader("Content-Type", "application/json"));

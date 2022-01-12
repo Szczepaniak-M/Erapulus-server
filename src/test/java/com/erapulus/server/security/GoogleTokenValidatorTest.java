@@ -2,7 +2,7 @@ package com.erapulus.server.security;
 
 import com.erapulus.server.common.exception.InvalidTokenException;
 import com.erapulus.server.student.database.StudentEntity;
-import com.erapulus.server.student.dto.StudentLoginDTO;
+import com.erapulus.server.applicationuser.dto.StudentLoginDto;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -50,7 +50,7 @@ class GoogleTokenValidatorTest {
         payload.setEmail(EMAIL);
         GoogleIdToken token = new GoogleIdToken(new JsonWebSignature.Header(), payload, new byte[]{}, new byte[]{});
         when(googleIdTokenVerifier.verify(anyString())).thenReturn(token);
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        StudentLoginDto loginDTO = new StudentLoginDto(TOKEN);
 
         // when
         Mono<StudentEntity> result = googleTokenValidator.validate(loginDTO);
@@ -71,7 +71,7 @@ class GoogleTokenValidatorTest {
     void verify_shouldReturnInvalidTokenExceptionWhenVerifyReturnNull() throws GeneralSecurityException, IOException {
         // given
         when(googleIdTokenVerifier.verify(anyString())).thenReturn(null);
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        StudentLoginDto loginDTO = new StudentLoginDto(TOKEN);
 
         // when
         Mono<StudentEntity> result = googleTokenValidator.validate(loginDTO);
@@ -87,7 +87,7 @@ class GoogleTokenValidatorTest {
     void verify_shouldReturnInvalidTokenExceptionWhenVerifyReturnException() throws GeneralSecurityException, IOException {
         // given
         when(googleIdTokenVerifier.verify(anyString())).thenThrow(new IllegalArgumentException());
-        StudentLoginDTO loginDTO = new StudentLoginDTO(TOKEN);
+        StudentLoginDto loginDTO = new StudentLoginDto(TOKEN);
 
         // when
         Mono<StudentEntity> result = googleTokenValidator.validate(loginDTO);

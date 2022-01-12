@@ -6,8 +6,6 @@ import com.erapulus.server.building.dto.BuildingRequestDto;
 import com.erapulus.server.building.dto.BuildingResponseDto;
 import com.erapulus.server.building.mapper.BuildingEntityToResponseDtoMapper;
 import com.erapulus.server.building.mapper.BuildingRequestDtoToEntityMapper;
-import com.erapulus.server.common.exception.NoSuchUserException;
-import com.erapulus.server.employee.database.EmployeeEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
