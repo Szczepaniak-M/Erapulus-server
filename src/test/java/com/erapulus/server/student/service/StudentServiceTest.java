@@ -157,6 +157,7 @@ class StudentServiceTest {
                         assertEquals(ID_1, studentResponseDto.id());
                         assertEquals(PICTURE_URL, studentResponseDto.pictureUrl());
                         assertEquals(UNIVERSITY_ID, studentResponseDto.universityId());
+                        assertEquals(EMAIL, studentResponseDto.email());
                     })
                     .verifyComplete();
     }

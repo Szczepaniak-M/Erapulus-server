@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.codec.DecodingException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
@@ -74,6 +76,7 @@ public class UniversityController {
                     @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -82,6 +85,7 @@ public class UniversityController {
                       .flatMap(universityService::createUniversity)
                       .flatMap(ServerResponseFactory::createHttpCreatedResponse)
                       .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                      .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("university"))
                       .doOnError(e -> log.error(e.getMessage(), e))
                       .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                       .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse());
@@ -96,6 +100,7 @@ public class UniversityController {
             parameters = @Parameter(in = PATH, name = UNIVERSITY_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = UniversityResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
@@ -125,6 +130,7 @@ public class UniversityController {
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -135,6 +141,7 @@ public class UniversityController {
                                        .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                        .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                        .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                       .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("university"))
                                        .doOnError(e -> log.error(e.getMessage(), e))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
@@ -185,16 +192,18 @@ public class UniversityController {
     public Mono<ServerResponse> updateUniversityPhoto(ServerRequest request) {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> request.body(BodyExtractors.toMultipartData())
-                                       .map(this::extractPhoto)
+                                       .flatMap(this::extractPhoto)
                                        .flatMap(photo -> universityService.updateUniversityLogo(universityId, photo))
                                        .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                       .onErrorResume(DecodingException.class, e -> ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())
                                        .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                        .doOnError(e -> log.error(e.getMessage(), e))
                                        .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                        .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
 
-    private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {
-        return (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
+    private Mono<FilePart> extractPhoto(MultiValueMap<String, Part> photoParts) {
+        FilePart filePart = (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
+        return Mono.justOrEmpty(filePart);
     }
 }

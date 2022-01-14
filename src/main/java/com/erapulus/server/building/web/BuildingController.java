@@ -101,6 +101,7 @@ public class BuildingController {
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = BuildingResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
@@ -134,6 +135,7 @@ public class BuildingController {
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -144,6 +146,7 @@ public class BuildingController {
                                              .flatMap(buildingDto -> buildingService.updateBuilding(buildingDto, buildingId, universityId))
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                              .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                             .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("building"))
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                              .doOnError(e -> log.error(e.getMessage(), e))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())

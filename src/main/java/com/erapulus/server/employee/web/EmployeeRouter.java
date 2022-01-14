@@ -34,7 +34,7 @@ public class EmployeeRouter {
     @Bean
     RouterFunction<ServerResponse> employeeRoutes(EmployeeController employeeController) {
         return route(GET(EMPLOYEE_LIST_URL).and(accept(APPLICATION_JSON)), employeeController::listEmployeeFromUniversity)
-                .andRoute(GET(EMPLOYEE_DETAILS_URL).and(contentType(APPLICATION_JSON)), employeeController::getEmployeeById)
+                .andRoute(GET(EMPLOYEE_DETAILS_URL).and(accept(APPLICATION_JSON)), employeeController::getEmployeeById)
                 .andRoute(PUT(EMPLOYEE_DETAILS_URL).and(contentType(APPLICATION_JSON)), employeeController::updateEmployee);
     }
 }

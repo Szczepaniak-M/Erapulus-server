@@ -72,7 +72,9 @@ public class StudentService extends CrudGenericService<StudentEntity, StudentReq
     public Mono<StudentResponseDto> updateStudent(@Valid StudentRequestDto requestDto, int studentId) {
         UnaryOperator<StudentEntity> addParamFromPath = student -> student.id(studentId).type(UserType.STUDENT);
         Supplier<Mono<StudentEntity>> supplier = () -> studentRepository.findByIdAndType(studentId);
-        BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl()).universityId(oldStudent.universityId());
+        BinaryOperator<StudentEntity> mergeEntity = (oldStudent, newStudent) -> newStudent.pictureUrl(oldStudent.pictureUrl())
+                                                                                          .universityId(oldStudent.universityId())
+                                                                                          .email(oldStudent.email());
         return updateEntity(requestDto, addParamFromPath, supplier, mergeEntity);
     }
 

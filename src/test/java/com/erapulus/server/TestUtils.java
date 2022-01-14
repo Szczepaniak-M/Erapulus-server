@@ -55,4 +55,22 @@ public class TestUtils {
         return Validation.buildDefaultValidatorFactory().getValidator();
     }
 
+    public static String createSuccessfulResponse(int code, String payload) {
+        return """
+                {
+                  "status":%d,
+                  "payload":%s,
+                  "message":null
+                }""".formatted(code, payload);
+    }
+
+    public static String createErrorResponse(int code, String errorMessage) {
+        return """
+                {
+                  "status":%d,
+                  "payload":null,
+                  "message":"%s"
+                }""".formatted(code, errorMessage);
+    }
+
 }

@@ -25,7 +25,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class ModuleRouter {
     public static final String MODULE_BASE_URL = String.format("/api/university/{%s}/faculty/{%s}/program/{%s}/module", UNIVERSITY_PATH_PARAM, FACULTY_PATH_PARAM, PROGRAM_PATH_PARAM);
-    public static final String MODULE_DETAILS_URL = String.format("api/university/{%s}/faculty/{%s}/program/{%s}/module/{%s}", UNIVERSITY_PATH_PARAM, FACULTY_PATH_PARAM, PROGRAM_PATH_PARAM, MODULE_PATH_PARAM);
+    public static final String MODULE_DETAILS_URL = String.format("/api/university/{%s}/faculty/{%s}/program/{%s}/module/{%s}", UNIVERSITY_PATH_PARAM, FACULTY_PATH_PARAM, PROGRAM_PATH_PARAM, MODULE_PATH_PARAM);
 
     @RouterOperations({
             @RouterOperation(path = MODULE_BASE_URL_OPENAPI, method = GET, beanClass = ModuleController.class, beanMethod = "listModules"),

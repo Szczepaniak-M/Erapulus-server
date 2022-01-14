@@ -112,6 +112,7 @@ public class PostController {
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),

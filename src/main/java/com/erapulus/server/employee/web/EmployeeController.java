@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -43,6 +45,7 @@ public class EmployeeController {
             summary = "List employees",
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeResponseDto.class)))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
@@ -52,6 +55,7 @@ public class EmployeeController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> employeeService.listEmployees(universityId)
                                                .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                               .onErrorResume(AccessDeniedException.class, e -> ServerResponseFactory.createHttpForbiddenErrorResponse())
                                                .doOnError(e -> log.error(e.getMessage(), e))
                                                .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
     }
@@ -65,6 +69,7 @@ public class EmployeeController {
             parameters = @Parameter(in = PATH, name = EMPLOYEE_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
@@ -75,6 +80,7 @@ public class EmployeeController {
         return withPathParam(request, EMPLOYEE_PATH_PARAM,
                 employeeId -> employeeService.getEmployeeById(employeeId)
                                              .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                             .onErrorResume(AccessDeniedException.class, e -> ServerResponseFactory.createHttpForbiddenErrorResponse())
                                              .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                              .doOnError(e -> log.error(e.getMessage(), e))
                                              .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
@@ -94,6 +100,7 @@ public class EmployeeController {
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
+                    @ApiResponse(responseCode = "409", description = CONFLICT),
                     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR)
             }
     )
@@ -103,7 +110,9 @@ public class EmployeeController {
                                      .flatMap(employeeDto -> employeeService.updateEmployee(employeeDto, employeeId))
                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                      .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
+                                     .onErrorResume(AccessDeniedException.class, e -> ServerResponseFactory.createHttpForbiddenErrorResponse())
                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                     .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("employee"))
                                      .doOnError(e -> log.error(e.getMessage(), e))
                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                      .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));

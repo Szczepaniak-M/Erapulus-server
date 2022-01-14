@@ -112,6 +112,23 @@ class DocumentServiceUniversityTest {
     }
 
     @Test
+    void createDocument_shouldThrowExceptionWhenFileNotFound() {
+        // given
+        var filePart = mock(FilePart.class);
+        Map<String, Part> body = new HashMap<>();
+        body.put("wrong_field", filePart);
+
+        // when
+        Mono<DocumentResponseDto> result = documentService.createDocument(UNIVERSITY_ID, null, null, null, body);
+
+        // then
+        StepVerifier.create(result)
+                    .expectSubscription()
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
+    }
+
+    @Test
     void getDocumentById_shouldReturnDocumentForUniversityWhenFound() {
         // given
         var document = createDocument(ID_1);

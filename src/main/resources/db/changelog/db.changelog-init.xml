@@ -44,7 +44,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="NVARCHAR(31)">
+            <column name="name" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
             <column name="address" type="NVARCHAR(63)">
@@ -64,7 +64,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="NVARCHAR(31)">
+            <column name="name" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
             <column name="abbrev" type="NVARCHAR(7)">
@@ -84,7 +84,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="NVARCHAR(31)">
+            <column name="name" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
             <column name="abbrev" type="NVARCHAR(7)">
@@ -104,7 +104,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="NVARCHAR(31)">
+            <column name="name" type="NVARCHAR(63)">
                 <constraints nullable="false"/>
             </column>
             <column name="abbrev" type="NVARCHAR(7)">
@@ -478,7 +478,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="name" type="NVARCHAR(31)"/>
+            <column name="name" type="NVARCHAR(63)"/>
             <column name="address" type="VARCHAR(63)"/>
             <column name="email" type="VARCHAR(63)"/>
             <column name="university" type="INT"/>
@@ -495,7 +495,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="name" type="NVARCHAR(31)"/>
+            <column name="name" type="NVARCHAR(63)"/>
             <column name="abbrev" type="NVARCHAR(7)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
             <column name="faculty" type="INT"/>
@@ -512,7 +512,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="name" type="NVARCHAR(31)"/>
+            <column name="name" type="NVARCHAR(63)"/>
             <column name="abbrev" type="NVARCHAR(7)"/>
             <column name="description" type="NVARCHAR(MAX)"/>
             <column name="program" type="INT"/>
@@ -529,7 +529,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="id" type="INT"/>
-            <column name="name" type="NVARCHAR(31)"/>
+            <column name="name" type="NVARCHAR(63)"/>
             <column name="abbrev" type="NVARCHAR(7)"/>
             <column name="latitude" type="DOUBLE"/>
             <column name="longitude" type="DOUBLE"/>

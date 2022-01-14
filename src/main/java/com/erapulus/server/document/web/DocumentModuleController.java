@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.BodyExtractors;
@@ -21,6 +22,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 import static com.erapulus.server.common.web.CommonRequestVariable.*;
@@ -94,11 +96,13 @@ public class DocumentModuleController {
         return withPathParam(request, UNIVERSITY_PATH_PARAM,
                 universityId -> withPathParam(request, FACULTY_PATH_PARAM,
                         facultyId -> withPathParam(request, PROGRAM_PATH_PARAM,
-                                programId -> withPathParam(request, PROGRAM_PATH_PARAM,
+                                programId -> withPathParam(request, MODULE_PATH_PARAM,
                                         moduleId -> request.body(BodyExtractors.toMultipartData())
                                                            .map(MultiValueMap::toSingleValueMap)
                                                            .flatMap(body -> documentService.createDocument(universityId, facultyId, programId, moduleId, body))
                                                            .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                           .onErrorResume(DecodingException.class, e -> ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())
+                                                           .onErrorResume(IllegalArgumentException.class, e -> ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())
                                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                            .doOnError(e -> log.error(e.getMessage(), e))
                                                            .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
@@ -172,6 +176,7 @@ public class DocumentModuleController {
                                                 documentId -> request.bodyToMono(DocumentRequestDto.class)
                                                                      .flatMap(document -> documentService.updateDocument(document, documentId, universityId, facultyId, programId, moduleId))
                                                                      .flatMap(ServerResponseFactory::createHttpSuccessResponse)
+                                                                     .onErrorResume(ConstraintViolationException.class, ServerResponseFactory::createHttpBadRequestConstraintViolationErrorResponse)
                                                                      .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                                                      .doOnError(e -> log.error(e.getMessage(), e))
                                                                      .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())

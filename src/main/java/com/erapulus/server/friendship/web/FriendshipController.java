@@ -121,7 +121,8 @@ public class FriendshipController {
                                     .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("duplicated.request"))
                                     .onErrorResume(IllegalStateException.class, e -> ServerResponseFactory.createHttpConflictResponse("other.request"))
                                     .doOnError(e -> log.error(e.getMessage(), e))
-                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse()));
+                                    .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                    .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
 
     @NonNull
@@ -154,7 +155,8 @@ public class FriendshipController {
                                            .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
                                            .onErrorResume(DataIntegrityViolationException.class, e -> ServerResponseFactory.createHttpConflictResponse("friend"))
                                            .doOnError(e -> log.error(e.getMessage(), e))
-                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())));
+                                           .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
+                                           .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())));
     }
 
     @NonNull

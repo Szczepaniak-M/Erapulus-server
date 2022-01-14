@@ -42,6 +42,12 @@ public class StudentEntity extends ApplicationUserEntity {
     }
 
     @Override
+    public StudentEntity email(String email) {
+        super.email(email);
+        return this;
+    }
+
+    @Override
     public StudentEntity universityId(Integer universityId) {
         super.universityId(universityId);
         return this;

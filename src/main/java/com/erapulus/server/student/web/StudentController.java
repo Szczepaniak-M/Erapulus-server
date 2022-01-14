@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
@@ -73,6 +74,7 @@ public class StudentController {
             parameters = @Parameter(in = PATH, name = STUDENT_PATH_PARAM, schema = @Schema(type = "integer"), required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = OK, content = @Content(schema = @Schema(implementation = StudentResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = BAD_REQUEST),
                     @ApiResponse(responseCode = "401", description = UNAUTHORIZED),
                     @ApiResponse(responseCode = "403", description = FORBIDDEN),
                     @ApiResponse(responseCode = "404", description = NOT_FOUND),
@@ -166,17 +168,19 @@ public class StudentController {
     public Mono<ServerResponse> updateStudentPhoto(ServerRequest request) {
         return withPathParam(request, STUDENT_PATH_PARAM,
                 studentId -> request.body(BodyExtractors.toMultipartData())
-                                    .map(this::extractPhoto)
+                                    .flatMap(this::extractPhoto)
                                     .flatMap(photo -> studentService.updateStudentPhoto(studentId, photo))
                                     .flatMap(ServerResponseFactory::createHttpSuccessResponse)
                                     .onErrorResume(NoSuchElementException.class, ServerResponseFactory::createHttpNotFoundResponse)
+                                    .onErrorResume(DecodingException.class, e -> ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse())
                                     .doOnError(e -> log.error(e.getMessage(), e))
                                     .onErrorResume(e -> ServerResponseFactory.createHttpInternalServerErrorResponse())
                                     .switchIfEmpty(ServerResponseFactory.createHttpBadRequestNoBodyFoundErrorResponse()));
     }
 
-    private FilePart extractPhoto(MultiValueMap<String, Part> photoParts) {
-        return (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
+    private Mono<FilePart> extractPhoto(MultiValueMap<String, Part> photoParts) {
+        FilePart filePart = (FilePart) photoParts.toSingleValueMap().get(FILE_QUERY_PARAM);
+        return Mono.justOrEmpty(filePart);
     }
 }
 

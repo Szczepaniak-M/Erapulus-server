@@ -11,6 +11,7 @@ import com.erapulus.server.employee.dto.EmployeeRequestDto;
 import com.erapulus.server.employee.dto.EmployeeResponseDto;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
@@ -48,6 +49,7 @@ public class EmployeeService extends CrudGenericService<EmployeeEntity, Employee
                 .flatMap(this::validateBodyContent);
     }
 
+    @Transactional
     public Mono<EmployeeResponseDto> updateEmployee(@Valid EmployeeRequestDto requestDto, int employeeId) {
         UnaryOperator<EmployeeEntity> addParamFromPath = employee -> employee.id(employeeId);
         Supplier<Mono<EmployeeEntity>> supplier = () -> employeeRepository.findByIdAndType(employeeId);

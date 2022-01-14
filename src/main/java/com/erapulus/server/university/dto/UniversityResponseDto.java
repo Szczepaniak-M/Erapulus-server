@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.annotation.MatchesPattern;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -45,12 +44,4 @@ public class UniversityResponseDto {
 
     @JsonProperty("logoUrl")
     private String logoUrl;
-
-    @MatchesPattern("#[A-F0-9]{6}")
-    @JsonProperty("primaryColor")
-    private String primaryColor;
-
-    @MatchesPattern("#[A-F0-9]{6}")
-    @JsonProperty("secondaryColor")
-    private String secondaryColor;
 }
