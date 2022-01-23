@@ -123,6 +123,255 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/employee:
+    post:
+      tags:
+        - Login
+      summary: Login employee
+      description: Login employee
+      operationId: login-employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeLoginDto'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/facebook:
+    post:
+      tags:
+        - Login
+      summary: Login student using Facebook
+      description: Login student using Facebook
+      operationId: login-student-facebook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLoginDto'
+      responses:
+        "201":
+          description: CREATED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/login/google:
+    post:
+      tags:
+        - Login
+      summary: Login student using Google
+      description: Login student using Google
+      operationId: login-student-google
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLoginDto'
+      responses:
+        "201":
+          description: CREATED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/administrator:
+    post:
+      tags:
+        - Employee
+      summary: Create administrator
+      description: Create administrator
+      operationId: create-administrator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/employee:
+    post:
+      tags:
+        - Employee
+      summary: Create university employee
+      description: Create university employee
+      operationId: create-employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /api/user/register/university-administrator:
+    post:
+      tags:
+        - Employee
+      summary: Create university administrator
+      description: Create university administrator
+      operationId: create-university-administrator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequestDto'
+        required: true
+      responses:
+        "201":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   /api/university/{universityId}/building:
     get:
       tags:
@@ -255,6 +504,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BuildingResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -329,6 +584,12 @@ paths:
                 $ref: '#/components/schemas/ServerResponse'
         "404":
           description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
           content:
             '*/*':
               schema:
@@ -519,6 +780,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeviceResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -593,6 +860,12 @@ paths:
                 $ref: '#/components/schemas/ServerResponse'
         "404":
           description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
           content:
             '*/*':
               schema:
@@ -1627,31 +1900,37 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
         "403":
           description: FORBIDDEN
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
         "404":
           description: NOT FOUND
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
     put:
@@ -1703,6 +1982,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -1726,6 +2011,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EmployeeResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -1851,6 +2142,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -1882,6 +2179,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FacultyResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -1956,6 +2259,12 @@ paths:
                 $ref: '#/components/schemas/ServerResponse'
         "404":
           description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
           content:
             '*/*':
               schema:
@@ -2308,105 +2617,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
-  /api/user/login/employee:
-    post:
-      tags:
-        - Login
-      summary: Login employee
-      description: Login employee
-      operationId: login-employee
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmployeeLoginDTO'
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/LoginResponseDTO'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "401":
-          description: UNAUTHORIZED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-  /api/user/login/facebook:
-    post:
-      tags:
-        - Login
-      summary: Login student using Facebook
-      description: Login student using Facebook
-      operationId: login-student-facebook
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StudentLoginDTO'
-      responses:
-        "201":
-          description: CREATED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/LoginResponseDTO'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-  /api/user/login/google:
-    post:
-      tags:
-        - Login
-      summary: Login student using Google
-      description: Login student using Google
-      operationId: login-student-google
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StudentLoginDTO'
-      responses:
-        "201":
-          description: CREATED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/LoginResponseDTO'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
   /api/university/{universityId}/faculty/{facultyId}/program/{programId}/module:
     get:
       tags:
@@ -2540,6 +2750,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -2581,6 +2797,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ModuleResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -2665,6 +2887,12 @@ paths:
                 $ref: '#/components/schemas/ServerResponse'
         "404":
           description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
           content:
             '*/*':
               schema:
@@ -2891,6 +3119,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -3158,6 +3392,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -3194,6 +3434,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProgramResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -3277,6 +3523,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -3342,156 +3594,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
-  /api/user/register/administrator:
-    post:
-      tags:
-        - Employee
-      summary: Create administrator
-      description: Create administrator
-      operationId: create-administrator
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmployeeCreateRequestDto'
-        required: true
-      responses:
-        "201":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EmployeeResponseDto'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "401":
-          description: UNAUTHORIZED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "403":
-          description: FORBIDDEN
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "409":
-          description: CONFLICT
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-  /api/user/register/employee:
-    post:
-      tags:
-        - Employee
-      summary: Create university employee
-      description: Create university employee
-      operationId: create-employee
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmployeeCreateRequestDto'
-        required: true
-      responses:
-        "201":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EmployeeResponseDto'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "401":
-          description: UNAUTHORIZED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "403":
-          description: FORBIDDEN
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "409":
-          description: CONFLICT
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-  /api/user/register/university-administrator:
-    post:
-      tags:
-        - Employee
-      summary: Create university administrator
-      description: Create university administrator
-      operationId: create-university-administrator
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmployeeCreateRequestDto'
-        required: true
-      responses:
-        "201":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EmployeeResponseDto'
-        "400":
-          description: BAD REQUEST
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "401":
-          description: UNAUTHORIZED
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "403":
-          description: FORBIDDEN
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "409":
-          description: CONFLICT
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-        "500":
-          description: INTERNAL SERVER ERROR
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
   /api/student:
     get:
       tags:
@@ -3549,6 +3651,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StudentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -3813,6 +3921,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "500":
           description: INTERNAL SERVER ERROR
           content:
@@ -3839,6 +3953,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UniversityResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         "401":
           description: UNAUTHORIZED
           content:
@@ -3861,6 +3981,67 @@ paths:
           description: INTERNAL SERVER ERROR
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - University
+      summary: Update university
+      description: Update university
+      operationId: update-university
+      parameters:
+        - name: universityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversityRequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/StudentResponseDto'
+        "400":
+          description: BAD REQUEST
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: UNAUTHORIZED
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "403":
+          description: FORBIDDEN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "404":
+          description: NOT FOUND
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "409":
+          description: CONFLICT
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: INTERNAL SERVER ERROR
+          content:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/ServerResponse'
     delete:
@@ -4000,6 +4181,91 @@ components:
           type: string
     ServerResponse:
       type: object
+    EmployeeLoginDto:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: object
+          properties:
+            empty:
+              type: boolean
+    LoginResponseDto:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+        universityId:
+          type: integer
+          format: int32
+        token:
+          type: string
+    StudentLoginDto:
+      required:
+        - token
+      type: object
+      properties:
+        token:
+          type: string
+    EmployeeCreateRequestDto:
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: object
+          properties:
+            empty:
+              type: boolean
+    EmployeeResponseDto:
+      required:
+        - email
+        - firstName
+        - id
+        - lastName
+        - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        type:
+          type: string
+          enum:
+            - ADMINISTRATOR
+            - UNIVERSITY_ADMINISTRATOR
+            - EMPLOYEE
+            - STUDENT
+        firstName:
+          type: string
+        lastName:
+          type: string
+        universityId:
+          type: integer
+          format: int32
+        email:
+          type: string
+        phoneNumber:
+          type: string
     BuildingResponseDto:
       required:
         - abbrev
@@ -4108,36 +4374,6 @@ components:
           type: string
         description:
           type: string
-    EmployeeResponseDto:
-      required:
-        - email
-        - firstName
-        - id
-        - lastName
-        - type
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        type:
-          type: string
-          enum:
-            - ADMINISTRATOR
-            - UNIVERSITY_ADMINISTRATOR
-            - EMPLOYEE
-            - STUDENT
-        firstName:
-          type: string
-        lastName:
-          type: string
-        universityId:
-          type: integer
-          format: int32
-        email:
-          type: string
-        phoneNumber:
-          type: string
     EmployeeRequestDto:
       required:
         - email
@@ -4241,35 +4477,6 @@ components:
       properties:
         accept:
           type: boolean
-    EmployeeLoginDTO:
-      required:
-        - email
-        - password
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: object
-          properties:
-            empty:
-              type: boolean
-    LoginResponseDTO:
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int32
-        universityId:
-          type: integer
-          format: int32
-        token:
-          type: string
-    StudentLoginDTO:
-      type: object
-      properties:
-        token:
-          type: string
     ModuleRequestDto:
       required:
         - abbrev
@@ -4366,30 +4573,6 @@ components:
           type: string
         description:
           type: string
-    EmployeeCreateRequestDto:
-      required:
-        - email
-        - firstName
-        - lastName
-        - password
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        universityId:
-          type: integer
-          format: int32
-        email:
-          type: string
-        phoneNumber:
-          type: string
-        password:
-          type: object
-          properties:
-            empty:
-              type: boolean
     StudentResponseDto:
       required:
         - email
@@ -4517,10 +4700,6 @@ components:
         websiteUrl:
           type: string
         logoUrl:
-          type: string
-        primaryColor:
-          type: string
-        secondaryColor:
           type: string
   securitySchemes:
     bearerAuth:
