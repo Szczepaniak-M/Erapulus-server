@@ -68,6 +68,9 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
         if (user.universityId() != null) {
             roles.add(new SimpleGrantedAuthority("UNIVERSITY_" + user.universityId()));
         }
+        if (user.type() == UserType.ADMINISTRATOR) {
+            roles.add(new SimpleGrantedAuthority("UNIVERSITY_null"));
+        }
         if (user.type() == UserType.STUDENT) {
             roles.add(new SimpleGrantedAuthority("STUDENT_" + user.id()));
         }
