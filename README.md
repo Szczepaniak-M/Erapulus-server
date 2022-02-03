@@ -1,6 +1,17 @@
 # Erapulus
+Erapulus is an application created by [@Piotr Gleska](https://github.com/pgleska/), [@Michał Szczepaniak](https://github.com/Szczepaniak-M) and [@Filip Szóstak](https://github.com/Cheriit/) as the Bachelor Thesis at Poznan University of Technology.
 
-Backend application for Erapulus project, made as an Engineer Thesis for Poznan University of Technology.
+The application is focused on the students participating in Erasmus+ project. 
+Its main purpose is to simplify the process of acclimatisation.
+
+
+The application consists of the three part:
+- Server application created by [@Michał Szczepaniak](https://github.com/Szczepaniak-M): [Erapulus-server](https://github.com/Szczepaniak-M/Erapulus-server)
+- Mobile application for students created by [@Piotr Gleska](https://github.com/pgleska/): [Erapulus-client-mobile](https://github.com/pgleska/erapulus-client-mobile)
+- Web application for university employees created by [@Filip Szóstak](https://github.com/Cheriit/): [Erapulus-client-web](https://github.com/Cheriit/erapulus-client-web)
+
+# Erapulus server
+
 
 ## Requirements:
 - Java 17
